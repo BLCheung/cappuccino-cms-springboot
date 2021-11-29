@@ -1,2 +1,2 @@
 # zbl-missyou-admin
-cms project for zbl-missyou-springboot
+springboot project for zbl-missyou-admin
