@@ -1,10 +1,7 @@
 package com.blcheung.zblmissyouadmin.kit;
 
 import com.blcheung.zblmissyouadmin.common.Code;
-import com.blcheung.zblmissyouadmin.vo.CreatedVO;
-import com.blcheung.zblmissyouadmin.vo.DeletedVO;
-import com.blcheung.zblmissyouadmin.vo.ResultVO;
-import com.blcheung.zblmissyouadmin.vo.UpdatedVO;
+import com.blcheung.zblmissyouadmin.vo.*;
 
 /**
  * 统一结果返回辅助类
@@ -29,6 +26,14 @@ public class ResultKit {
                                      .msg(null)
                                      .data(data)
                                      .build();
+    }
+
+    public static ErrorVO reject(Integer code, String msg) {
+        return new ErrorVO(code, msg);
+    }
+
+    public static <T> ErrorVO reject(Integer code, String msg, T data) {
+        return new ErrorVO(code, msg, data);
     }
 
     public static CreatedVO resolveCreated() {
