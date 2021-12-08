@@ -18,7 +18,16 @@ public enum Code {
 
     INTERNAL_SERVER_ERROR(9999, "服务器异常"),
 
-    Fail(10000, "未知错误");
+    FAIL(10000, "操作失败"),
+
+    UNAUTHORIZED(10001, "权限不足"),
+
+    FORBIDDEN(10002, "禁止操作"),
+
+    PARAMETER_ERROR(10003, "参数错误"),
+
+    NOT_FOUND(10004, "资源找不到");
+
 
     private final Integer code;
     private final String  desc;
