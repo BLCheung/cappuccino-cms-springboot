@@ -10,6 +10,14 @@ spring:
 
 missyou:
   api-path: com.blcheung.zblmissyouadmin
+  # cms配置
+  cms:
+    # 秘钥
+    secret: 123456789
+    # token过期时长，默认3600s 一小时
+    access-token-expired: 3600
+    # refresh_token过期时长，默认604800s 一周
+    refresh-token-expired: 604800
 
 mybatis-plus:
   configuration:
