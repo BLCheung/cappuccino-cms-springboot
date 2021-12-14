@@ -14,7 +14,7 @@
     <name>zbl-missyou-admin</name>
     <description>CMS project for zbl-missyou-admin</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>15</java.version>
     </properties>
 
     <dependencies>
@@ -119,6 +119,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.18.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+            <version>4.9.2</version>
         </dependency>
 
         <dependency>
