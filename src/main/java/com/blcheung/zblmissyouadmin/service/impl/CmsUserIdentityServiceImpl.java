@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2021-11-28
  */
 @Service
-public class CmsUserIdentityServiceImp extends ServiceImpl<CmsUserIdentityMapper, CmsUserIdentityDO> implements CmsUserIdentityService {
+public class CmsUserIdentityServiceImpl extends ServiceImpl<CmsUserIdentityMapper, CmsUserIdentityDO> implements CmsUserIdentityService {
 
 }

@@ -48,7 +48,7 @@ public class MyBatisCodeGenerator {
                                                            .formatFileName("%sController")
                                                            .serviceBuilder()
                                                            .formatServiceFileName("%sService")
-                                                           .formatServiceImplFileName("%sServiceImp")
+                                                           .formatServiceImplFileName("%sServiceImpl")
                                                            .entityBuilder()
                                                            .naming(NamingStrategy.underline_to_camel)
                                                            .superClass(packageName + ".model.BaseDO")

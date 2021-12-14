@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2021-11-28
  */
 @Service
-public class CmsFileServiceImp extends ServiceImpl<CmsFileMapper, CmsFileDO> implements CmsFileService {
+public class CmsFileServiceImpl extends ServiceImpl<CmsFileMapper, CmsFileDO> implements CmsFileService {
 
 }

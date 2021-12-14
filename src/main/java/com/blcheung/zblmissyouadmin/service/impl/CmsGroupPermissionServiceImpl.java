@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2021-11-28
  */
 @Service
-public class CmsGroupPermissionServiceImp extends ServiceImpl<CmsGroupPermissionMapper, CmsGroupPermissionDO> implements CmsGroupPermissionService {
+public class CmsGroupPermissionServiceImpl extends ServiceImpl<CmsGroupPermissionMapper, CmsGroupPermissionDO> implements CmsGroupPermissionService {
 
 }
