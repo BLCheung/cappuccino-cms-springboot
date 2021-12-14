@@ -26,8 +26,11 @@ public enum Code {
 
     PARAMETER_ERROR(10003, "参数错误"),
 
-    NOT_FOUND(10004, "资源找不到");
+    NOT_FOUND(10004, "资源找不到"),
 
+    TOKEN_INVALID(10009, "令牌失效"),
+
+    TOKEN_EXPIRED(10010, "令牌过期");
 
     private final Integer code;
     private final String  desc;
