@@ -10,11 +10,12 @@ import lombok.Getter;
  */
 @Getter
 public enum UserLevel {
-    ADMIN(0, "管理员，最高权限"),
-    GROUP(1, "登录且具有相应角色权限"),
-    LOGIN(2, "登录即可访问权限"),
-    GUEST(3, "游客权限，不限制"),
-    REFRESH(4, "刷新令牌权限");
+    ROOT(0, "超级管理员，最高权限"),
+    ADMIN(1, "管理员，仅次于超级管理员"),
+    GROUP(2, "登录且具有相应角色权限"),
+    LOGIN(3, "登录即可访问权限"),
+    GUEST(4, "游客权限，不限制"),
+    REFRESH(5, "刷新令牌权限");
 
     private final Integer value;
 
