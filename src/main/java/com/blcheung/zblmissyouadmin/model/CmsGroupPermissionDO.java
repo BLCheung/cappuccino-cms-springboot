@@ -1,6 +1,7 @@
 package com.blcheung.zblmissyouadmin.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 @TableName("cms_group_permission")
 public class CmsGroupPermissionDO extends BaseDO {
 
@@ -22,12 +24,12 @@ public class CmsGroupPermissionDO extends BaseDO {
     /**
      * 分组id
      */
-    private Integer groupId;
+    private Long groupId;
 
     /**
      * 权限id
      */
-    private Integer permissionId;
+    private Long permissionId;
 
 
 }

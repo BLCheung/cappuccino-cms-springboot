@@ -3,9 +3,11 @@ package com.blcheung.zblmissyouadmin.service;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author BLCheung
@@ -13,4 +15,23 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CmsPermissionService extends IService<CmsPermissionDO> {
 
+    /**
+     * 权限是否存在
+     *
+     * @param id
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2021/12/25 11:21 下午
+     */
+    Boolean checkPermissionExist(Long id);
+
+    /**
+     * 批量检查权限是否存在
+     *
+     * @param ids
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2021/12/25 11:30 下午
+     */
+    Boolean checkPermissionExistBatch(List<Long> ids);
 }
