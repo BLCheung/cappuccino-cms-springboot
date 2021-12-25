@@ -3,10 +3,7 @@ package com.blcheung.zblmissyouadmin.model;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * <p>
@@ -19,6 +16,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName("cms_group")
 public class CmsGroupDO extends BaseDO {
 

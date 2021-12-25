@@ -1,8 +1,13 @@
 package com.blcheung.zblmissyouadmin.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.io.Serial;
+import java.io.Serializable;
+
 
 /**
  * <p>
@@ -14,20 +19,27 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @TableName("cms_user_group")
-public class CmsUserGroupDO extends BaseDO {
+public class CmsUserGroupDO implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = -7812857663526275266L;
+
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
     /**
      * 用户id
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 分组id
      */
-    private Integer groupId;
+    private Long groupId;
 
 
 }

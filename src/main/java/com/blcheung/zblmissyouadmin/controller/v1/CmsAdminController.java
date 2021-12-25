@@ -4,12 +4,12 @@ import com.blcheung.zblmissyouadmin.dto.NewGroupDTO;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.service.CmsAdminService;
 import com.blcheung.zblmissyouadmin.vo.CreatedVO;
+import com.blcheung.zblmissyouadmin.vo.DeletedVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.Positive;
 
 /**
  * @author BLCheung
@@ -23,9 +23,15 @@ public class CmsAdminController {
     @Autowired
     private CmsAdminService cmsAdminService;
 
-    @PostMapping("/create_group")
+    @PostMapping("/group")
     public CreatedVO createGroup(@RequestBody @Validated NewGroupDTO dto) {
         this.cmsAdminService.createGroup(dto);
         return ResultKit.resolveCreated();
+    }
+
+    @DeleteMapping("/group/{id}")
+    public DeletedVO deleteGroup(@PathVariable @Positive Long id) {
+        this.cmsAdminService.deleteGroup(id);
+        return ResultKit.resolveDeleted();
     }
 }

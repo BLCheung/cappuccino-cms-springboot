@@ -2,13 +2,11 @@ package com.blcheung.zblmissyouadmin.service.impl;
 
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
+import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
 import com.blcheung.zblmissyouadmin.dto.NewGroupDTO;
 import com.blcheung.zblmissyouadmin.model.CmsGroupDO;
 import com.blcheung.zblmissyouadmin.model.CmsGroupPermissionDO;
-import com.blcheung.zblmissyouadmin.service.CmsAdminService;
-import com.blcheung.zblmissyouadmin.service.CmsGroupPermissionService;
-import com.blcheung.zblmissyouadmin.service.CmsGroupService;
-import com.blcheung.zblmissyouadmin.service.CmsPermissionService;
+import com.blcheung.zblmissyouadmin.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +27,8 @@ public class CmsAdminServiceImpl implements CmsAdminService {
     private CmsPermissionService      cmsPermissionService;
     @Autowired
     private CmsGroupPermissionService cmsGroupPermissionService;
+    @Autowired
+    private CmsUserGroupService       cmsUserGroupService;
 
     @Transactional
     @Override
@@ -55,6 +55,28 @@ public class CmsAdminServiceImpl implements CmsAdminService {
         }
 
         return true;
+    }
+
+    @Transactional
+    @Override
+    public boolean deleteGroup(Long groupId) {
+        Long rootGroupId = this.cmsGroupService.getGroupIdByEnum(GroupLevel.ROOT);
+        if (rootGroupId.equals(groupId)) throw new ForbiddenException(10204);
+
+        Long adminGroupId = this.cmsGroupService.getGroupIdByEnum(GroupLevel.ADMIN);
+        if (adminGroupId.equals(groupId)) throw new ForbiddenException(10205);
+
+        Long guestGroupId = this.cmsGroupService.getGroupIdByEnum(GroupLevel.GUEST);
+        if (guestGroupId.equals(groupId)) throw new ForbiddenException(10206);
+
+        boolean isGroupExist = this.cmsGroupService.checkGroupExistById(groupId);
+        if (!isGroupExist) throw new NotFoundException(10208);
+
+        // 待删除的分组下是否存在用户
+        List<Long> groupAllUserIds = this.cmsUserGroupService.getGroupAllUserIds(groupId);
+        if (!groupAllUserIds.isEmpty()) throw new ForbiddenException(10210);
+
+        return this.cmsGroupService.removeById(groupId);
     }
 
 
