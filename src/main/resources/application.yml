@@ -4,6 +4,8 @@ spring:
   # 激活配置
   profiles:
     active: dev
+  # 文件编码格式
+  mandatory-file-encoding: UTF-8
   mvc:
     # 404 交给异常处理
     throw-exception-if-no-handler-found: true
