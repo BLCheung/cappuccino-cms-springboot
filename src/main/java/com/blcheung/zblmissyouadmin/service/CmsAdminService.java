@@ -17,4 +17,14 @@ public interface CmsAdminService {
      * @date 2021/12/21 9:47 下午
      */
     boolean createGroup(NewGroupDTO dto);
+
+    /**
+     * 删除分组
+     *
+     * @param groupId
+     * @return boolean
+     * @author BLCheung
+     * @date 2021/12/26 4:03 上午
+     */
+    boolean deleteGroup(Long groupId);
 }
