@@ -2,7 +2,6 @@ package com.blcheung.zblmissyouadmin.common.exceptions;
 
 import com.blcheung.zblmissyouadmin.common.Code;
 import com.blcheung.zblmissyouadmin.common.configuration.CodeConfiguration;
-import com.blcheung.zblmissyouadmin.common.exceptions.HttpException;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.util.RequestUtil;
 import com.blcheung.zblmissyouadmin.vo.ErrorVO;
@@ -10,6 +9,8 @@ import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -77,7 +78,7 @@ public class RestExceptionHandler {
     }
 
     /**
-     * 捕捉通过query方式参数验证错误抛出的异常
+     * 捕捉普通参数（非java bean）校验错误时抛出的异常
      *
      * @param request
      * @param response
@@ -100,7 +101,9 @@ public class RestExceptionHandler {
     }
 
     /**
-     * 捕捉通过body方式的参数验证错误抛出的异常
+     * 捕捉将请求体（body）解析到java bean时出错则抛出的MethodArgumentNotValidException异常
+     * 参数绑定到java bean时出错则抛出BindException异常
+     * 而MethodArgumentNotValidException继承自BindException
      *
      * @param request
      * @param response
@@ -109,10 +112,10 @@ public class RestExceptionHandler {
      * @author BLCheung
      * @date 2021/12/9 9:01 下午
      */
-    @ExceptionHandler({ MethodArgumentNotValidException.class })
-    public ErrorVO handleException(HttpServletRequest request, HttpServletResponse response,
-                                   MethodArgumentNotValidException exception) {
-        List<ObjectError> errors = exception.getAllErrors();
+    @ExceptionHandler({ BindException.class })
+    public ErrorVO handleException(HttpServletRequest request, HttpServletResponse response, BindException exception) {
+        List<ObjectError> errors = exception.getBindingResult()
+                                            .getAllErrors();
         String message = this.formatAllBeanValidatorErrorMessage(errors);
 
         ErrorVO errorVO = ResultKit.reject(Code.PARAMETER_ERROR.getCode(), message);
