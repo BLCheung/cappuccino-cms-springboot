@@ -1,6 +1,7 @@
 package com.blcheung.zblmissyouadmin.service.impl;
 
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
+import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
 import com.blcheung.zblmissyouadmin.model.CmsGroupDO;
 import com.blcheung.zblmissyouadmin.mapper.CmsGroupMapper;
 import com.blcheung.zblmissyouadmin.service.CmsGroupService;
@@ -49,4 +50,11 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
                                     .one();
         return cmsGroupDO.getId();
     }
+
+    @Override
+    public void validateGroupNameExist(String groupName) {
+        boolean exist = this.checkGroupExistByName(groupName);
+        if (exist) throw new ForbiddenException(10201);
+    }
+
 }

@@ -34,4 +34,13 @@ public interface CmsPermissionService extends IService<CmsPermissionDO> {
      * @date 2021/12/25 11:30 下午
      */
     Boolean checkPermissionExistBatch(List<Long> ids);
+
+    /**
+     * 校验权限集合
+     *
+     * @param permissionIds
+     * @author BLCheung
+     * @date 2021/12/26 10:08 下午
+     */
+    void validatePermissionExist(List<Long> permissionIds);
 }

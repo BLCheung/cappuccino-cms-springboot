@@ -1,5 +1,6 @@
 package com.blcheung.zblmissyouadmin.service.impl;
 
+import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.mapper.CmsPermissionMapper;
 import com.blcheung.zblmissyouadmin.service.CmsPermissionService;
@@ -32,5 +33,11 @@ public class CmsPermissionServiceImpl extends ServiceImpl<CmsPermissionMapper, C
         return this.lambdaQuery()
                    .in(CmsPermissionDO::getId, ids)
                    .exists();
+    }
+
+    @Override
+    public void validatePermissionExist(List<Long> permissionIds) {
+        Boolean allPermissionExist = this.checkPermissionExistBatch(permissionIds);
+        if (!allPermissionExist) throw new ForbiddenException(10207);
     }
 }

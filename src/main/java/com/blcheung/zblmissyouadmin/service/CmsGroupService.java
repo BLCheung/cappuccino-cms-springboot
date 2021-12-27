@@ -55,4 +55,13 @@ public interface CmsGroupService extends IService<CmsGroupDO> {
      * @date 2021/12/21 12:53 上午
      */
     Long getGroupIdByEnum(GroupLevel groupLevel);
+
+    /**
+     * 校验分组
+     *
+     * @param groupName
+     * @author BLCheung
+     * @date 2021/12/26 10:10 下午
+     */
+    void validateGroupNameExist(String groupName);
 }

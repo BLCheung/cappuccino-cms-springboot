@@ -1,6 +1,7 @@
 package com.blcheung.zblmissyouadmin.service.impl;
 
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
+import com.blcheung.zblmissyouadmin.common.exceptions.DatabaseActionException;
 import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
 import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
 import com.blcheung.zblmissyouadmin.dto.NewGroupDTO;
@@ -33,19 +34,20 @@ public class CmsAdminServiceImpl implements CmsAdminService {
     @Transactional
     @Override
     public boolean createGroup(NewGroupDTO dto) {
-        this.validateGroupNameExist(dto.getName());
+        this.cmsGroupService.validateGroupNameExist(dto.getName());
         CmsGroupDO cmsGroupDO = CmsGroupDO.builder()
                                           .name(dto.getName())
                                           .info(dto.getInfo())
                                           .level(GroupLevel.USER)   // 管理员只能添加用户等级的角色群组
                                           .build();
 
-        this.cmsGroupService.createGroup(cmsGroupDO);
+        boolean saveSuccess = this.cmsGroupService.createGroup(cmsGroupDO);
+        if (!saveSuccess) throw new DatabaseActionException(10200);
 
         // 校验分配的权限
         if (!ObjectUtils.isEmpty(dto.getPermissionIds()) && !dto.getPermissionIds()
                                                                 .isEmpty()) {
-            this.validatePermissionExist(dto.getPermissionIds());
+            this.cmsPermissionService.validatePermissionExist(dto.getPermissionIds());
             List<CmsGroupPermissionDO> groupPermissionRelations = dto.getPermissionIds()
                                                                      .stream()
                                                                      .map(permissionId -> new CmsGroupPermissionDO(
@@ -79,14 +81,4 @@ public class CmsAdminServiceImpl implements CmsAdminService {
         return this.cmsGroupService.removeById(groupId);
     }
 
-
-    private void validateGroupNameExist(String groupName) {
-        boolean exist = this.cmsGroupService.checkGroupExistByName(groupName);
-        if (exist) throw new ForbiddenException(10201);
-    }
-
-    private void validatePermissionExist(List<Long> permissionIds) {
-        Boolean allPermissionExist = this.cmsPermissionService.checkPermissionExistBatch(permissionIds);
-        if (!allPermissionExist) throw new ForbiddenException(10207);
-    }
 }
