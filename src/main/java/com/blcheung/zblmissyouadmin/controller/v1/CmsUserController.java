@@ -1,16 +1,20 @@
 package com.blcheung.zblmissyouadmin.controller.v1;
 
 
+import com.blcheung.zblmissyouadmin.common.token.Tokens;
+import com.blcheung.zblmissyouadmin.dto.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.RegisterUserDTO;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.service.CmsUserService;
 import com.blcheung.zblmissyouadmin.vo.CreatedVO;
+import com.blcheung.zblmissyouadmin.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.constraints.Positive;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -29,8 +33,14 @@ public class CmsUserController {
     private CmsUserService cmsUserService;
 
     @PostMapping("/register")
-    public CreatedVO registerUser(@RequestBody @Validated RegisterUserDTO dto) {
+    public CreatedVO register(@RequestBody @Validated RegisterUserDTO dto) {
         CmsUserDO cmsUserDO = this.cmsUserService.registerUser(dto);
         return ResultKit.resolveCreated(cmsUserDO);
+    }
+
+    @PostMapping("/login")
+    public ResultVO<Tokens> login(@RequestBody @Validated LoginDTO dto) {
+        Tokens tokens = this.cmsUserService.login(dto);
+        return ResultKit.resolve(tokens);
     }
 }

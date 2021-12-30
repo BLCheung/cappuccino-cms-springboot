@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
 import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
+import com.blcheung.zblmissyouadmin.common.exceptions.ParameterException;
+import com.blcheung.zblmissyouadmin.common.token.Tokens;
+import com.blcheung.zblmissyouadmin.dto.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.RegisterUserDTO;
 import com.blcheung.zblmissyouadmin.mapper.CmsUserMapper;
-import com.blcheung.zblmissyouadmin.model.CmsGroupDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserGroupDO;
 import com.blcheung.zblmissyouadmin.service.CmsGroupService;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -70,7 +73,6 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
             this.checkGroupExist(dto.getGroupIds());
             this.checkGroupValidate(dto.getGroupIds());
             List<CmsUserGroupDO> userGroupRelations = dto.getGroupIds()
-
                                                          .stream()
                                                          .map(groupId -> CmsUserGroupDO.builder()
                                                                                        .userId(userDO.getId())
@@ -88,6 +90,18 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
     }
 
     @Override
+    public Tokens login(LoginDTO loginDTO) {
+        CmsUserDO cmsUserDO = this.getUserByUserName(loginDTO.getUsername())
+                                  .orElseThrow(() -> new NotFoundException(10103));
+        Boolean isValid = this.cmsUserIdentityService.verifyUserNamePasswordIdentity(cmsUserDO.getId(),
+                                                                                     cmsUserDO.getUsername(),
+                                                                                     loginDTO.getPassword());
+        if (!isValid) throw new ParameterException(10121);
+
+        return this.cmsUserIdentityService.generateDoubleJwtToken(cmsUserDO.getId());
+    }
+
+    @Override
     public Boolean checkUserExistByUserName(String username) {
         return this.lambdaQuery()
                    .eq(CmsUserDO::getUsername, username)
@@ -99,6 +113,13 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         return this.lambdaQuery()
                    .eq(CmsUserDO::getEmail, email)
                    .exists();
+    }
+
+    @Override
+    public Optional<CmsUserDO> getUserByUserName(String userName) {
+        return this.lambdaQuery()
+                   .eq(CmsUserDO::getUsername, userName)
+                   .oneOpt();
     }
 
 
