@@ -1,8 +1,10 @@
 package com.blcheung.zblmissyouadmin.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * <p>
@@ -14,10 +16,14 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @TableName("cms_user")
-public class CmsUserDO extends BaseDO {
+public class CmsUserDO extends BaseDO implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 3956171190208177861L;
 
     /**
      * 用户名，唯一

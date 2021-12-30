@@ -1,8 +1,8 @@
 package com.blcheung.zblmissyouadmin.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Getter;
-import lombok.Setter;
+import com.blcheung.zblmissyouadmin.common.enumeration.UserIdentifyType;
+import lombok.*;
 
 /**
  * <p>
@@ -14,6 +14,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @TableName("cms_user_identity")
 public class CmsUserIdentityDO extends BaseDO {
 
@@ -22,9 +25,12 @@ public class CmsUserIdentityDO extends BaseDO {
     /**
      * 用户id
      */
-    private Integer userId;
+    private Long userId;
 
-    private String identityType;
+    /**
+     * 用户加密类型
+     */
+    private UserIdentifyType identityType;
 
     private String identifier;
 

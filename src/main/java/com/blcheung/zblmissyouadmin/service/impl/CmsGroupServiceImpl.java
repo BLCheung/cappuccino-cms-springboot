@@ -35,6 +35,13 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
     }
 
     @Override
+    public boolean checkGroupExistByIds(List<Long> ids) {
+        return this.lambdaQuery()
+                   .in(CmsGroupDO::getId, ids)
+                   .exists();
+    }
+
+    @Override
     public boolean checkGroupExistByName(String name) {
         return this.lambdaQuery()
                    .eq(CmsGroupDO::getName, name)

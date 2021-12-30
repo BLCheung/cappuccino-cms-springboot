@@ -37,6 +37,16 @@ public interface CmsGroupService extends IService<CmsGroupDO> {
     boolean checkGroupExistById(Long id);
 
     /**
+     * 通过分组id集合批量检查分组是否存在
+     *
+     * @param ids
+     * @return boolean
+     * @author BLCheung
+     * @date 2021/12/29 11:24 下午
+     */
+    boolean checkGroupExistByIds(List<Long> ids);
+
+    /**
      * 通过名字检查分组是否存在
      *
      * @param name
