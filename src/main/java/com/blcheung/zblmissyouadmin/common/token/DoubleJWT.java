@@ -47,6 +47,20 @@ public class DoubleJWT {
     }
 
     /**
+     * 生成双令牌
+     *
+     * @param identity token标识
+     * @return com.blcheung.zblmissyouadmin.common.token.Tokens
+     * @author BLCheung
+     * @date 2021/12/30 11:16 下午
+     */
+    public Tokens createTokens(Long identity) {
+        String accessToken = this.createAccessToken(identity);
+        String refreshToken = this.createRefreshToken(identity);
+        return new Tokens(accessToken, refreshToken);
+    }
+
+    /**
      * 生成accessToken
      *
      * @param identity
