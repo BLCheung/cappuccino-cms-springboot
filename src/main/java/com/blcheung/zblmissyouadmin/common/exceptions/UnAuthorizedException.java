@@ -4,7 +4,7 @@ import com.blcheung.zblmissyouadmin.common.Code;
 import org.springframework.http.HttpStatus;
 
 /**
- * 未授权异常
+ * 认证异常
  *
  * @author BLCheung
  * @date 2021/12/8 8:31 下午
