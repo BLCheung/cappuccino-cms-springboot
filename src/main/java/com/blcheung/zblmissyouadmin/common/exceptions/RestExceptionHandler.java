@@ -5,14 +5,14 @@ import com.blcheung.zblmissyouadmin.common.configuration.CodeConfiguration;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.util.RequestUtil;
 import com.blcheung.zblmissyouadmin.vo.ErrorVO;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -139,8 +139,8 @@ public class RestExceptionHandler {
     @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
     public ErrorVO handleException(HttpServletRequest request, HttpServletResponse response,
                                    MethodArgumentTypeMismatchException exception) {
-        String message = exception.getValue() + CodeConfiguration.getMessage(10005);
-        ErrorVO errorVO = ResultKit.reject(Code.PARAMETER_ERROR.getCode(), message);
+        String message = exception.getName() + Code.ARGUMENT_TYPE_ERROR.getDesc();
+        ErrorVO errorVO = ResultKit.reject(Code.ARGUMENT_TYPE_ERROR.getCode(), message);
         errorVO.setRequest(RequestUtil.getActionRequest(request));
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -158,7 +158,7 @@ public class RestExceptionHandler {
      * @author BLCheung
      * @date 2021/12/9 11:07 下午
      */
-    @ExceptionHandler(TypeMismatchException.class)
+    @ExceptionHandler({ TypeMismatchException.class })
     public ErrorVO handleException(HttpServletRequest request, HttpServletResponse response,
                                    TypeMismatchException exception) {
         ErrorVO errorVO = ResultKit.reject(Code.PARAMETER_ERROR.getCode(), exception.getLocalizedMessage());
@@ -182,7 +182,8 @@ public class RestExceptionHandler {
     @ExceptionHandler({ MissingServletRequestParameterException.class })
     public ErrorVO handleException(HttpServletRequest request, HttpServletResponse response,
                                    MissingServletRequestParameterException exception) {
-        ErrorVO errorVO = ResultKit.reject(Code.PARAMETER_ERROR.getCode(), CodeConfiguration.getMessage(10006));
+        String message = Code.MISSING_REQUEST_PARAMETER_ERROR.getDesc() + ": " + exception.getParameterName();
+        ErrorVO errorVO = ResultKit.reject(Code.MISSING_REQUEST_PARAMETER_ERROR.getCode(), message);
         errorVO.setRequest(RequestUtil.getActionRequest(request));
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -203,7 +204,7 @@ public class RestExceptionHandler {
     @ExceptionHandler({ ServletException.class })
     public ErrorVO handleException(HttpServletRequest request, HttpServletResponse response,
                                    ServletException exception) {
-        ErrorVO errorVO = ResultKit.reject(Code.FAIL.getCode(), exception.getLocalizedMessage());
+        ErrorVO errorVO = ResultKit.reject(Code.PARAMETER_ERROR.getCode(), exception.getLocalizedMessage());
         errorVO.setRequest(RequestUtil.getActionRequest(request));
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -213,6 +214,11 @@ public class RestExceptionHandler {
 
     /**
      * 处理请求没有对应控制器api方法时的异常
+     * 在路径不会被匹配的时候才会抛出NoHandlerFoundException异常，
+     * 但是由于默认的匹配路径有/**，所以即使你的地址错误，
+     * 仍然会匹配到 /**这个静态资源映射地址，就不会进入noHandlerFound方法，
+     * 自然不会抛出NoHandlerFoundException了，
+     * 所以需要在配置文件进行404异常配置和关闭静态资源映射
      *
      * @param request
      * @param response
@@ -224,7 +230,7 @@ public class RestExceptionHandler {
     @ExceptionHandler({ NoHandlerFoundException.class })
     public ErrorVO handleException(HttpServletRequest request, HttpServletResponse response,
                                    NoHandlerFoundException exception) {
-        ErrorVO errorVO = ResultKit.reject(Code.NOT_FOUND.getCode(), CodeConfiguration.getMessage(10007));
+        ErrorVO errorVO = ResultKit.reject(Code.METHOD_NOT_FOUND.getCode(), Code.METHOD_NOT_FOUND.getDesc());
         errorVO.setRequest(RequestUtil.getActionRequest(request));
 
         response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -233,7 +239,7 @@ public class RestExceptionHandler {
     }
 
     /**
-     * 处理无请求体的异常
+     * 处理body请求体的异常
      *
      * @param request
      * @param response
@@ -245,7 +251,21 @@ public class RestExceptionHandler {
     @ExceptionHandler({ HttpMessageNotReadableException.class })
     public ErrorVO handleException(HttpServletRequest request, HttpServletResponse response,
                                    HttpMessageNotReadableException exception) {
-        ErrorVO errorVO = ResultKit.reject(Code.PARAMETER_ERROR.getCode(), CodeConfiguration.getMessage(10006));
+        Throwable cause = exception.getCause();
+        String message;
+        Integer code;
+        // body请求体存在字段类型错误等
+        if (cause instanceof MismatchedInputException) {
+            MismatchedInputException e = (MismatchedInputException) cause;
+            code    = Code.ARGUMENT_TYPE_ERROR.getCode();
+            message = this.formatMismatchedInputFieldsMessage(e.getPath()) + Code.ARGUMENT_TYPE_ERROR.getDesc();
+        } else {
+            // 无body请求体或缺失字段等错误
+            code    = Code.MISSING_REQUEST_PARAMETER_ERROR.getCode();
+            message = Code.MISSING_REQUEST_PARAMETER_ERROR.getDesc();
+        }
+
+        ErrorVO errorVO = ResultKit.reject(code, message);
         errorVO.setRequest(RequestUtil.getActionRequest(request));
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -254,14 +274,6 @@ public class RestExceptionHandler {
     }
 
 
-    /**
-     * 格式化body方式的参数验证错误
-     *
-     * @param errors
-     * @return java.lang.String
-     * @author BLCheung
-     * @date 2021/12/9 8:44 下午
-     */
     private String formatAllBeanValidatorErrorMessage(List<ObjectError> errors) {
         StringBuffer errorMsg = new StringBuffer();
         errors.forEach(error -> errorMsg.append(error.getDefaultMessage())
@@ -269,15 +281,6 @@ public class RestExceptionHandler {
         return errorMsg.toString();
     }
 
-
-    /**
-     * 格式化query方式参数验证错误
-     *
-     * @param e
-     * @return java.lang.String
-     * @author BLCheung
-     * @date 2021/12/9 8:44 下午
-     */
     private String formatAllConstraintViolationErrorMessage(ConstraintViolationException e) {
         StringBuffer errorMsg = new StringBuffer();
         e.getConstraintViolations()
@@ -289,6 +292,18 @@ public class RestExceptionHandler {
                      .append(err.getMessage())
                      .append(";");
          });
+        return errorMsg.toString();
+    }
+
+    private String formatMismatchedInputFieldsMessage(List<JsonMappingException.Reference> path) {
+        StringBuffer errorMsg = new StringBuffer();
+        errorMsg.append("[");
+        String fieldsStr = org.apache.commons.lang3.StringUtils.join(path.stream()
+                                                                         .map(JsonMappingException.Reference::getFieldName)
+                                                                         .toArray(String[]::new));
+        errorMsg.append(fieldsStr)
+                .append("]");
+
         return errorMsg.toString();
     }
 }

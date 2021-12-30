@@ -9,6 +9,12 @@ spring:
   mvc:
     # 404 交给异常处理
     throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      # 关闭默认静态资源的映射规则
+      # springboot中，404异常是进行了默认资源映射的，
+      # 如果没有做特殊配置，我们的异常处理系统就会处理不到404请求
+      add-mappings: false
 
 missyou:
   api-path: com.blcheung.zblmissyouadmin.controller

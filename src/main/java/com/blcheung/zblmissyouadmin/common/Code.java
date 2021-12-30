@@ -20,7 +20,7 @@ public enum Code {
 
     FAIL(10000, "操作失败"),
 
-    UNAUTHORIZED(10001, "权限不足"),
+    UNAUTHORIZED(10001, "未经授权"),
 
     FORBIDDEN(10002, "禁止操作"),
 
@@ -28,9 +28,19 @@ public enum Code {
 
     NOT_FOUND(10004, "资源找不到"),
 
-    TOKEN_INVALID(10009, "令牌失效"),
+    ARGUMENT_TYPE_ERROR(10005, "参数类型错误"),
 
-    TOKEN_EXPIRED(10010, "令牌过期");
+    MISSING_REQUEST_PARAMETER_ERROR(10006, "请求参数丢失"),
+
+    MISSING_REQUEST_BODY_ERROR(10007, "请求体body丢失"),
+
+    METHOD_NOT_FOUND(10008, "找不到相应api"),
+
+    MISSING_HEADER_ERROR(10009, "请传入认证头字段"),
+
+    TOKEN_INVALID(10010, "令牌失效"),
+
+    TOKEN_EXPIRED(10011, "令牌过期");
 
     private final Integer code;
     private final String  desc;
