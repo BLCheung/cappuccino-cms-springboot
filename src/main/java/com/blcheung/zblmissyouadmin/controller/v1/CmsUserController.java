@@ -1,6 +1,9 @@
 package com.blcheung.zblmissyouadmin.controller.v1;
 
 
+import com.blcheung.zblmissyouadmin.common.annotations.permission.AdminRequired;
+import com.blcheung.zblmissyouadmin.common.annotations.router.RouterMeta;
+import com.blcheung.zblmissyouadmin.common.annotations.router.RouterModule;
 import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.dto.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.RegisterUserDTO;
@@ -27,12 +30,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/cms/user")
 @Validated  // 不加的话@PathVariable方式的参数校验可能不生效
+@RouterModule(name = "用户")
 public class CmsUserController {
 
     @Autowired
     private CmsUserService cmsUserService;
 
     @PostMapping("/register")
+    @AdminRequired
+    @RouterMeta(name = "注册用户")
     public CreatedVO register(@RequestBody @Validated RegisterUserDTO dto) {
         CmsUserDO cmsUserDO = this.cmsUserService.registerUser(dto);
         return ResultKit.resolveCreated(cmsUserDO);
