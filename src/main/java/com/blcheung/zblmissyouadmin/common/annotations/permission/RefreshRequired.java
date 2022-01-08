@@ -1,4 +1,4 @@
-package com.blcheung.zblmissyouadmin.common.permission;
+package com.blcheung.zblmissyouadmin.common.annotations.permission;
 
 import com.blcheung.zblmissyouadmin.common.enumeration.UserLevel;
 
