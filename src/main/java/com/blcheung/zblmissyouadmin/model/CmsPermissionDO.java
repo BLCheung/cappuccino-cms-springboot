@@ -1,8 +1,7 @@
 package com.blcheung.zblmissyouadmin.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * <p>
@@ -14,6 +13,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @TableName("cms_permission")
 public class CmsPermissionDO extends BaseDO {
 
