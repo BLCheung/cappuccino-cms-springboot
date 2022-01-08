@@ -1,4 +1,4 @@
-package com.blcheung.zblmissyouadmin.common.enumeration.permission;
+package com.blcheung.zblmissyouadmin.common.permission;
 
 import com.blcheung.zblmissyouadmin.common.enumeration.UserLevel;
 
