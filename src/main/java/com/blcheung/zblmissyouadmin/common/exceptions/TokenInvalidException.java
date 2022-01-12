@@ -3,6 +3,8 @@ package com.blcheung.zblmissyouadmin.common.exceptions;
 import com.blcheung.zblmissyouadmin.common.Code;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serial;
+
 /**
  * 令牌无效异常
  *
@@ -11,16 +13,19 @@ import org.springframework.http.HttpStatus;
  */
 public class TokenInvalidException extends HttpException {
 
-    public TokenInvalidException(String message) {
-        super(message);
-        this.code       = Code.TOKEN_INVALID.getCode();
-        this.statusCode = HttpStatus.UNAUTHORIZED.value();
+    @Serial
+    private static final long serialVersionUID = 6633425654713859604L;
+
+    public TokenInvalidException() {
+        this(Code.TOKEN_INVALID.getDesc());
     }
 
     public TokenInvalidException(Integer code) {
-        super(Code.TOKEN_INVALID.getDesc());
-        this.code       = code;
-        this.statusCode = HttpStatus.UNAUTHORIZED.value();
+        this(code, Code.TOKEN_INVALID.getDesc());
+    }
+
+    public TokenInvalidException(String message) {
+        this(Code.TOKEN_INVALID.getCode(), message);
     }
 
     public TokenInvalidException(Integer code, String message) {

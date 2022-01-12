@@ -3,6 +3,8 @@ package com.blcheung.zblmissyouadmin.common.exceptions;
 import com.blcheung.zblmissyouadmin.common.Code;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serial;
+
 /**
  * 令牌过期异常
  *
@@ -11,16 +13,19 @@ import org.springframework.http.HttpStatus;
  */
 public class TokenExpiredException extends HttpException {
 
-    public TokenExpiredException(String message) {
-        super(message);
-        this.code       = Code.TOKEN_EXPIRED.getCode();
-        this.statusCode = HttpStatus.UNAUTHORIZED.value();
+    @Serial
+    private static final long serialVersionUID = 1882727199241071921L;
+
+    public TokenExpiredException() {
+        this(Code.TOKEN_EXPIRED.getDesc());
     }
 
     public TokenExpiredException(Integer code) {
-        super(Code.TOKEN_EXPIRED.getDesc());
-        this.code       = code;
-        this.statusCode = HttpStatus.UNAUTHORIZED.value();
+        this(code, Code.TOKEN_EXPIRED.getDesc());
+    }
+
+    public TokenExpiredException(String message) {
+        this(Code.TOKEN_EXPIRED.getCode(), message);
     }
 
     public TokenExpiredException(Integer code, String message) {

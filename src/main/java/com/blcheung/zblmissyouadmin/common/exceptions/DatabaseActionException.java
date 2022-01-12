@@ -3,6 +3,8 @@ package com.blcheung.zblmissyouadmin.common.exceptions;
 import com.blcheung.zblmissyouadmin.common.Code;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serial;
+
 /**
  * 数据库操作失败异常
  *
@@ -11,19 +13,22 @@ import org.springframework.http.HttpStatus;
  */
 public class DatabaseActionException extends HttpException {
 
+    @Serial
+    private static final long serialVersionUID = -1879376197878595016L;
+
+    public DatabaseActionException() {
+        this(Code.FAIL.getDesc());
+    }
+
     public DatabaseActionException(Integer code) {
-        super(code, Code.FAIL.getDesc(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+        this(code, Code.FAIL.getDesc());
     }
 
     public DatabaseActionException(String message) {
-        super(Code.FAIL.getCode(), message, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        this(Code.FAIL.getCode(), message);
     }
 
-    public DatabaseActionException(Integer code, Integer statusCode) {
-        super(code, Code.FAIL.getDesc(), statusCode);
-    }
-
-    public DatabaseActionException(Integer code, String message, Integer statusCode) {
-        super(code, message, statusCode);
+    public DatabaseActionException(Integer code, String message) {
+        super(code, message, HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

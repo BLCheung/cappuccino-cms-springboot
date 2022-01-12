@@ -3,6 +3,8 @@ package com.blcheung.zblmissyouadmin.common.exceptions;
 import com.blcheung.zblmissyouadmin.common.Code;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serial;
+
 /**
  * 认证异常
  *
@@ -11,16 +13,19 @@ import org.springframework.http.HttpStatus;
  */
 public class UnAuthorizedException extends HttpException {
 
+    @Serial
+    private static final long serialVersionUID = -6511277210921214106L;
+
+    public UnAuthorizedException() {
+        this(Code.UNAUTHORIZED.getDesc());
+    }
+
     public UnAuthorizedException(String message) {
-        super(message);
-        this.code       = Code.UNAUTHORIZED.getCode();
-        this.statusCode = HttpStatus.UNAUTHORIZED.value();
+        this(Code.UNAUTHORIZED.getCode(), message);
     }
 
     public UnAuthorizedException(Integer code) {
-        super(Code.NOT_FOUND.getDesc());
-        this.code       = code;
-        this.statusCode = HttpStatus.UNAUTHORIZED.value();
+        this(code, Code.UNAUTHORIZED.getDesc());
     }
 
     public UnAuthorizedException(Integer code, String message) {

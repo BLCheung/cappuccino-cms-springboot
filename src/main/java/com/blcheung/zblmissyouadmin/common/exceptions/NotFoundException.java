@@ -3,6 +3,8 @@ package com.blcheung.zblmissyouadmin.common.exceptions;
 import com.blcheung.zblmissyouadmin.common.Code;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serial;
+
 /**
  * 资源未找到异常
  *
@@ -11,16 +13,19 @@ import org.springframework.http.HttpStatus;
  */
 public class NotFoundException extends HttpException {
 
-    public NotFoundException(String message) {
-        super(message);
-        this.code       = Code.NOT_FOUND.getCode();
-        this.statusCode = HttpStatus.NOT_FOUND.value();
+    @Serial
+    private static final long serialVersionUID = 2166639156003846971L;
+
+    public NotFoundException() {
+        this(Code.NOT_FOUND.getDesc());
     }
 
     public NotFoundException(Integer code) {
-        super(Code.NOT_FOUND.getDesc());
-        this.code       = code;
-        this.statusCode = HttpStatus.NOT_FOUND.value();
+        this(code, Code.NOT_FOUND.getDesc());
+    }
+
+    public NotFoundException(String message) {
+        this(Code.NOT_FOUND.getCode(), message);
     }
 
     public NotFoundException(Integer code, String message) {

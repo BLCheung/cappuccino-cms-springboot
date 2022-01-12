@@ -4,6 +4,8 @@ import com.blcheung.zblmissyouadmin.common.Code;
 import com.blcheung.zblmissyouadmin.common.interfaces.BaseResponse;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serial;
+
 /**
  * HTTP异常
  *
@@ -11,8 +13,17 @@ import org.springframework.http.HttpStatus;
  * @date 2021/12/8 1:31 上午
  */
 public class HttpException extends RuntimeException implements BaseResponse {
-    protected int     code;
-    protected Integer statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+
+    @Serial
+    private static final long    serialVersionUID = 3634412969489117410L;
+    
+    protected            int     code;
+    protected            Integer statusCode       = HttpStatus.INTERNAL_SERVER_ERROR.value();
+
+    public HttpException() {
+        super(Code.INTERNAL_SERVER_ERROR.getDesc());
+        this.code = Code.INTERNAL_SERVER_ERROR.getCode();
+    }
 
     public HttpException(String message) {
         super(message);

@@ -20,7 +20,7 @@ public enum Code {
 
     FAIL(10000, "操作失败"),
 
-    UNAUTHORIZED(10001, "未经授权"),
+    UNAUTHORIZED(10001, "未经授权 权限不足"),
 
     FORBIDDEN(10002, "禁止操作"),
 
