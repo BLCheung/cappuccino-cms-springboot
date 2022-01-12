@@ -78,16 +78,16 @@ public class PermissionMetaCollector implements BeanPostProcessor {
         String router = StringUtils.hasText(routerMeta.name()) ? routerMeta.name() : methodName;
 
         // 路由的权限级别
-        UserLevel userLevel;
-        UserLevel clazzUserLevel = UserLevelKit.getUserLevel(method.getDeclaringClass());
-        UserLevel methodUserLevel = UserLevelKit.getUserLevel(method);
-        if (!ObjectUtils.isEmpty(clazzUserLevel)) {
-            // 优先使用method上指定的UserLevel
-            userLevel = ObjectUtils.isEmpty(methodUserLevel) ? clazzUserLevel : methodUserLevel;
-        } else {
-            // method没有指定UserLevel则为游客级别
-            userLevel = ObjectUtils.isEmpty(methodUserLevel) ? UserLevel.GUEST : methodUserLevel;
-        }
+        UserLevel userLevel = UserLevelKit.findUserLevel(method);
+        // UserLevel clazzUserLevel = UserLevelKit.getUserLevel(method.getDeclaringClass());
+        // UserLevel methodUserLevel = UserLevelKit.getUserLevel(method);
+        // if (!ObjectUtils.isEmpty(clazzUserLevel)) {
+        //     // 优先使用method上指定的UserLevel
+        //     userLevel = ObjectUtils.isEmpty(methodUserLevel) ? clazzUserLevel : methodUserLevel;
+        // } else {
+        //     // method没有指定UserLevel则为游客级别
+        //     userLevel = ObjectUtils.isEmpty(methodUserLevel) ? UserLevel.GUEST : methodUserLevel;
+        // }
 
         // 构建路由信息
         RouterInfo routerInfo = RouterInfo.builder()

@@ -9,18 +9,17 @@ import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.dto.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.RegisterUserDTO;
 import com.blcheung.zblmissyouadmin.mapper.CmsUserMapper;
+import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserGroupDO;
-import com.blcheung.zblmissyouadmin.service.CmsGroupService;
-import com.blcheung.zblmissyouadmin.service.CmsUserGroupService;
-import com.blcheung.zblmissyouadmin.service.CmsUserIdentityService;
-import com.blcheung.zblmissyouadmin.service.CmsUserService;
+import com.blcheung.zblmissyouadmin.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,6 +39,9 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
 
     @Autowired
     private CmsUserGroupService cmsUserGroupService;
+
+    @Autowired
+    private CmsPermissionService cmsPermissionService;
 
     @Autowired
     private CmsUserIdentityService cmsUserIdentityService;
@@ -122,6 +124,32 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
                    .oneOpt();
     }
 
+    @Override
+    public Boolean checkUserIsAdmin(Long userId) {
+        List<Long> userAllGroupIds = this.cmsUserGroupService.getUserAllGroupIds(userId);
+        if (userAllGroupIds.isEmpty()) return false;
+
+        List<Long> adminLevelGroupIds = this.cmsGroupService.getAdminLevelGroups();
+        return adminLevelGroupIds.stream()
+                                 .anyMatch(
+                                         adminLevelGroupId -> this.isContainGroups(adminLevelGroupId, userAllGroupIds));
+    }
+
+    @Override
+    public Boolean checkUserIsRoot(Long userId) {
+        Long rootGroupId = this.cmsGroupService.getRootGroupId();
+        CmsUserGroupDO userGroupRelation = this.cmsUserGroupService.getUserGroupRelation(userId, rootGroupId);
+        return userGroupRelation != null;
+    }
+
+    @Override
+    public List<CmsPermissionDO> getUserPermissions(Long uid) {
+        List<Long> userAllGroupIds = this.cmsUserGroupService.getUserAllGroupIds(uid);
+        if (userAllGroupIds.isEmpty()) return Collections.emptyList();
+
+        return this.cmsPermissionService.getPermissionsByGroupIds(userAllGroupIds);
+    }
+
 
     private void checkGroupExist(List<Long> groupIds) {
         boolean isGroupExist = this.cmsGroupService.checkGroupExistByIds(groupIds);
@@ -129,12 +157,18 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
     }
 
     private void checkGroupValidate(List<Long> groupIds) {
-        Long rootGroupId = this.cmsGroupService.getGroupIdByEnum(GroupLevel.ROOT);
-        Long adminGroupId = this.cmsGroupService.getGroupIdByEnum(GroupLevel.ADMIN);
+        List<Long> adminLevelGroupIds = this.cmsGroupService.getAdminLevelGroups();
+        boolean isContainAdminLevel = adminLevelGroupIds.stream()
+                                                        .anyMatch(adminGroupId -> this.isContainGroups(adminGroupId,
+                                                                                                       groupIds));
 
-        boolean anyMatch = groupIds.stream()
-                                   .anyMatch(groupId -> groupId.equals(rootGroupId) || groupId.equals(adminGroupId));
+        if (isContainAdminLevel) throw new ForbiddenException(10203);
+    }
 
-        if (anyMatch) throw new ForbiddenException(10203);
+    private Boolean isContainGroups(Long groupId, List<Long> belongGroupsIds) {
+        if (belongGroupsIds.isEmpty()) return false;
+
+        return belongGroupsIds.stream()
+                              .anyMatch(belongGroupsId -> belongGroupsId.equals(groupId));
     }
 }

@@ -4,13 +4,49 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.blcheung.zblmissyouadmin.model.CmsGroupDO">
-        <result column="id" property="id" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
-        <result column="delete_time" property="deleteTime" />
-        <result column="name" property="name" />
-        <result column="info" property="info" />
-        <result column="level" property="level" />
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="delete_time" property="deleteTime"/>
+        <result column="name" property="name"/>
+        <result column="info" property="info"/>
+        <result column="level" property="level"/>
     </resultMap>
+
+    <select id="getGroupIdsByUserId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT id
+        FROM cms_group AS g
+        WHERE g.delete_time IS NULL
+          AND g.id IN
+              (
+#                   SELECT ug.group_id
+#                   FROM cms_user AS u
+#                            LEFT JOIN cms_user_group AS ug
+#                                      ON ug.user_id = u.id
+#                   WHERE u.id = #{uid}
+#                     AND u.delete_time IS NULL
+                  SELECT group_id
+                  FROM cms_user_group AS ug
+                           LEFT JOIN cms_user AS u
+                                     ON u.id = ug.user_id
+                  WHERE u.id = #{uid}
+                    AND u.delete_time IS NULL
+              )
+    </select>
+
+    <select id="getGroupsByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT id, name, info, level, create_time, update_time, delete_time
+        FROM cms_group AS g
+        WHERE g.delete_time IS NULL
+          AND g.id IN
+              (
+                  SELECT group_id
+                  FROM cms_user_group AS ug
+                           LEFT JOIN cms_user AS u
+                                     ON u.id = ug.user_id
+                  WHERE u.id = #{uid}
+                    AND u.delete_time IS NULL
+              )
+    </select>
 
 </mapper>

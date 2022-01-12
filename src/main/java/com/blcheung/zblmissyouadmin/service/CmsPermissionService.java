@@ -43,4 +43,14 @@ public interface CmsPermissionService extends IService<CmsPermissionDO> {
      * @date 2021/12/26 10:08 下午
      */
     void validatePermissionExist(List<Long> permissionIds);
+
+    /**
+     * 根据分组id集合获取所有权限
+     *
+     * @param groupIds
+     * @return java.util.List<com.blcheung.zblmissyouadmin.model.CmsPermissionDO>
+     * @author BLCheung
+     * @date 2022/1/11 9:23 下午
+     */
+    List<CmsPermissionDO> getPermissionsByGroupIds(List<Long> groupIds);
 }

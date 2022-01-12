@@ -3,6 +3,7 @@ package com.blcheung.zblmissyouadmin.service;
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.model.CmsGroupDO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -74,4 +75,32 @@ public interface CmsGroupService extends IService<CmsGroupDO> {
      * @date 2021/12/26 10:10 下午
      */
     void validateGroupNameExist(String groupName);
+
+    /**
+     * 获取用户所有所属分组的id
+     *
+     * @param userId
+     * @return java.util.List<java.lang.Long>
+     * @author BLCheung
+     * @date 2022/1/11 9:14 下午
+     */
+    List<Long> getUserGroupIds(Long userId);
+
+    /**
+     * 获取所有管理员级别及以上的分组id
+     *
+     * @return java.util.List<java.lang.Long>
+     * @author BLCheung
+     * @date 2022/1/11 10:02 下午
+     */
+    List<Long> getAdminLevelGroups();
+
+    /**
+     * 获取超级管理员分组的id
+     *
+     * @return java.lang.Long
+     * @author BLCheung
+     * @date 2022/1/11 10:25 下午
+     */
+    Long getRootGroupId();
 }

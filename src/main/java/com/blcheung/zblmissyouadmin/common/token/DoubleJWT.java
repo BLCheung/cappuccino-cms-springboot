@@ -22,11 +22,11 @@ import java.util.Map;
  */
 public class DoubleJWT {
     // 秘钥
-    private String secret;
+    private final String secret;
 
-    private Long accessTokenExpired;
+    private final Long accessTokenExpired;
 
-    private Long refreshTokenExpired;
+    private final Long refreshTokenExpired;
 
     // accessToken的检查器
     private JWTVerifier accessVerifier;
@@ -38,6 +38,9 @@ public class DoubleJWT {
     private JWTCreator.Builder builder;
 
     private Algorithm algorithm;
+
+    public static final String KEY_TOKEN_IDENTITY = "identity";
+    public static final String KEY_TOKEN_TYPE     = "type";
 
     public DoubleJWT(String secret, Long accessTokenExpired, Long refreshTokenExpired) {
         this.secret              = secret;
@@ -95,7 +98,7 @@ public class DoubleJWT {
     public Map<String, Claim> decodeAccessToken(String accessToken) {
         DecodedJWT accessVerify = this.accessVerifier.verify(accessToken);
 
-        this.checkTokenType(accessVerify.getClaim("type")
+        this.checkTokenType(accessVerify.getClaim(this.KEY_TOKEN_TYPE)
                                         .asInt(), TokenType.ACCESS);
         this.checkTokenExpired(accessVerify.getExpiresAt());
 
@@ -113,7 +116,7 @@ public class DoubleJWT {
     public Map<String, Claim> decodeRefreshToken(String refreshToken) {
         DecodedJWT refreshVerify = this.refreshVerifier.verify(refreshToken);
 
-        this.checkTokenType(refreshVerify.getClaim("type")
+        this.checkTokenType(refreshVerify.getClaim(KEY_TOKEN_TYPE)
                                          .asInt(), TokenType.REFRESH);
         this.checkTokenExpired(refreshVerify.getExpiresAt());
 
@@ -133,8 +136,8 @@ public class DoubleJWT {
     }
 
     private String createToken(Long identity, TokenType tokenType, Long tokenExpired) {
-        return builder.withClaim("identity", identity)
-                      .withClaim("type", tokenType.getValue())
+        return builder.withClaim(KEY_TOKEN_IDENTITY, identity)
+                      .withClaim(KEY_TOKEN_TYPE, tokenType.getValue())
                       .withExpiresAt(CommonUtil.getFutureDateWithSecond(tokenExpired))
                       .sign(this.algorithm);
     }

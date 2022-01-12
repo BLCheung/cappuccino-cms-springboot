@@ -8,6 +8,7 @@ import com.blcheung.zblmissyouadmin.service.CmsGroupService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,4 +65,22 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
         if (exist) throw new ForbiddenException(10201);
     }
 
+    @Override
+    public List<Long> getUserGroupIds(Long userId) {
+        List<Long> userGroupIds = this.getBaseMapper()
+                                      .getGroupIdsByUserId(userId);
+        return userGroupIds.isEmpty() ? Collections.emptyList() : userGroupIds;
+    }
+
+    @Override
+    public List<Long> getAdminLevelGroups() {
+        Long rootGroupId = this.getGroupIdByEnum(GroupLevel.ROOT);
+        Long adminGroupId = this.getGroupIdByEnum(GroupLevel.ADMIN);
+        return List.of(rootGroupId, adminGroupId);
+    }
+
+    @Override
+    public Long getRootGroupId() {
+        return this.getGroupIdByEnum(GroupLevel.ROOT);
+    }
 }

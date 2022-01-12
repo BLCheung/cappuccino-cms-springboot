@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.dto.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.RegisterUserDTO;
+import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -66,4 +68,34 @@ public interface CmsUserService extends IService<CmsUserDO> {
      * @date 2021/12/30 10:42 下午
      */
     Optional<CmsUserDO> getUserByUserName(String userName);
+
+    /**
+     * 检查用户是否为管理员级别
+     *
+     * @param userId
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/11 9:50 下午
+     */
+    Boolean checkUserIsAdmin(Long userId);
+
+    /**
+     * 检查用户是否为超级管理员级别
+     *
+     * @param userId
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/11 10:24 下午
+     */
+    Boolean checkUserIsRoot(Long userId);
+
+    /**
+     * 获取用户拥有的权限
+     *
+     * @param uid
+     * @return java.util.List<com.blcheung.zblmissyouadmin.model.CmsPermissionDO>
+     * @author BLCheung
+     * @date 2022/1/11 2:42 上午
+     */
+    List<CmsPermissionDO> getUserPermissions(Long uid);
 }

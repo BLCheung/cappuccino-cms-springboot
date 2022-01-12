@@ -23,12 +23,30 @@ public class CmsUserGroupServiceImpl extends ServiceImpl<CmsUserGroupMapper, Cms
 
     @Override
     public List<Long> getGroupAllUserIds(Long groupId) {
-        List<CmsUserGroupDO> userGroupRelations = this.lambdaQuery()
-                                                      .eq(CmsUserGroupDO::getGroupId, groupId)
-                                                      .list();
+        List<CmsUserGroupDO> groupAllUserIdRelations = this.lambdaQuery()
+                                                           .eq(CmsUserGroupDO::getGroupId, groupId)
+                                                           .list();
 
-        return userGroupRelations.stream()
-                                 .map(CmsUserGroupDO::getUserId)
-                                 .collect(Collectors.toList());
+        return groupAllUserIdRelations.stream()
+                                      .map(CmsUserGroupDO::getUserId)
+                                      .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Long> getUserAllGroupIds(Long userId) {
+        List<CmsUserGroupDO> userAllGroupIdRelations = this.lambdaQuery()
+                                                           .eq(CmsUserGroupDO::getUserId, userId)
+                                                           .list();
+        return userAllGroupIdRelations.stream()
+                                      .map(CmsUserGroupDO::getGroupId)
+                                      .collect(Collectors.toList());
+    }
+
+    @Override
+    public CmsUserGroupDO getUserGroupRelation(Long userId, Long groupId) {
+        return this.lambdaQuery()
+                   .eq(CmsUserGroupDO::getUserId, userId)
+                   .eq(CmsUserGroupDO::getGroupId, groupId)
+                   .one();
     }
 }
