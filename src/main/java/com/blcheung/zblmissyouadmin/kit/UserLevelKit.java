@@ -4,6 +4,7 @@ import com.blcheung.zblmissyouadmin.common.annotations.permission.Required;
 import com.blcheung.zblmissyouadmin.common.enumeration.UserLevel;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -60,5 +61,26 @@ public class UserLevelKit {
         }
 
         return null;
+    }
+
+    /**
+     * 查找类或方法上的UserLevel用户级别权限
+     * 优先返回method上的UserLevel，否则返回类上的
+     * 如果两者都没有则返回GUEST级别
+     *
+     * @param method
+     * @return com.blcheung.zblmissyouadmin.common.enumeration.UserLevel
+     * @author BLCheung
+     * @date 2022/1/13 3:45 上午
+     */
+    public static UserLevel findUserLevel(Method method) {
+        UserLevel clazzUserLevel = getUserLevel(method.getDeclaringClass());
+        UserLevel methodUserLevel = getUserLevel(method);
+
+        if (!ObjectUtils.isEmpty(clazzUserLevel)) {
+            return ObjectUtils.isEmpty(methodUserLevel) ? clazzUserLevel : methodUserLevel;
+        } else {
+            return ObjectUtils.isEmpty(methodUserLevel) ? UserLevel.GUEST : methodUserLevel;
+        }
     }
 }
