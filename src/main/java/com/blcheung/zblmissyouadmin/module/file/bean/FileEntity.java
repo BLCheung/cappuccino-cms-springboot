@@ -1,6 +1,5 @@
 package com.blcheung.zblmissyouadmin.module.file.bean;
 
-import com.blcheung.zblmissyouadmin.module.file.enumeration.UploadType;
 import lombok.*;
 
 /**
@@ -21,7 +20,7 @@ public class FileEntity {
     /**
      * 文件原始名称
      */
-    private String originName;
+    private String originalName;
 
     /**
      * 文件真实url
@@ -51,5 +50,5 @@ public class FileEntity {
     /**
      * 文件上传类型
      */
-    private UploadType type;
+    private String type;
 }

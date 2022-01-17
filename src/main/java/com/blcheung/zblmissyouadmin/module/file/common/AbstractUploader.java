@@ -3,7 +3,6 @@ package com.blcheung.zblmissyouadmin.module.file.common;
 import com.blcheung.zblmissyouadmin.common.exceptions.*;
 import com.blcheung.zblmissyouadmin.module.file.bean.FileEntity;
 import com.blcheung.zblmissyouadmin.module.file.configuration.CmsFileProperties;
-import com.blcheung.zblmissyouadmin.module.file.enumeration.UploadType;
 import com.blcheung.zblmissyouadmin.module.file.kit.FileKit;
 import com.blcheung.zblmissyouadmin.module.file.listener.OnUploadFileListener;
 import org.apache.commons.lang3.StringUtils;
@@ -51,13 +50,13 @@ public abstract class AbstractUploader implements Uploader {
     /**
      * 具体的处理文件上传逻辑
      *
-     * @param bytes
-     * @param newFileName
+     * @param bytes    文件的字节数
+     * @param filePath 文件的存放路径
      * @return java.lang.Boolean
      * @author BLCheung
      * @date 2022/1/16 3:38 上午
      */
-    protected abstract Boolean onUploadFile(byte[] bytes, String newFileName);
+    protected abstract Boolean onUploadFile(byte[] bytes, String filePath);
 
     /**
      * 获取指定上传文件的配置
@@ -71,21 +70,21 @@ public abstract class AbstractUploader implements Uploader {
     /**
      * 获取上传文件后的访问url
      *
-     * @param path 存放问价的目录路径
+     * @param filePath 文件的目录路径
      * @return java.lang.String
      * @author BLCheung
      * @date 2022/1/17 2:43 上午
      */
-    protected abstract String getFileUrl(String path);
+    protected abstract String getFileUrl(String filePath);
 
     /**
      * 获取文件的上传类型
      *
-     * @return com.blcheung.zblmissyouadmin.module.file.enumeration.UploadType
+     * @return java.lang.String
      * @author BLCheung
-     * @date 2022/1/16 3:38 上午
+     * @date 2022/1/18 6:26 上午
      */
-    protected abstract UploadType getFileType();
+    protected abstract String getFileType();
 
     /**
      * 获取文件存放路径
@@ -142,7 +141,7 @@ public abstract class AbstractUploader implements Uploader {
         String fileUrl = this.getFileUrl(storePath);
         String md5 = FileKit.getFileMD5(fileBytes);
         Integer size = fileBytes.length;
-        UploadType fileType = this.getFileType();
+        String fileType = this.getFileType();
 
         FileEntity fileEntity = FileEntity.builder()
                                           .name(newFileName)
@@ -158,7 +157,7 @@ public abstract class AbstractUploader implements Uploader {
         if (this.uploadFileListener != null && !this.uploadFileListener.onEachFilePreUpload(fileEntity)) return;
 
         // 对应的上传逻辑是否成功
-        Boolean isUploaded = this.onUploadFile(fileBytes, newFileName);
+        Boolean isUploaded = this.onUploadFile(fileBytes, storePath);
         if (isUploaded) {
             fileEntities.add(fileEntity);
             if (this.uploadFileListener != null) this.uploadFileListener.onEachFileUploadAfter(fileEntity);
