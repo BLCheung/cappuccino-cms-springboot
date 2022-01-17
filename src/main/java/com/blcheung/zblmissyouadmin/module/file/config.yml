@@ -11,6 +11,8 @@ upload:
   count: 9
   # 支持的文件扩展名
   whitelist:
+    - .jpg
+    - .png
 
 spring:
   servlet:

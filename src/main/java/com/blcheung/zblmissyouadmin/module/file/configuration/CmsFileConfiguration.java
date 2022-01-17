@@ -1,7 +1,8 @@
 package com.blcheung.zblmissyouadmin.module.file.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import com.blcheung.zblmissyouadmin.module.file.LocalUploader;
+import com.blcheung.zblmissyouadmin.module.file.common.Uploader;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -11,10 +12,10 @@ import org.springframework.context.annotation.Configuration;
  * @date 2022/1/15 2:34 上午
  */
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(CmsFileProperties.class)
 public class CmsFileConfiguration {
 
-    @Autowired
-    CmsFileProperties cmsFileProperties;
-
+    @Bean
+    public Uploader uploader() {
+        return new LocalUploader();
+    }
 }

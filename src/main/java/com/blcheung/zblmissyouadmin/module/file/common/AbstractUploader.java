@@ -5,6 +5,7 @@ import com.blcheung.zblmissyouadmin.module.file.bean.FileEntity;
 import com.blcheung.zblmissyouadmin.module.file.configuration.CmsFileProperties;
 import com.blcheung.zblmissyouadmin.module.file.kit.FileKit;
 import com.blcheung.zblmissyouadmin.module.file.listener.OnUploadFileListener;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
@@ -21,8 +22,12 @@ import java.util.stream.Collectors;
  * @author BLCheung
  * @date 2022/1/16 2:59 上午
  */
+@Slf4j
 public abstract class AbstractUploader implements Uploader {
 
+    /**
+     * 外部实现的文件上传监听器回调
+     */
     private OnUploadFileListener uploadFileListener;
 
     @Override
@@ -123,7 +128,7 @@ public abstract class AbstractUploader implements Uploader {
         try {
             bytes = file.getBytes();
         } catch (IOException e) {
-            throw new FailedException(10020);
+            throw new FailedException(10020, "获取文件字节码出现错误");
         }
 
         return bytes;
@@ -158,6 +163,11 @@ public abstract class AbstractUploader implements Uploader {
 
         // 对应的上传逻辑是否成功
         Boolean isUploaded = this.onUploadFile(fileBytes, storePath);
+        if (isUploaded == null) {
+            log.error("请重写onUploadFile()处理具体的上传逻辑!");
+            throw new FailedException("后端未处理具体的文件上传逻辑!");
+        }
+
         if (isUploaded) {
             fileEntities.add(fileEntity);
             if (this.uploadFileListener != null) this.uploadFileListener.onEachFileUploadAfter(fileEntity);
@@ -195,22 +205,19 @@ public abstract class AbstractUploader implements Uploader {
         String[] extWhiteList = this.getExtWhiteList();
         if (extWhiteList.length == 0) return;
 
-        // 所有文件的原始文件名集合
-        List<String> fileNameList = fileList.stream()
-                                            .map(MultipartFile::getOriginalFilename)
+        // 所有文件的后缀类型集合
+        List<String> unSupportExt = fileList.stream()
+                                            .map(file -> FileKit.getFileExt(file.getOriginalFilename()))
+                                            .filter(fileExt -> !this.isFileExtValid(extWhiteList, fileExt))
                                             .collect(Collectors.toList());
 
-        List<String> unSupportExt = fileNameList.stream()
-                                                .filter(fileName -> !this.isFileNameExtValid(extWhiteList, fileName))
-                                                .collect(Collectors.toList());
-
         if (!unSupportExt.isEmpty())
-            throw new FileExtensionException("不支持" + StringUtils.join(unSupportExt, ",") + "类型的文件");
+            throw new FileExtensionException(10025, "不支持" + StringUtils.join(unSupportExt, ",") + "类型的文件");
     }
 
-    private boolean isFileNameExtValid(String[] extList, String fileName) {
+    private boolean isFileExtValid(String[] extList, String fileExt) {
         for (String ext : extList) {
-            if (StringUtils.equalsIgnoreCase(ext, FileKit.getFileExt(fileName))) {
+            if (StringUtils.equalsIgnoreCase(ext, fileExt)) {
                 return true;
             }
         }
