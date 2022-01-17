@@ -40,7 +40,13 @@ public enum Code {
 
     TOKEN_INVALID(10010, "令牌失效"),
 
-    TOKEN_EXPIRED(10011, "令牌过期");
+    TOKEN_EXPIRED(10011, "令牌过期"),
+
+    FILE_TOO_MANY(10022, "文件数量过多"),
+
+    FILE_TOO_LARGE(10024, "文件体积过大"),
+
+    FILE_EXT_ERROR(10025, "文件扩展名不符合规范");
 
     private final Integer code;
     private final String  desc;
