@@ -1,0 +1,19 @@
+upload:
+  # 文件服务域名
+  domain: localhost
+  # 本地资源目录
+  local-path: tmp/
+  # 服务器资源目录
+  server-path: tmp/**
+  # 单个文件大小
+  single-max-limit: 1MB
+  # 每次上传文件的最大数量
+  count: 9
+  # 支持的文件扩展名
+  whitelist:
+
+spring:
+  servlet:
+    multipart:
+      # 每次上传文件的总大小
+      max-file-size: 10MB
