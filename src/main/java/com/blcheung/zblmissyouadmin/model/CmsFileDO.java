@@ -2,6 +2,7 @@ package com.blcheung.zblmissyouadmin.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -14,6 +15,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @TableName("cms_file")
 public class CmsFileDO extends BaseDO {
 
@@ -26,7 +28,20 @@ public class CmsFileDO extends BaseDO {
      */
     private String type;
 
+    /**
+     * 文件url
+     */
+    private String url;
+
+    /**
+     * 后端分配的文件名
+     */
     private String name;
+
+    /**
+     * 原始文件名
+     */
+    private String originalName;
 
     private String extension;
 
