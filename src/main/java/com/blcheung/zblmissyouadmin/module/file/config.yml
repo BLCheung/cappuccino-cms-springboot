@@ -1,8 +1,8 @@
 upload:
   # 文件服务域名
-  domain: http://localhost:${server.port}/
+  domain: http://localhost:${server.port}
   # 本地资源目录
-  local-path: tmp/**
+  local-path: tmp/
   # 服务器资源目录
   server-path: tmp/**
   # 单个文件大小

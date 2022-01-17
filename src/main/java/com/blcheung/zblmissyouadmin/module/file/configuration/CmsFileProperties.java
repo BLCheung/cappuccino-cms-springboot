@@ -2,13 +2,17 @@ package com.blcheung.zblmissyouadmin.module.file.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
 /**
  * @author BLCheung
  * @date 2022/1/15 2:35 上午
  */
+@Component
 @ConfigurationProperties(prefix = "upload")
-@PropertySource("classpath:com/blcheung/zblmissyouadmin/module/file/config.yml")
+@PropertySource(value = "classpath:com/blcheung/zblmissyouadmin/module/file/config.yml",
+                encoding = "UTF-8",
+                factory = YmlPropertySourceFactory.class)
 public class CmsFileProperties {
 
     private String domain;
