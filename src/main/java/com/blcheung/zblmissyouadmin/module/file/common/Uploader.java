@@ -11,7 +11,7 @@ import java.util.List;
  * @author BLCheung
  * @date 2022/1/16 3:01 上午
  */
-public interface Upload {
+public interface Uploader {
 
     /**
      * 上传文件

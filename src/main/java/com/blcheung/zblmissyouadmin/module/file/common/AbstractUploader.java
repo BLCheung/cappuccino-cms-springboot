@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * @author BLCheung
  * @date 2022/1/16 2:59 上午
  */
-public abstract class AbstractUpload implements Upload {
+public abstract class AbstractUploader implements Uploader {
 
     private OnUploadFileListener uploadFileListener;
 
@@ -69,14 +69,14 @@ public abstract class AbstractUpload implements Upload {
     protected abstract CmsFileProperties getFileProperties();
 
     /**
-     * 获取上传文件后的具体访问路径
+     * 获取上传文件后的访问url
      *
-     * @param fileName
+     * @param path 存放问价的目录路径
      * @return java.lang.String
      * @author BLCheung
      * @date 2022/1/17 2:43 上午
      */
-    protected abstract String getFileUrl(String fileName);
+    protected abstract String getFileUrl(String path);
 
     /**
      * 获取文件的上传类型
@@ -88,13 +88,14 @@ public abstract class AbstractUpload implements Upload {
     protected abstract UploadType getFileType();
 
     /**
-     * 获取文件的存放目录路径
+     * 获取文件存放路径
      *
+     * @param newFileName
      * @return java.lang.String
      * @author BLCheung
      * @date 2022/1/17 3:10 上午
      */
-    protected abstract String getStorePath();
+    protected abstract String getStorePath(String newFileName);
 
     /**
      * 获取文件名
@@ -137,18 +138,21 @@ public abstract class AbstractUpload implements Upload {
         String originFileName = file.getOriginalFilename();
         String ext = FileKit.getFileExt(originFileName);
         String newFileName = this.getNewFileName(ext);
+        String storePath = this.getStorePath(newFileName);
+        String fileUrl = this.getFileUrl(storePath);
         String md5 = FileKit.getFileMD5(fileBytes);
         Integer size = fileBytes.length;
+        UploadType fileType = this.getFileType();
 
         FileEntity fileEntity = FileEntity.builder()
                                           .name(newFileName)
-                                          .originName(originFileName)
+                                          .originalName(originFileName)
                                           .extension(ext)
                                           .size(size)
+                                          .path(storePath)
+                                          .url(fileUrl)
                                           .md5(md5)
-                                          .url(this.getFileUrl(newFileName))
-                                          .path(this.getStorePath())
-                                          .type(this.getFileType())
+                                          .type(fileType)
                                           .build();
         // 有上传监听器，并且每个文件上传的前置回调都返回true则处理，否则不做处理
         if (this.uploadFileListener != null && !this.uploadFileListener.onEachFilePreUpload(fileEntity)) return;
