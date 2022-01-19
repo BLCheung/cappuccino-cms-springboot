@@ -1,6 +1,7 @@
 package com.blcheung.zblmissyouadmin.module.file.configuration;
 
 import com.blcheung.zblmissyouadmin.module.file.LocalUploader;
+import com.blcheung.zblmissyouadmin.module.file.QiniuUploader;
 import com.blcheung.zblmissyouadmin.module.file.common.Uploader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,5 +18,6 @@ public class CmsFileConfiguration {
     @Bean
     public Uploader uploader() {
         return new LocalUploader();
+        // return new QiniuUploader();
     }
 }

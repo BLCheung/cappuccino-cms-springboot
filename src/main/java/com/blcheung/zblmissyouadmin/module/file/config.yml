@@ -1,10 +1,11 @@
 upload:
   # 文件服务域名
   domain: http://localhost:${server.port}
+  #  domain: http://xxxxxxxxx.hn-bkt.clouddn.com
   # 本地资源目录
   local-path: tmp/
   # 服务器资源目录
-  server-path: tmp/**
+  server-path: /
   # 每次上传文件的最大数量
   count: 9
   # 支持的文件扩展名
@@ -19,3 +20,8 @@ spring:
       max-file-size: 2MB
       # 每次上传文件的总大小
       max-request-size: 10MB
+
+qiniu:
+  access-key:
+  secret-key:
+  bucket:
