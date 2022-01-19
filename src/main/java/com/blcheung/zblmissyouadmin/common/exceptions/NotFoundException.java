@@ -16,19 +16,25 @@ public class NotFoundException extends HttpException {
     @Serial
     private static final long serialVersionUID = 2166639156003846971L;
 
+    protected Integer code = Code.NOT_FOUND.getCode();
+
+    protected Integer statusCode = HttpStatus.NOT_FOUND.value();
+
     public NotFoundException() {
-        this(Code.NOT_FOUND.getDesc());
+        this(Code.NOT_FOUND.getCode());
     }
 
     public NotFoundException(Integer code) {
-        this(code, Code.NOT_FOUND.getDesc());
+        super(code, Code.NOT_FOUND.getDesc());
     }
 
     public NotFoundException(String message) {
-        this(Code.NOT_FOUND.getCode(), message);
+        super(Code.NOT_FOUND.getCode(), message);
+        this.isDefaultMsg = false;
     }
 
     public NotFoundException(Integer code, String message) {
-        super(code, message, HttpStatus.NOT_FOUND.value());
+        super(code, message);
+        this.isDefaultMsg = false;
     }
 }

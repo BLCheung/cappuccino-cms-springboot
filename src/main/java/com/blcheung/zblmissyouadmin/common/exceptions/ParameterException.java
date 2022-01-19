@@ -16,19 +16,25 @@ public class ParameterException extends HttpException {
     @Serial
     private static final long serialVersionUID = 4165158781838308373L;
 
+    protected Integer code = Code.PARAMETER_ERROR.getCode();
+
+    protected Integer statusCode = HttpStatus.BAD_REQUEST.value();
+
     public ParameterException() {
-        this(Code.PARAMETER_ERROR.getDesc());
+        this(Code.PARAMETER_ERROR.getCode());
     }
 
     public ParameterException(Integer code) {
-        this(code, Code.PARAMETER_ERROR.getDesc());
+        super(code, Code.PARAMETER_ERROR.getDesc());
     }
 
     public ParameterException(String message) {
-        this(Code.PARAMETER_ERROR.getCode(), message);
+        super(Code.PARAMETER_ERROR.getCode(), message);
+        this.isDefaultMsg = false;
     }
 
     public ParameterException(Integer code, String message) {
-        super(code, message, HttpStatus.BAD_REQUEST.value());
+        super(code, message);
+        this.isDefaultMsg = false;
     }
 }

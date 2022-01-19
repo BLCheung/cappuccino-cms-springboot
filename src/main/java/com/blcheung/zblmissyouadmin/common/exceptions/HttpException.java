@@ -3,6 +3,7 @@ package com.blcheung.zblmissyouadmin.common.exceptions;
 import com.blcheung.zblmissyouadmin.common.Code;
 import com.blcheung.zblmissyouadmin.common.interfaces.BaseResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 
 import java.io.Serial;
 
@@ -12,22 +13,22 @@ import java.io.Serial;
  * @author BLCheung
  * @date 2021/12/8 1:31 上午
  */
-public class HttpException extends RuntimeException implements BaseResponse {
+public abstract class HttpException extends RuntimeException implements BaseResponse {
 
     @Serial
-    private static final long    serialVersionUID = 3634412969489117410L;
-    
-    protected            int     code;
-    protected            Integer statusCode       = HttpStatus.INTERNAL_SERVER_ERROR.value();
+    private static final long serialVersionUID = 3634412969489117410L;
+
+    protected Integer code;
+
+    protected String msg;
+
+    protected Integer statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+
+    // 是否默认消息提示
+    protected Boolean isDefaultMsg = true;
 
     public HttpException() {
-        super(Code.INTERNAL_SERVER_ERROR.getDesc());
-        this.code = Code.INTERNAL_SERVER_ERROR.getCode();
-    }
-
-    public HttpException(String message) {
-        super(message);
-        this.code = Code.INTERNAL_SERVER_ERROR.getCode();
+        this(Code.INTERNAL_SERVER_ERROR.getCode());
     }
 
     public HttpException(Integer code) {
@@ -35,16 +36,16 @@ public class HttpException extends RuntimeException implements BaseResponse {
         this.code = code;
     }
 
-    public HttpException(Integer code, Integer statusCode) {
-        super(Code.INTERNAL_SERVER_ERROR.getDesc());
-        this.code       = code;
-        this.statusCode = statusCode;
+    public HttpException(String message) {
+        this(Code.INTERNAL_SERVER_ERROR.getCode(), message);
+        this.msg          = message;
+        this.isDefaultMsg = false;
     }
 
-    public HttpException(Integer code, String message, Integer statusCode) {
+    public HttpException(Integer code, String message) {
         super(message);
-        this.code       = code;
-        this.statusCode = statusCode;
+        this.msg  = message;
+        this.code = code;
     }
 
     @Override
@@ -55,5 +56,10 @@ public class HttpException extends RuntimeException implements BaseResponse {
     @Override
     public Integer getStatusCode() {
         return this.statusCode;
+    }
+
+    @Override
+    public String getMsg() {
+        return this.msg;
     }
 }

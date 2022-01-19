@@ -16,19 +16,25 @@ public class TokenInvalidException extends HttpException {
     @Serial
     private static final long serialVersionUID = 6633425654713859604L;
 
+    protected Integer code = Code.TOKEN_INVALID.getCode();
+
+    protected Integer statusCode = HttpStatus.UNAUTHORIZED.value();
+
     public TokenInvalidException() {
-        this(Code.TOKEN_INVALID.getDesc());
+        this(Code.TOKEN_INVALID.getCode());
     }
 
     public TokenInvalidException(Integer code) {
-        this(code, Code.TOKEN_INVALID.getDesc());
+        super(code, Code.TOKEN_INVALID.getDesc());
     }
 
     public TokenInvalidException(String message) {
-        this(Code.TOKEN_INVALID.getCode(), message);
+        super(Code.TOKEN_INVALID.getCode(), message);
+        this.isDefaultMsg = false;
     }
 
     public TokenInvalidException(Integer code, String message) {
-        super(code, message, HttpStatus.UNAUTHORIZED.value());
+        super(code, message);
+        this.isDefaultMsg = false;
     }
 }

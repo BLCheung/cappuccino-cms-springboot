@@ -23,4 +23,13 @@ public interface BaseResponse {
      * @date 2021/12/2 12:07 上午
      */
     Integer getStatusCode();
+
+    /**
+     * 获取自定义的错误消息
+     *
+     * @return java.lang.String
+     * @author BLCheung
+     * @date 2022/1/18 7:18 上午
+     */
+    String getMsg();
 }

@@ -16,19 +16,25 @@ public class UnAuthorizedException extends HttpException {
     @Serial
     private static final long serialVersionUID = -6511277210921214106L;
 
-    public UnAuthorizedException() {
-        this(Code.UNAUTHORIZED.getDesc());
-    }
+    protected Integer code = Code.UNAUTHORIZED.getCode();
 
-    public UnAuthorizedException(String message) {
-        this(Code.UNAUTHORIZED.getCode(), message);
+    protected Integer statusCode = HttpStatus.UNAUTHORIZED.value();
+
+    public UnAuthorizedException() {
+        this(Code.UNAUTHORIZED.getCode());
     }
 
     public UnAuthorizedException(Integer code) {
-        this(code, Code.UNAUTHORIZED.getDesc());
+        super(code, Code.UNAUTHORIZED.getDesc());
+    }
+
+    public UnAuthorizedException(String message) {
+        super(Code.UNAUTHORIZED.getCode(), message);
+        this.isDefaultMsg = false;
     }
 
     public UnAuthorizedException(Integer code, String message) {
-        super(code, message, HttpStatus.UNAUTHORIZED.value());
+        super(code, message);
+        this.isDefaultMsg = false;
     }
 }

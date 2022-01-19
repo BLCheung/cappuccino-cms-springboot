@@ -16,19 +16,25 @@ public class FailedException extends HttpException {
     @Serial
     private static final long serialVersionUID = 4624766117100079482L;
 
+    protected Integer code = Code.FAIL.getCode();
+
+    protected Integer statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+
     public FailedException() {
-        this(Code.FAIL.getDesc());
+        this(Code.FAIL.getCode());
     }
 
     public FailedException(Integer code) {
-        this(code, Code.FAIL.getDesc());
+        super(code, Code.FAIL.getDesc());
     }
 
     public FailedException(String message) {
-        this(Code.FAIL.getCode(), message);
+        super(Code.FAIL.getCode(), message);
+        this.isDefaultMsg = false;
     }
 
     public FailedException(Integer code, String message) {
-        super(code, message, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        super(code, message);
+        this.isDefaultMsg = false;
     }
 }

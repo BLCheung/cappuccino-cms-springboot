@@ -16,19 +16,25 @@ public class ServerErrorException extends HttpException {
     @Serial
     private static final long serialVersionUID = 8404987900707708713L;
 
+    protected Integer code = Code.INTERNAL_SERVER_ERROR.getCode();
+
+    protected Integer statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+
     public ServerErrorException() {
-        this(Code.INTERNAL_SERVER_ERROR.getDesc());
+        this(Code.INTERNAL_SERVER_ERROR.getCode());
     }
 
     public ServerErrorException(Integer code) {
-        this(code, Code.INTERNAL_SERVER_ERROR.getDesc());
+        super(code, Code.INTERNAL_SERVER_ERROR.getDesc());
     }
 
     public ServerErrorException(String message) {
-        this(Code.INTERNAL_SERVER_ERROR.getCode(), message);
+        super(Code.INTERNAL_SERVER_ERROR.getCode(), message);
+        this.isDefaultMsg = false;
     }
 
     public ServerErrorException(Integer code, String message) {
-        super(code, message, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        super(code, message);
+        this.isDefaultMsg = false;
     }
 }

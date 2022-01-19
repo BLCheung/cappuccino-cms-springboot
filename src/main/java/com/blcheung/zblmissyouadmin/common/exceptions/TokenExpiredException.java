@@ -16,19 +16,25 @@ public class TokenExpiredException extends HttpException {
     @Serial
     private static final long serialVersionUID = 1882727199241071921L;
 
+    protected Integer code = Code.TOKEN_EXPIRED.getCode();
+
+    protected Integer statusCode = HttpStatus.UNAUTHORIZED.value();
+
     public TokenExpiredException() {
-        this(Code.TOKEN_EXPIRED.getDesc());
+        this(Code.TOKEN_EXPIRED.getCode());
     }
 
     public TokenExpiredException(Integer code) {
-        this(code, Code.TOKEN_EXPIRED.getDesc());
+        super(code, Code.TOKEN_EXPIRED.getDesc());
     }
 
     public TokenExpiredException(String message) {
-        this(Code.TOKEN_EXPIRED.getCode(), message);
+        super(Code.TOKEN_EXPIRED.getCode(), message);
+        this.isDefaultMsg = false;
     }
 
     public TokenExpiredException(Integer code, String message) {
-        super(code, message, HttpStatus.UNAUTHORIZED.value());
+        super(code, message);
+        this.isDefaultMsg = false;
     }
 }

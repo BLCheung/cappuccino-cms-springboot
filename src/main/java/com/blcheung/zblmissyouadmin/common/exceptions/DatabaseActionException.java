@@ -16,19 +16,25 @@ public class DatabaseActionException extends HttpException {
     @Serial
     private static final long serialVersionUID = -1879376197878595016L;
 
+    protected Integer code = Code.FAIL.getCode();
+
+    protected Integer statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+
     public DatabaseActionException() {
-        this(Code.FAIL.getDesc());
+        this(Code.FAIL.getCode());
     }
 
     public DatabaseActionException(Integer code) {
-        this(code, Code.FAIL.getDesc());
+        super(code, Code.FAIL.getDesc());
     }
 
     public DatabaseActionException(String message) {
-        this(Code.FAIL.getCode(), message);
+        super(Code.FAIL.getCode(), message);
+        this.isDefaultMsg = false;
     }
 
     public DatabaseActionException(Integer code, String message) {
-        super(code, message, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        super(code, message);
+        this.isDefaultMsg = false;
     }
 }

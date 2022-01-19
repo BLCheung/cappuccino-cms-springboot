@@ -16,19 +16,25 @@ public class ForbiddenException extends HttpException {
     @Serial
     private static final long serialVersionUID = -7040854574781587444L;
 
+    protected Integer code = Code.FORBIDDEN.getCode();
+
+    protected Integer statusCode = HttpStatus.FORBIDDEN.value();
+
     public ForbiddenException() {
-        this(Code.FORBIDDEN.getDesc());
+        this(Code.FORBIDDEN.getCode());
     }
 
     public ForbiddenException(Integer code) {
-        this(code, Code.FORBIDDEN.getDesc());
+        super(code, Code.FORBIDDEN.getDesc());
     }
 
     public ForbiddenException(String message) {
-        this(Code.FORBIDDEN.getCode(), message);
+        super(Code.FORBIDDEN.getCode(), message);
+        this.isDefaultMsg = false;
     }
 
     public ForbiddenException(Integer code, String message) {
-        super(code, message, HttpStatus.FORBIDDEN.value());
+        super(code, message);
+        this.isDefaultMsg = false;
     }
 }

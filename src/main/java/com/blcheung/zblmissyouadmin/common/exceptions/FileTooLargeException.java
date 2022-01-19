@@ -16,19 +16,25 @@ public class FileTooLargeException extends HttpException {
     @Serial
     private static final long serialVersionUID = 8788264037524133199L;
 
+    protected Integer code = Code.FILE_TOO_LARGE.getCode();
+
+    protected Integer statusCode = HttpStatus.PAYLOAD_TOO_LARGE.value();
+
     public FileTooLargeException() {
-        this(Code.FILE_TOO_LARGE.getDesc());
+        this(Code.FILE_TOO_LARGE.getCode());
     }
 
     public FileTooLargeException(Integer code) {
-        this(code, Code.FILE_TOO_LARGE.getDesc());
+        super(code, Code.FILE_TOO_LARGE.getDesc());
     }
 
     public FileTooLargeException(String message) {
-        this(Code.FILE_TOO_LARGE.getCode(), message);
+        super(Code.FILE_TOO_LARGE.getCode(), message);
+        this.isDefaultMsg = false;
     }
 
     public FileTooLargeException(Integer code, String message) {
-        super(code, message, HttpStatus.PAYLOAD_TOO_LARGE.value());
+        super(code, message);
+        this.isDefaultMsg = false;
     }
 }
