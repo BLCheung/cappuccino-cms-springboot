@@ -39,7 +39,7 @@ public class CmsFileServiceImpl extends ServiceImpl<CmsFileMapper, CmsFileDO> im
         this.uploader.upload(filesMap, new OnUploadFileListener() {
             @Override
             public Boolean onEachFilePreUpload(FileEntity file) {
-                CmsFileDO cmsFileDO = CmsFileServiceImpl.this.getFileByMD5(file.getMd5());
+                CmsFileDO cmsFileDO = CmsFileServiceImpl.this.getFileByMD5(file.getType(), file.getMd5());
                 // 不存在，则在上传完毕的后置回调里保存文件数据
                 if (cmsFileDO == null) return true;
 
@@ -65,8 +65,9 @@ public class CmsFileServiceImpl extends ServiceImpl<CmsFileMapper, CmsFileDO> im
     }
 
     @Override
-    public CmsFileDO getFileByMD5(String md5) {
+    public CmsFileDO getFileByMD5(String type, String md5) {
         return this.lambdaQuery()
+                   .eq(CmsFileDO::getType, type)
                    .eq(CmsFileDO::getMd5, md5)
                    .one();
     }

@@ -33,7 +33,7 @@ public class LocalUploader extends AbstractUploader {
     }
 
     @Override
-    protected Boolean onUploadFile(byte[] bytes, String filePath) {
+    protected Boolean onUploadFile(byte[] bytes, String filePath, String fileName) {
         try {
             BufferedOutputStream bfs = new BufferedOutputStream(new FileOutputStream(filePath));
             bfs.write(bytes);

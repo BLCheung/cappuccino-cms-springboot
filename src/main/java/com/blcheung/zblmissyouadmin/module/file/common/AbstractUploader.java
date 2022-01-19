@@ -58,11 +58,12 @@ public abstract class AbstractUploader implements Uploader {
      *
      * @param bytes    文件的字节数
      * @param filePath 文件的存放路径
+     * @param fileName 文件名称
      * @return java.lang.Boolean
      * @author BLCheung
      * @date 2022/1/16 3:38 上午
      */
-    protected abstract Boolean onUploadFile(byte[] bytes, String filePath);
+    protected abstract Boolean onUploadFile(byte[] bytes, String filePath, String fileName);
 
     /**
      * 获取指定上传文件的配置
@@ -163,7 +164,7 @@ public abstract class AbstractUploader implements Uploader {
         if (this.uploadFileListener != null && !this.uploadFileListener.onEachFilePreUpload(fileEntity)) return;
 
         // 对应的上传逻辑是否成功
-        Boolean isUploaded = this.onUploadFile(fileBytes, storePath);
+        Boolean isUploaded = this.onUploadFile(fileBytes, storePath, newFileName);
         if (isUploaded == null) {
             log.error("请重写onUploadFile()处理具体的上传逻辑!");
             throw new FailedException("后端未处理具体的文件上传逻辑!");

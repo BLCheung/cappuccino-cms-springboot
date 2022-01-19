@@ -31,12 +31,13 @@ public interface CmsFileService extends IService<CmsFileDO> {
     /**
      * 通过md5获取文件
      *
+     * @param type 文件的上传类型
      * @param md5
      * @return com.blcheung.zblmissyouadmin.model.CmsFileDO
      * @author BLCheung
      * @date 2022/1/18 4:01 上午
      */
-    CmsFileDO getFileByMD5(String md5);
+    CmsFileDO getFileByMD5(String type, String md5);
 
     /**
      * 检查文件是否已存在
