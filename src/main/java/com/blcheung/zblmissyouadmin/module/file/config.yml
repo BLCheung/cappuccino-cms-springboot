@@ -5,8 +5,6 @@ upload:
   local-path: tmp/
   # 服务器资源目录
   server-path: tmp/**
-  # 单个文件大小
-  single-max-limit: 2MB
   # 每次上传文件的最大数量
   count: 9
   # 支持的文件扩展名

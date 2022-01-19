@@ -7,7 +7,10 @@ import com.blcheung.zblmissyouadmin.util.RequestUtil;
 import com.blcheung.zblmissyouadmin.vo.ErrorVO;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.StringUtils;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.ServletException;
@@ -31,6 +35,12 @@ import java.util.List;
  */
 @RestControllerAdvice
 public class RestExceptionHandler {
+
+    @Value("${spring.servlet.multipart.max-file-size}")
+    private String maxFileSize;
+
+    @Value("${spring.servlet.multipart.max-request-size}")
+    private String maxRequestSize;
 
     /**
      * 处理通用异常
@@ -64,12 +74,18 @@ public class RestExceptionHandler {
      */
     @ExceptionHandler({ HttpException.class })
     public ErrorVO handleException(HttpServletRequest request, HttpServletResponse response, HttpException exception) {
+        // 错误码
         Integer code = exception.getCode();
-        String message = StringUtils.hasText(CodeConfiguration.getMessage(code))
+        // 自定义消息
+        String msg = exception.getMsg();
+        // 默认消息，从code码取或异常自带
+        String defaultMsg = StringUtils.hasText(CodeConfiguration.getMessage(code))
                 ? CodeConfiguration.getMessage(code)
                 : exception.getMessage();
+        // 是否为默认消息
+        Boolean isDefaultMsg = exception.isDefaultMsg;
 
-        ErrorVO errorVO = ResultKit.reject(code, message);
+        ErrorVO errorVO = ResultKit.reject(code, isDefaultMsg ? defaultMsg : msg);
         errorVO.setRequest(RequestUtil.getActionRequest(request));
 
         response.setStatus(exception.getStatusCode());
@@ -269,6 +285,35 @@ public class RestExceptionHandler {
         errorVO.setRequest(RequestUtil.getActionRequest(request));
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());
+
+        return errorVO;
+    }
+
+    /**
+     * 上传的文件体积超过限制异常
+     *
+     * @param request
+     * @param response
+     * @param exception
+     * @return com.blcheung.zblmissyouadmin.vo.ErrorVO
+     * @author BLCheung
+     * @date 2022/1/19 8:03 下午
+     */
+    @ExceptionHandler({ MaxUploadSizeExceededException.class })
+    public ErrorVO handleException(HttpServletRequest request, HttpServletResponse response,
+                                   MaxUploadSizeExceededException exception) {
+        Throwable rootCause = exception.getRootCause();
+        String message;
+        if (rootCause instanceof FileSizeLimitExceededException) {
+            message = CodeConfiguration.getMessage(10026) + this.maxFileSize;
+        } else {
+            message = CodeConfiguration.getMessage(10027) + this.maxRequestSize;
+        }
+
+        ErrorVO errorVO = ResultKit.reject(10024, message);
+        errorVO.setRequest(RequestUtil.getActionRequest(request));
+
+        response.setStatus(HttpStatus.PAYLOAD_TOO_LARGE.value());
 
         return errorVO;
     }

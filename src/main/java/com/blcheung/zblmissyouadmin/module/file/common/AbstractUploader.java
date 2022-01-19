@@ -44,7 +44,8 @@ public abstract class AbstractUploader implements Uploader {
         List<MultipartFile> allFiles = this.getAllFiles(fileMultiValueMap);
 
         this.validateFilesExt(allFiles);
-        this.validateFilesSize(allFiles);
+        // 全局异常已经处理文件大小限制
+        // this.validateFilesSize(allFiles);
 
         List<FileEntity> fileEntityList = new ArrayList<>();
         allFiles.forEach(file -> this.handleMultipartFile(fileEntityList, file));
@@ -212,7 +213,7 @@ public abstract class AbstractUploader implements Uploader {
                                             .collect(Collectors.toList());
 
         if (!unSupportExt.isEmpty())
-            throw new FileExtensionException(10025, "不支持" + StringUtils.join(unSupportExt, ",") + "类型的文件");
+            throw new FileExtensionException("不支持" + StringUtils.join(unSupportExt, ",") + "类型的文件");
     }
 
     private boolean isFileExtValid(String[] extList, String fileExt) {
@@ -232,7 +233,13 @@ public abstract class AbstractUploader implements Uploader {
 
     private Long getSingleFileMaxSizeLimit() {
         String maxLimit = this.getFileProperties()
-                              .getSingleMaxLimit();
+                              .getMaxFileSize();
+        return FileKit.parseSize(maxLimit);
+    }
+
+    private Long getTotalFileMaxSizeLimit() {
+        String maxLimit = this.getFileProperties()
+                              .getMaxRequestSize();
         return FileKit.parseSize(maxLimit);
     }
 

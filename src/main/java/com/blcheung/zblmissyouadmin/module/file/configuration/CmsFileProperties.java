@@ -1,5 +1,6 @@
 package com.blcheung.zblmissyouadmin.module.file.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -21,11 +22,15 @@ public class CmsFileProperties {
 
     private String serverPath;
 
-    private String singleMaxLimit;
-
     private Integer count;
 
     private String[] whitelist;
+
+    @Value("${spring.servlet.multipart.max-file-size}")
+    private String maxFileSize;
+
+    @Value("${spring.servlet.multipart.max-request-size}")
+    private String maxRequestSize;
 
     public String getDomain() {
         return domain;
@@ -51,14 +56,6 @@ public class CmsFileProperties {
         this.serverPath = serverPath;
     }
 
-    public String getSingleMaxLimit() {
-        return singleMaxLimit;
-    }
-
-    public void setSingleMaxLimit(String singleMaxLimit) {
-        this.singleMaxLimit = singleMaxLimit;
-    }
-
     public Integer getCount() {
         return count;
     }
@@ -73,5 +70,21 @@ public class CmsFileProperties {
 
     public void setWhitelist(String[] whitelist) {
         this.whitelist = whitelist;
+    }
+
+    public String getMaxFileSize() {
+        return maxFileSize;
+    }
+
+    public void setMaxFileSize(String maxFileSize) {
+        this.maxFileSize = maxFileSize;
+    }
+
+    public String getMaxRequestSize() {
+        return maxRequestSize;
+    }
+
+    public void setMaxRequestSize(String maxRequestSize) {
+        this.maxRequestSize = maxRequestSize;
     }
 }
