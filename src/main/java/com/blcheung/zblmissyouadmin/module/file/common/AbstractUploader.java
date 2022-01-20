@@ -181,7 +181,7 @@ public abstract class AbstractUploader implements Uploader {
 
         int fileCount = this.getFileProperties()
                             .getCount();
-
+        // 文件数量限制判断
         AtomicInteger fileMapSize = new AtomicInteger();
         for (String key : fileMap.keySet()) {
             fileMap.get(key)
@@ -191,7 +191,7 @@ public abstract class AbstractUploader implements Uploader {
         }
 
         if (fileMapSize.get() > fileCount) {
-            throw new FileTooManyException(10121);
+            throw new FileTooManyException(10022);
         }
     }
 
