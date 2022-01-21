@@ -1,6 +1,6 @@
 package com.blcheung.zblmissyouadmin.service;
 
-import com.blcheung.zblmissyouadmin.dto.NewAdminGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.NewAdminGroupDTO;
 
 /**
  * @author BLCheung

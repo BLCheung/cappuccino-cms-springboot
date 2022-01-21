@@ -5,8 +5,8 @@ import com.blcheung.zblmissyouadmin.common.annotations.permission.AdminRequired;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterMeta;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterModule;
 import com.blcheung.zblmissyouadmin.common.token.Tokens;
-import com.blcheung.zblmissyouadmin.dto.LoginDTO;
-import com.blcheung.zblmissyouadmin.dto.RegisterUserDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.LoginDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.RegisterUserDTO;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.service.CmsUserService;
@@ -38,7 +38,7 @@ public class CmsUserController {
 
     @PostMapping("/register")
     @AdminRequired
-    @RouterMeta(name = "注册用户")
+    @RouterMeta(name = "注册用户", mount = false)
     public CreatedVO register(@RequestBody @Validated RegisterUserDTO dto) {
         CmsUserDO cmsUserDO = this.cmsUserService.registerUser(dto);
         return ResultKit.resolveCreated(cmsUserDO);

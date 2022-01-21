@@ -1,4 +1,4 @@
-package com.blcheung.zblmissyouadmin.dto;
+package com.blcheung.zblmissyouadmin.dto.cms;
 
 import com.blcheung.zblmissyouadmin.validator.EqualField;
 import com.blcheung.zblmissyouadmin.validator.LongList;

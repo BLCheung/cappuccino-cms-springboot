@@ -1,4 +1,4 @@
-package com.blcheung.zblmissyouadmin.dto;
+package com.blcheung.zblmissyouadmin.dto.cms;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -3,7 +3,7 @@ package com.blcheung.zblmissyouadmin.service.impl;
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
 import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
-import com.blcheung.zblmissyouadmin.dto.NewAdminGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.NewAdminGroupDTO;
 import com.blcheung.zblmissyouadmin.model.CmsGroupDO;
 import com.blcheung.zblmissyouadmin.service.CmsGroupService;
 import com.blcheung.zblmissyouadmin.service.CmsRootService;

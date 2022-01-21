@@ -1,15 +1,19 @@
 package com.blcheung.zblmissyouadmin.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
-import com.blcheung.zblmissyouadmin.model.CmsGroupDO;
+import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
 import com.blcheung.zblmissyouadmin.mapper.CmsGroupMapper;
+import com.blcheung.zblmissyouadmin.model.CmsGroupDO;
 import com.blcheung.zblmissyouadmin.service.CmsGroupService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -31,21 +35,24 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
     @Override
     public boolean checkGroupExistById(Long id) {
         return this.lambdaQuery()
-                   .eq(CmsGroupDO::getId, id)
+                   .select(CmsGroupDO::getId)
+                   .eq(!ObjectUtils.isEmpty(id), CmsGroupDO::getId, id)
                    .exists();
     }
 
     @Override
     public boolean checkGroupExistByIds(List<Long> ids) {
         return this.lambdaQuery()
-                   .in(CmsGroupDO::getId, ids)
+                   .select(CmsGroupDO::getId)
+                   .in(!ids.isEmpty(), CmsGroupDO::getId, ids)
                    .exists();
     }
 
     @Override
     public boolean checkGroupExistByName(String name) {
         return this.lambdaQuery()
-                   .eq(CmsGroupDO::getName, name)
+                   .select(CmsGroupDO::getName)
+                   .eq(StringUtils.hasText(name), CmsGroupDO::getName, name)
                    .exists();
     }
 
@@ -66,6 +73,12 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
     }
 
     @Override
+    public void validateGroupIdExist(Long groupId) {
+        boolean exist = this.checkGroupExistById(groupId);
+        if (!exist) throw new NotFoundException(10208);
+    }
+
+    @Override
     public List<Long> getUserGroupIds(Long userId) {
         List<Long> userGroupIds = this.getBaseMapper()
                                       .getGroupIdsByUserId(userId);
@@ -74,13 +87,25 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
 
     @Override
     public List<Long> getAdminLevelGroups() {
-        Long rootGroupId = this.getGroupIdByEnum(GroupLevel.ROOT);
-        Long adminGroupId = this.getGroupIdByEnum(GroupLevel.ADMIN);
-        return List.of(rootGroupId, adminGroupId);
+        return this.lambdaQuery()
+                   .select(CmsGroupDO::getId)   // 只查id即可，返回的对象内只包含id字段以及基类的字段（不查则为null）
+                   .le(CmsGroupDO::getLevel, GroupLevel.ADMIN)
+                   .list()
+                   .stream()
+                   .map(CmsGroupDO::getId)
+                   .collect(Collectors.toList());
     }
 
     @Override
     public Long getRootGroupId() {
         return this.getGroupIdByEnum(GroupLevel.ROOT);
+    }
+
+    @Override
+    public List<CmsGroupDO> getAllUserLevelGroups() {
+        List<Long> adminLevelGroupsIds = this.getAdminLevelGroups();
+        return this.lambdaQuery()
+                   .notIn(CmsGroupDO::getId, adminLevelGroupsIds)
+                   .list();
     }
 }

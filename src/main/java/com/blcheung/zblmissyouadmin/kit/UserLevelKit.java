@@ -78,6 +78,8 @@ public class UserLevelKit {
         UserLevel methodUserLevel = getUserLevel(method);
 
         if (!ObjectUtils.isEmpty(clazzUserLevel)) {
+            if (clazzUserLevel.equals(methodUserLevel)) return clazzUserLevel;
+
             return ObjectUtils.isEmpty(methodUserLevel) ? clazzUserLevel : methodUserLevel;
         } else {
             return ObjectUtils.isEmpty(methodUserLevel) ? UserLevel.GUEST : methodUserLevel;

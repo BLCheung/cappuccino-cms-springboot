@@ -2,8 +2,8 @@ package com.blcheung.zblmissyouadmin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.blcheung.zblmissyouadmin.common.token.Tokens;
-import com.blcheung.zblmissyouadmin.dto.LoginDTO;
-import com.blcheung.zblmissyouadmin.dto.RegisterUserDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.LoginDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.RegisterUserDTO;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 

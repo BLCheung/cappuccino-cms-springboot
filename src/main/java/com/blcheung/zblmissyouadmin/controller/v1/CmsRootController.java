@@ -3,7 +3,7 @@ package com.blcheung.zblmissyouadmin.controller.v1;
 import com.blcheung.zblmissyouadmin.common.annotations.permission.RootRequired;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterMeta;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterModule;
-import com.blcheung.zblmissyouadmin.dto.NewAdminGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.NewAdminGroupDTO;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.service.CmsRootService;
 import com.blcheung.zblmissyouadmin.vo.CreatedVO;
@@ -28,14 +28,14 @@ public class CmsRootController {
     private CmsRootService cmsRootService;
 
     @PostMapping("/admin/group")
-    @RouterMeta(name = "创建管理员分组")
+    @RouterMeta(name = "创建管理员分组", mount = false)
     public CreatedVO createAdminGroup(@RequestBody @Validated NewAdminGroupDTO dto) {
         this.cmsRootService.createAdminGroup(dto);
         return ResultKit.resolveCreated();
     }
 
     @DeleteMapping("/admin/group/{id}")
-    @RouterMeta(name = "删除管理员分组")
+    @RouterMeta(name = "删除管理员分组", mount = false)
     public DeletedVO deleteAdminGroup(@PathVariable @Positive Long id) {
         this.cmsRootService.deleteAdminGroup(id);
         return ResultKit.resolveDeleted();
