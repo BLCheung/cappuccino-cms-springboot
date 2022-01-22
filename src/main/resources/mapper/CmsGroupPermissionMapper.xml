@@ -9,4 +9,21 @@
         <result column="permission_id" property="permissionId" />
     </resultMap>
 
+    <insert id="saveBatch">
+        INSERT INTO cms_group_permission(group_id, permission_id)
+        VALUES
+        <foreach collection="relations" item="relation" separator=",">
+            (#{relation.groupId}, #{relation.permissionId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteBatch">
+        DELETE FROM cms_group_permission AS gp
+        WHERE gp.group_id = #{groupId}
+        AND gp.permission_id IN
+        <foreach collection="permissionIds" item="permissionId" index="index" open="(" close=")" separator=",">
+            #{permissionId}
+        </foreach>
+    </delete>
+
 </mapper>

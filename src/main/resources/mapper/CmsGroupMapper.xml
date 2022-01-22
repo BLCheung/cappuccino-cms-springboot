@@ -4,13 +4,13 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.blcheung.zblmissyouadmin.model.CmsGroupDO">
-        <result column="id" property="id"/>
-        <result column="create_time" property="createTime"/>
-        <result column="update_time" property="updateTime"/>
-        <result column="delete_time" property="deleteTime"/>
-        <result column="name" property="name"/>
-        <result column="info" property="info"/>
-        <result column="level" property="level"/>
+        <result column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="delete_time" property="deleteTime" />
+        <result column="name" property="name" />
+        <result column="info" property="info" />
+        <result column="level" property="level" />
     </resultMap>
 
     <select id="getGroupIdsByUserId" parameterType="java.lang.Long" resultType="java.lang.Long">

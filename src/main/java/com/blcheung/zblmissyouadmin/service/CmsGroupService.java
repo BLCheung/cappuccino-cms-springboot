@@ -77,6 +77,15 @@ public interface CmsGroupService extends IService<CmsGroupDO> {
     void validateGroupNameExist(String groupName);
 
     /**
+     * 校验分组id是否存在
+     *
+     * @param groupId
+     * @author BLCheung
+     * @date 2022/1/21 11:30 下午
+     */
+    void validateGroupIdExist(Long groupId);
+
+    /**
      * 获取用户所有所属分组的id
      *
      * @param userId
@@ -103,4 +112,13 @@ public interface CmsGroupService extends IService<CmsGroupDO> {
      * @date 2022/1/11 10:25 下午
      */
     Long getRootGroupId();
+
+    /**
+     * 获取所有用户级别的分组（不包括管理员及以上级别）
+     *
+     * @return java.util.List<com.blcheung.zblmissyouadmin.model.CmsGroupDO>
+     * @author BLCheung
+     * @date 2022/1/21 2:13 上午
+     */
+    List<CmsGroupDO> getAllUserLevelGroups();
 }

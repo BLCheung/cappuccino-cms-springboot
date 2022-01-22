@@ -32,6 +32,7 @@ public class CmsPermissionServiceImpl extends ServiceImpl<CmsPermissionMapper, C
     @Override
     public Boolean checkPermissionExistBatch(List<Long> ids) {
         return this.lambdaQuery()
+                   .select(CmsPermissionDO::getId)
                    .in(CmsPermissionDO::getId, ids)
                    .exists();
     }
@@ -48,4 +49,19 @@ public class CmsPermissionServiceImpl extends ServiceImpl<CmsPermissionMapper, C
                                                 .getPermissionsByGroupIds(groupIds);
         return permissions.isEmpty() ? Collections.emptyList() : permissions;
     }
+
+    @Override
+    public List<CmsPermissionDO> getPermissionByGroupId(Long groupId) {
+        List<CmsPermissionDO> permissions = this.getBaseMapper()
+                                                .getPermissionByGroupId(groupId);
+        return permissions.isEmpty() ? Collections.emptyList() : permissions;
+    }
+
+    @Override
+    public List<Long> getPermissionIdsByGroupId(Long groupId) {
+        List<Long> permissionIds = this.getBaseMapper()
+                                       .getPermissionIdsByGroupId(groupId);
+        return permissionIds.isEmpty() ? Collections.emptyList() : permissionIds;
+    }
+
 }

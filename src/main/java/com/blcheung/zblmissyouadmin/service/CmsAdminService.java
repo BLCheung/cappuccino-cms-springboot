@@ -1,6 +1,12 @@
 package com.blcheung.zblmissyouadmin.service;
 
-import com.blcheung.zblmissyouadmin.dto.NewGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
+import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
+import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
+import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
+
+import java.util.List;
 
 /**
  * @author BLCheung
@@ -27,4 +33,42 @@ public interface CmsAdminService {
      * @date 2021/12/26 4:03 上午
      */
     boolean deleteGroup(Long groupId);
+
+    /**
+     * 获取所有用户分组（不包括超级管理员）
+     *
+     * @return java.util.List<com.blcheung.zblmissyouadmin.model.CmsGroupDO>
+     * @author BLCheung
+     * @date 2022/1/21 2:09 上午
+     */
+    List<GroupVO> getAllUserLevelGroups();
+
+    /**
+     * 获取所有可分配的权限
+     *
+     * @return java.util.List<com.blcheung.zblmissyouadmin.model.CmsPermissionDO>
+     * @author BLCheung
+     * @date 2022/1/21 10:09 下午
+     */
+    List<PermissionVO> getAssignablePermissions();
+
+    /**
+     * 获取一个分组以及它的权限
+     *
+     * @param groupId
+     * @return com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO
+     * @author BLCheung
+     * @date 2022/1/21 11:25 下午
+     */
+    GroupPermissionVO getGroupAndPermissions(Long groupId);
+
+    /**
+     * 分组分配多个权限
+     *
+     * @param dto
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/22 2:39 上午
+     */
+    Boolean dispatchPermissions(DispatchPermissionsDTO dto);
 }

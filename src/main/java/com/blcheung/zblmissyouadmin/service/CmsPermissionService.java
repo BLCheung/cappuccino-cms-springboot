@@ -1,7 +1,7 @@
 package com.blcheung.zblmissyouadmin.service;
 
-import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 
 import java.util.List;
 
@@ -53,4 +53,24 @@ public interface CmsPermissionService extends IService<CmsPermissionDO> {
      * @date 2022/1/11 9:23 下午
      */
     List<CmsPermissionDO> getPermissionsByGroupIds(List<Long> groupIds);
+
+    /**
+     * 根据分组id获取指定分组的所有权限
+     *
+     * @param groupId
+     * @return java.util.List<com.blcheung.zblmissyouadmin.model.CmsPermissionDO>
+     * @author BLCheung
+     * @date 2022/1/22 12:24 上午
+     */
+    List<CmsPermissionDO> getPermissionByGroupId(Long groupId);
+
+    /**
+     * 根据分组id获取指定分组的所有权限id集合
+     *
+     * @param groupId
+     * @return java.util.List<java.lang.Long>
+     * @author BLCheung
+     * @date 2022/1/22 8:22 下午
+     */
+    List<Long> getPermissionIdsByGroupId(Long groupId);
 }
