@@ -4,17 +4,16 @@ import com.blcheung.zblmissyouadmin.common.annotations.permission.AdminRequired;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterMeta;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterModule;
 import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
+import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.service.CmsAdminService;
-import com.blcheung.zblmissyouadmin.vo.CreatedVO;
-import com.blcheung.zblmissyouadmin.vo.DeletedVO;
-import com.blcheung.zblmissyouadmin.vo.ResultVO;
-import com.blcheung.zblmissyouadmin.vo.UpdatedVO;
+import com.blcheung.zblmissyouadmin.vo.*;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
+import com.blcheung.zblmissyouadmin.vo.cms.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +34,12 @@ public class CmsAdminController {
 
     @Autowired
     private CmsAdminService cmsAdminService;
+
+    @GetMapping("/users")
+    @RouterMeta(name = "查询用户", mount = false)
+    public PagingResultVO<UserVO> users(@Validated QueryUsersDTO dto) {
+        return this.cmsAdminService.getUserPage(dto);
+    }
 
     @GetMapping("/group/{id}")
     @RouterMeta(name = "查询一个分组及其权限", mount = false)
@@ -76,7 +81,6 @@ public class CmsAdminController {
     public UpdatedVO dispatchPermissions(@RequestBody @Validated DispatchPermissionsDTO dto) {
         Boolean dispatchSuccess = this.cmsAdminService.dispatchPermissions(dto);
         if (!dispatchSuccess) throw new FailedException(10221);
-
         return ResultKit.resolveUpdated();
     }
 }

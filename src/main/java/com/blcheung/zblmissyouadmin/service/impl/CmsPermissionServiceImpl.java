@@ -25,6 +25,7 @@ public class CmsPermissionServiceImpl extends ServiceImpl<CmsPermissionMapper, C
     @Override
     public Boolean checkPermissionExist(Long id) {
         return this.lambdaQuery()
+                   .select(CmsPermissionDO::getId)
                    .eq(CmsPermissionDO::getId, id)
                    .exists();
     }

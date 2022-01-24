@@ -1,6 +1,8 @@
 package com.blcheung.zblmissyouadmin.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.dto.cms.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.RegisterUserDTO;
@@ -98,4 +100,36 @@ public interface CmsUserService extends IService<CmsUserDO> {
      * @date 2022/1/11 2:42 上午
      */
     List<CmsPermissionDO> getUserPermissions(Long uid);
+
+    /**
+     * 根据分组级别获取用户分页
+     *
+     * @param page
+     * @param level
+     * @return java.util.List<com.blcheung.zblmissyouadmin.vo.cms.UserVO>
+     * @author BLCheung
+     * @date 2022/1/24 2:52 上午
+     */
+    Page<CmsUserDO> getUserPageByGroupLevel(Page<CmsUserDO> page, GroupLevel level);
+
+    /**
+     * 超级管理员所有用户分页
+     *
+     * @param page
+     * @return com.baomidou.mybatisplus.extension.plugins.pagination.Page<com.blcheung.zblmissyouadmin.model.CmsUserDO>
+     * @author BLCheung
+     * @date 2022/1/24 2:52 上午
+     */
+    Page<CmsUserDO> getUserPageByRoot(Page<CmsUserDO> page);
+
+    /**
+     * 根据分组id获取用户分页
+     *
+     * @param page
+     * @param groupId
+     * @return java.util.List<com.blcheung.zblmissyouadmin.vo.cms.UserVO>
+     * @author BLCheung
+     * @date 2022/1/24 2:53 上午
+     */
+    Page<CmsUserDO> getUserPageByGroupId(Page<CmsUserDO> page, Long groupId);
 }

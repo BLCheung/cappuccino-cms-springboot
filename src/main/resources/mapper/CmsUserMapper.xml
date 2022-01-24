@@ -4,14 +4,14 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.blcheung.zblmissyouadmin.model.CmsUserDO">
-        <result column="id" property="id"/>
-        <result column="create_time" property="createTime"/>
-        <result column="update_time" property="updateTime"/>
-        <result column="delete_time" property="deleteTime"/>
-        <result column="username" property="username"/>
-        <result column="nickname" property="nickname"/>
-        <result column="avatar" property="avatar"/>
-        <result column="email" property="email"/>
+        <result column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="delete_time" property="deleteTime" />
+        <result column="username" property="username" />
+        <result column="nickname" property="nickname" />
+        <result column="avatar" property="avatar" />
+        <result column="email" property="email" />
     </resultMap>
 
     <select id="checkCountById" parameterType="java.lang.Integer" resultType="java.lang.Integer">
@@ -46,6 +46,46 @@
                                      ON g.id = ug.group_id
                   WHERE g.delete_time IS NULL
                     AND g.id = #{groupId}
+              )
+    </select>
+
+    <select id="getUserPageByGroupLevel" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT id,
+               username,
+               nickname,
+               avatar,
+               email,
+               create_time,
+               update_time,
+               delete_time
+        FROM cms_user AS u
+        WHERE u.delete_time IS NULL
+          AND u.id IN
+              (
+                  SELECT user_id
+                  FROM cms_group AS g
+                           LEFT JOIN cms_user_group AS ug
+                                     ON ug.group_id = g.id
+                  WHERE <![CDATA[ g.level >= #{level} ]]>
+              )
+    </select>
+
+    <select id="getUserPageByGroupId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT id,
+               username,
+               nickname,
+               avatar,
+               email,
+               create_time,
+               update_time,
+               delete_time
+        FROM cms_user AS u
+        WHERE u.delete_time IS NULL
+          AND u.id IN
+              (
+                  SELECT user_id
+                  FROM cms_user_group AS ug
+                  WHERE ug.group_id = #{groupId}
               )
     </select>
 </mapper>

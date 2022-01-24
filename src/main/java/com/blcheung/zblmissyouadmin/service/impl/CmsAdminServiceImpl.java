@@ -1,20 +1,25 @@
 package com.blcheung.zblmissyouadmin.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.common.exceptions.DatabaseActionException;
 import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
 import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
 import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
+import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
 import com.blcheung.zblmissyouadmin.kit.BeanKit;
+import com.blcheung.zblmissyouadmin.kit.PagingKit;
 import com.blcheung.zblmissyouadmin.model.CmsGroupDO;
-import com.blcheung.zblmissyouadmin.model.CmsGroupPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
+import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.service.*;
+import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
+import com.blcheung.zblmissyouadmin.vo.cms.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +45,8 @@ public class CmsAdminServiceImpl implements CmsAdminService {
     private CmsGroupPermissionService cmsGroupPermissionService;
     @Autowired
     private CmsUserGroupService       cmsUserGroupService;
+    @Autowired
+    private CmsUserService            cmsUserService;
 
     @Transactional
     @Override
@@ -114,7 +121,6 @@ public class CmsAdminServiceImpl implements CmsAdminService {
         List<Long> dispatchPermissionIds = dto.getPermissionIds();
         // 分组下的权限列表
         List<Long> currentGroupPermissionIds = this.cmsPermissionService.getPermissionIdsByGroupId(groupId);
-        log.debug("-------------------------------------------currentGroupPermissionIds: " + currentGroupPermissionIds);
 
         if (dispatchPermissionIds.isEmpty() && currentGroupPermissionIds.isEmpty()) return true;
 
@@ -141,6 +147,20 @@ public class CmsAdminServiceImpl implements CmsAdminService {
 
         return this.cmsGroupPermissionService.dispatchGroupPermission(groupId, addIds) &&
                this.cmsGroupPermissionService.removeGroupPermission(groupId, removeIds);
+    }
+
+    @Override
+    public PagingResultVO<UserVO> getUserPage(QueryUsersDTO dto) {
+        Page<CmsUserDO> pageable = PagingKit.pageable(dto, CmsUserDO.class);
+
+        if (dto.getGroupId() == null) {
+            // 当前只能查询管理员以下级别的用户
+            pageable = this.cmsUserService.getUserPageByGroupLevel(pageable, GroupLevel.USER);
+        } else {
+            pageable = this.cmsUserService.getUserPageByGroupId(pageable, dto.getGroupId());
+        }
+
+        return PagingKit.build(pageable, UserVO.class);
     }
 
 

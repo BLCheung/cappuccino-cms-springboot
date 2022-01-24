@@ -1,10 +1,13 @@
 package com.blcheung.zblmissyouadmin.service;
 
+import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
+import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
+import com.blcheung.zblmissyouadmin.vo.cms.UserVO;
 
 import java.util.List;
 
@@ -71,4 +74,14 @@ public interface CmsAdminService {
      * @date 2022/1/22 2:39 上午
      */
     Boolean dispatchPermissions(DispatchPermissionsDTO dto);
+
+    /**
+     * 获取用户分页
+     *
+     * @param dto
+     * @return com.blcheung.zblmissyouadmin.vo.PagingResultVO<com.blcheung.zblmissyouadmin.vo.cms.UserVO>
+     * @author BLCheung
+     * @date 2022/1/24 11:22 下午
+     */
+    PagingResultVO<UserVO> getUserPage(QueryUsersDTO dto);
 }

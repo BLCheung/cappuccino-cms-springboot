@@ -1,5 +1,6 @@
 package com.blcheung.zblmissyouadmin.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
@@ -8,6 +9,7 @@ import com.blcheung.zblmissyouadmin.common.exceptions.ParameterException;
 import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.dto.cms.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.RegisterUserDTO;
+import com.blcheung.zblmissyouadmin.kit.UserKit;
 import com.blcheung.zblmissyouadmin.mapper.CmsUserMapper;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
@@ -150,6 +152,28 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         return this.cmsPermissionService.getPermissionsByGroupIds(userAllGroupIds);
     }
 
+    @Override
+    public Page<CmsUserDO> getUserPageByGroupLevel(Page<CmsUserDO> page, GroupLevel level) {
+        return this.getBaseMapper()
+                   .getUserPageByGroupLevel(page, level.getValue());
+    }
+
+    @Override
+    public Page<CmsUserDO> getUserPageByRoot(Page<CmsUserDO> page) {
+        Long rootGroupId = this.cmsGroupService.getRootGroupId();
+        CmsUserDO cmsUserDO = UserKit.getUser();
+        CmsUserGroupDO userGroupRelation = this.cmsUserGroupService.getUserGroupRelation(cmsUserDO.getId(),
+                                                                                         rootGroupId);
+        return this.lambdaQuery()
+                   .ne(CmsUserDO::getId, userGroupRelation.getUserId())
+                   .page(page);
+    }
+
+    @Override
+    public Page<CmsUserDO> getUserPageByGroupId(Page<CmsUserDO> page, Long groupId) {
+        return this.getBaseMapper()
+                   .getUserPageByGroupId(page, groupId);
+    }
 
     private void checkGroupExist(List<Long> groupIds) {
         boolean isGroupExist = this.cmsGroupService.checkGroupExistByIds(groupIds);
