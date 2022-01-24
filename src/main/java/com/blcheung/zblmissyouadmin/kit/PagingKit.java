@@ -1,0 +1,67 @@
+package com.blcheung.zblmissyouadmin.kit;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
+import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
+
+/**
+ * 分页辅助器
+ *
+ * @author BLCheung
+ * @date 2022/1/21 9:02 下午
+ */
+public class PagingKit {
+
+    /**
+     * 生成分页查询器
+     *
+     * @param dto         分页DTO
+     * @param entityClazz 数据源类型
+     * @return com.baomidou.mybatisplus.extension.plugins.pagination.Page<T>
+     * @author BLCheung
+     * @date 2022/1/23 10:50 下午
+     */
+    public static <D extends BasePagingDTO, T> Page<T> pageable(D dto, Class<T> entityClazz) {
+        Long pageNum = dto.getPageNum();
+        Long pageSize = dto.getPageSize();
+        return new Page<T>(pageNum, pageSize);
+    }
+
+    /**
+     * 构造数据源分页结果
+     *
+     * @param pageable 分页器
+     * @return com.blcheung.zblmissyouadmin.vo.PagingResultVO<T>
+     * @author BLCheung
+     * @date 2022/1/23 10:51 下午
+     */
+    public static <D> PagingResultVO<D> build(Page<D> pageable) {
+        return new PagingResultVO<D>(pageable);
+    }
+
+    /**
+     * 构造VO类型分页结果
+     *
+     * @param pageable    分页器
+     * @param voItemClass VO对象类
+     * @return com.blcheung.zblmissyouadmin.vo.PagingResultVO<V>
+     * @author BLCheung
+     * @date 2022/1/24 10:21 下午
+     */
+    public static <D, V> PagingResultVO<V> build(Page<D> pageable, Class<V> voItemClass) {
+        return new PagingResultVO<V>(pageable, voItemClass);
+    }
+
+    /**
+     * 构造VO类型分页结果
+     *
+     * @param pageable 分页器
+     * @param voItem   VO对象
+     * @return com.blcheung.zblmissyouadmin.vo.PagingResultVO<V>
+     * @author BLCheung
+     * @date 2022/1/24 10:22 下午
+     */
+    public static <D, V> PagingResultVO<V> build(Page<D> pageable, V voItem) {
+        return new PagingResultVO<V>(pageable, voItem);
+    }
+}
