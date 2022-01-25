@@ -38,7 +38,7 @@ public interface CmsUserMapper extends BaseMapper<CmsUserDO> {
     Integer checkCountByUsername(String username);
 
     /**
-     * 根据分组级别获取用户分页
+     * 获取>=level的分组级别用户分页
      *
      * @param page
      * @param level
@@ -46,7 +46,18 @@ public interface CmsUserMapper extends BaseMapper<CmsUserDO> {
      * @author BLCheung
      * @date 2022/1/24 2:50 上午
      */
-    Page<CmsUserDO> getUserPageByGroupLevel(Page<CmsUserDO> page, Integer level);
+    Page<CmsUserDO> getUserPageByGroupLevelGE(Page<CmsUserDO> page, Integer level);
+
+    /**
+     * 获取==level的分组级别用户分页
+     *
+     * @param page
+     * @param level
+     * @return com.baomidou.mybatisplus.extension.plugins.pagination.Page<com.blcheung.zblmissyouadmin.model.CmsUserDO>
+     * @author BLCheung
+     * @date 2022/1/25 11:55 下午
+     */
+    Page<CmsUserDO> getUserPageByGroupLevelEQ(Page<CmsUserDO> page, Integer level);
 
     /**
      * 根据分组id获取用户分页

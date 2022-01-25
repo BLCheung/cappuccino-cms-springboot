@@ -1,6 +1,12 @@
 package com.blcheung.zblmissyouadmin.service;
 
 import com.blcheung.zblmissyouadmin.dto.cms.NewAdminGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
+import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
+import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
+import com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO;
+
+import java.util.List;
 
 /**
  * @author BLCheung
@@ -9,22 +15,51 @@ import com.blcheung.zblmissyouadmin.dto.cms.NewAdminGroupDTO;
 public interface CmsRootService {
 
     /**
+     * 检查用户是否为超级管理员级别
+     *
+     * @param userId
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/11 10:24 下午
+     */
+    Boolean checkUserIsRoot(Long userId);
+
+    /**
      * 新建管理员分组
      *
      * @param dto
-     * @return boolean
+     * @return java.lang.Boolean
      * @author BLCheung
      * @date 2021/12/26 10:01 下午
      */
-    boolean createAdminGroup(NewAdminGroupDTO dto);
+    Boolean createAdminGroup(NewAdminGroupDTO dto);
 
     /**
      * 删除管理员分组
      *
-     * @param groupId
-     * @return boolean
+     * @param adminGroupId
+     * @return java.lang.Boolean
      * @author BLCheung
      * @date 2021/12/26 10:01 下午
      */
-    boolean deleteAdminGroup(Long adminGroupId);
+    Boolean deleteAdminGroup(Long adminGroupId);
+
+    /**
+     * 超级管理员获取所有用户与管理员
+     *
+     * @param dto
+     * @return java.util.List<com.blcheung.zblmissyouadmin.vo.cms.UserVO>
+     * @author BLCheung
+     * @date 2022/1/25 3:00 上午
+     */
+    PagingResultVO<UserGroupVO> getAllUserByRoot(BasePagingDTO dto);
+
+    /**
+     * 超级管理员获取所有分组
+     *
+     * @return java.util.List<com.blcheung.zblmissyouadmin.vo.cms.GroupVO>
+     * @author BLCheung
+     * @date 2022/1/25 3:35 上午
+     */
+    List<GroupVO> getAllGroupByRoot();
 }

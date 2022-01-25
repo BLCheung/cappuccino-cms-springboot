@@ -2,16 +2,14 @@ package com.blcheung.zblmissyouadmin.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
-import com.blcheung.zblmissyouadmin.common.exceptions.DatabaseActionException;
-import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
-import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
-import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
+import com.blcheung.zblmissyouadmin.common.exceptions.*;
 import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
 import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import com.blcheung.zblmissyouadmin.kit.PagingKit;
+import com.blcheung.zblmissyouadmin.kit.UserKit;
 import com.blcheung.zblmissyouadmin.model.CmsGroupDO;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
@@ -21,7 +19,7 @@ import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
-import com.blcheung.zblmissyouadmin.vo.cms.UserVO;
+import com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,10 +47,21 @@ public class CmsAdminServiceImpl implements CmsAdminService {
     private CmsUserGroupService       cmsUserGroupService;
     @Autowired
     private CmsUserService            cmsUserService;
+    @Autowired
+    private CmsRootService            cmsRootService;
+
+    @Override
+    public Boolean checkUserIsAdmin(Long userId) {
+        List<Long> userAllGroupIds = this.cmsUserGroupService.getUserAllGroupIds(userId);
+        if (userAllGroupIds.isEmpty()) return false;
+
+        List<Long> adminLevelGroupIds = this.cmsGroupService.getAdminLevelGroupsIds();
+        return CommonUtil.isContainAnyIds(userAllGroupIds, adminLevelGroupIds);
+    }
 
     @Transactional
     @Override
-    public boolean createGroup(NewGroupDTO dto) {
+    public Boolean createGroup(NewGroupDTO dto) {
         this.cmsGroupService.validateGroupNameExist(dto.getName());
         CmsGroupDO cmsGroupDO = CmsGroupDO.builder()
                                           .name(dto.getName())
@@ -77,7 +86,7 @@ public class CmsAdminServiceImpl implements CmsAdminService {
 
     @Transactional
     @Override
-    public boolean deleteGroup(Long groupId) {
+    public Boolean deleteGroup(Long groupId) {
         this.validateGroupCanModify(groupId);
         this.cmsGroupService.validateGroupIdExist(groupId);
 
@@ -153,17 +162,24 @@ public class CmsAdminServiceImpl implements CmsAdminService {
     }
 
     @Override
-    public PagingResultVO<UserVO> getUserPage(QueryUsersDTO dto) {
+    public PagingResultVO<UserGroupVO> getUserPage(QueryUsersDTO dto) {
         Page<CmsUserDO> pageable = PagingKit.build(dto, CmsUserDO.class);
 
         if (dto.getGroupId() == null) {
             // 当前只能查询管理员以下级别的用户
-            pageable = this.cmsUserService.getUserPageByGroupLevel(pageable, GroupLevel.USER);
+            pageable = this.cmsUserService.getUserPageByGroupLevelGE(pageable, GroupLevel.USER);
         } else {
+            CmsUserDO cmsUserDO = UserKit.getUser();
+            Boolean isRoot = this.cmsRootService.checkUserIsRoot(cmsUserDO.getId());
+            Long rootGroupId = this.cmsGroupService.getRootGroupId();
+            if (rootGroupId.equals(dto.getGroupId()) && !isRoot) {
+                throw new UnAuthorizedException(10222);
+            }
             pageable = this.cmsUserService.getUserPageByGroupId(pageable, dto.getGroupId());
         }
 
-        return PagingKit.resolve(pageable, UserVO.class);
+        // 每个用户都组装上分组信息
+        return this.assembleUserGroupVO(pageable);
     }
 
     @Transactional
@@ -202,6 +218,28 @@ public class CmsAdminServiceImpl implements CmsAdminService {
 
         return this.cmsUserGroupService.addUserGroupRelations(cmsUserDO.getId(), addIds) &&
                this.cmsUserGroupService.removeUserGroupRelations(cmsUserDO.getId(), removeIds);
+    }
+
+    /**
+     * 拼装用户分页下的每个用户所属分组信息
+     *
+     * @param pageable
+     * @return com.blcheung.zblmissyouadmin.vo.PagingResultVO<com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO>
+     * @author BLCheung
+     * @date 2022/1/26 3:03 上午
+     */
+    @Override
+    public PagingResultVO<UserGroupVO> assembleUserGroupVO(Page<CmsUserDO> pageable) {
+        List<UserGroupVO> userGroupsVO = pageable.getRecords()
+                                                 .stream()
+                                                 .map(cmsUserDO -> {
+                                                     // 查当前用户的分组信息
+                                                     List<CmsGroupDO> userGroups = this.cmsGroupService.getUserGroups(
+                                                             cmsUserDO.getId());
+                                                     return BeanKit.transform(cmsUserDO, new UserGroupVO(userGroups));
+                                                 })
+                                                 .collect(Collectors.toList());
+        return PagingKit.resolve(pageable, userGroupsVO);
     }
 
 

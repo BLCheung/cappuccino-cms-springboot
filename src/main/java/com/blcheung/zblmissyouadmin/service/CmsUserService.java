@@ -82,26 +82,6 @@ public interface CmsUserService extends IService<CmsUserDO> {
     Optional<CmsUserDO> getUserByUserName(String userName);
 
     /**
-     * 检查用户是否为管理员级别
-     *
-     * @param userId
-     * @return java.lang.Boolean
-     * @author BLCheung
-     * @date 2022/1/11 9:50 下午
-     */
-    Boolean checkUserIsAdmin(Long userId);
-
-    /**
-     * 检查用户是否为超级管理员级别
-     *
-     * @param userId
-     * @return java.lang.Boolean
-     * @author BLCheung
-     * @date 2022/1/11 10:24 下午
-     */
-    Boolean checkUserIsRoot(Long userId);
-
-    /**
      * 获取用户拥有的权限
      *
      * @param uid
@@ -112,7 +92,7 @@ public interface CmsUserService extends IService<CmsUserDO> {
     List<CmsPermissionDO> getUserPermissions(Long uid);
 
     /**
-     * 根据分组级别获取用户分页
+     * 获取>=level的分组级别用户分页
      *
      * @param page
      * @param level
@@ -120,27 +100,38 @@ public interface CmsUserService extends IService<CmsUserDO> {
      * @author BLCheung
      * @date 2022/1/24 2:52 上午
      */
-    Page<CmsUserDO> getUserPageByGroupLevel(Page<CmsUserDO> page, GroupLevel level);
+    Page<CmsUserDO> getUserPageByGroupLevelGE(Page<CmsUserDO> page, GroupLevel level);
 
     /**
-     * 超级管理员所有用户分页
+     * 获取==level的分组级别用户分页
+     *
+     * @param page
+     * @param level
+     * @return java.util.List<com.blcheung.zblmissyouadmin.vo.cms.UserVO>
+     * @author BLCheung
+     * @date 2022/1/24 2:52 上午
+     */
+    Page<CmsUserDO> getUserPageByGroupLevelEQ(Page<CmsUserDO> page, GroupLevel level);
+
+    /**
+     * 超级管理员获取所有用户包括管理员的分页
      *
      * @param page
      * @return com.baomidou.mybatisplus.extension.plugins.pagination.Page<com.blcheung.zblmissyouadmin.model.CmsUserDO>
      * @author BLCheung
      * @date 2022/1/24 2:52 上午
      */
-    Page<CmsUserDO> getUserPageByRoot(Page<CmsUserDO> page);
+    Page<CmsUserDO> getUserAdminPageByRoot(Page<CmsUserDO> page);
 
     /**
-     * 获取管理员分页
+     * 超级管理员获取所有管理员级别分页
      *
      * @param page
      * @return com.baomidou.mybatisplus.extension.plugins.pagination.Page<com.blcheung.zblmissyouadmin.model.CmsUserDO>
      * @author BLCheung
      * @date 2022/1/25 3:03 上午
      */
-    Page<CmsUserDO> getAdminPage(Page<CmsUserDO> page);
+    Page<CmsUserDO> getAdminPageByRoot(Page<CmsUserDO> page);
 
     /**
      * 根据分组id获取用户分页

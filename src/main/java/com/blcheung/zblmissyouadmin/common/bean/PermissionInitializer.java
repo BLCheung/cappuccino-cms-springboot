@@ -51,6 +51,7 @@ public class PermissionInitializer implements ApplicationListener<ContextRefresh
     private void createPermissionIfNotExist(RouterInfo routerInfo) {
         String module = routerInfo.getModule();
         String router = routerInfo.getRouter();
+        // TODO: 权限表保存level字段（对以后扩展多管理员分组分配不同管理员权限的情况做准备）
 
         CmsPermissionDO cmsPermissionDO = this.cmsPermissionService.lambdaQuery()
                                                                    .eq(CmsPermissionDO::getModule, module)

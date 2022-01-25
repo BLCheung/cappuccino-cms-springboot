@@ -18,6 +18,8 @@ import com.blcheung.zblmissyouadmin.kit.UserKit;
 import com.blcheung.zblmissyouadmin.kit.UserLevelKit;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
+import com.blcheung.zblmissyouadmin.service.CmsAdminService;
+import com.blcheung.zblmissyouadmin.service.CmsRootService;
 import com.blcheung.zblmissyouadmin.service.CmsUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,12 @@ import java.util.Map;
 public class AuthorizeResolverImpl implements AuthorizeResolver {
     @Autowired
     private DoubleJWT jwt;
+
+    @Autowired
+    private CmsRootService cmsRootService;
+
+    @Autowired
+    private CmsAdminService cmsAdminService;
 
     @Autowired
     private CmsUserService cmsUserService;
@@ -210,11 +218,11 @@ public class AuthorizeResolverImpl implements AuthorizeResolver {
     }
 
     private Boolean verifyAdmin(Long userId) {
-        return this.cmsUserService.checkUserIsAdmin(userId);
+        return this.cmsAdminService.checkUserIsAdmin(userId);
     }
 
     private Boolean verifyRoot(Long userId) {
-        return this.cmsUserService.checkUserIsRoot(userId);
+        return this.cmsRootService.checkUserIsRoot(userId);
     }
 
     private Boolean verifyPermission(CmsPermissionDO cmsPermissionDO, RouterInfo routerInfo) {

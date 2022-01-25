@@ -7,6 +7,7 @@ import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
 import com.blcheung.zblmissyouadmin.mapper.CmsGroupMapper;
 import com.blcheung.zblmissyouadmin.model.CmsGroupDO;
 import com.blcheung.zblmissyouadmin.service.CmsGroupService;
+import com.blcheung.zblmissyouadmin.util.CommonUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -51,7 +52,7 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
     @Override
     public boolean checkGroupExistByName(String name) {
         return this.lambdaQuery()
-                   .select(CmsGroupDO::getName)
+                   .select(CmsGroupDO::getId)
                    .eq(StringUtils.hasText(name), CmsGroupDO::getName, name)
                    .exists();
     }
@@ -61,15 +62,24 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
         // 普通用户组无需返回具体分组id
         if (GroupLevel.USER.equals(groupLevel)) return 0L;
         CmsGroupDO cmsGroupDO = this.lambdaQuery()
+                                    .select(CmsGroupDO::getId)
                                     .eq(CmsGroupDO::getLevel, groupLevel.getValue())
                                     .one();
         return cmsGroupDO.getId();
     }
 
     @Override
-    public List<CmsGroupDO> getGroupsByLevel(GroupLevel groupLevel) {
+    public List<CmsGroupDO> getGroupsByLevelEQ(GroupLevel level) {
         return this.lambdaQuery()
-                   .eq(CmsGroupDO::getLevel, groupLevel.getValue())
+                   .eq(CmsGroupDO::getLevel, level.getValue())
+                   .list();
+    }
+
+    @Override
+    public List<CmsGroupDO> getGroupsByLevelGE(GroupLevel level) {
+        return this.lambdaQuery()
+                   .ge(CmsGroupDO::getLevel, level.getValue())
+                   .orderByAsc(CmsGroupDO::getLevel)
                    .list();
     }
 
@@ -93,6 +103,13 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
     }
 
     @Override
+    public List<CmsGroupDO> getUserGroups(Long userId) {
+        List<CmsGroupDO> userGroups = this.getBaseMapper()
+                                          .getGroupsByUserId(userId);
+        return userGroups.isEmpty() ? Collections.emptyList() : userGroups;
+    }
+
+    @Override
     public List<Long> getAdminLevelGroupsIds() {
         return this.lambdaQuery()
                    .select(CmsGroupDO::getId)   // 只查id即可，返回的对象内只包含id字段以及基类的字段（不查则为null）
@@ -110,10 +127,7 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
 
     @Override
     public List<CmsGroupDO> getAllUserLevelGroups() {
-        List<Long> adminLevelGroupsIds = this.getAdminLevelGroupsIds();
-        return this.lambdaQuery()
-                   .notIn(CmsGroupDO::getId, adminLevelGroupsIds)
-                   .list();
+        return this.getGroupsByLevelGE(GroupLevel.USER);
     }
 
     @Override
@@ -123,5 +137,29 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
                               .in(CmsGroupDO::getId, groupIds)
                               .count();
         return existCount == groupIds.size();
+    }
+
+    @Override
+    public void validateIsUserLevelGroupId(Long groupId) {
+        List<Long> adminLevelGroupsIds = this.getAdminLevelGroupsIds();
+        if (CommonUtil.isContainOneId(groupId, adminLevelGroupsIds)) {
+            throw new ForbiddenException(10211);
+        }
+    }
+
+    @Override
+    public void validateIsRootLevelGroupId(Long groupId) {
+        Long rootGroupId = this.getRootGroupId();
+        if (!rootGroupId.equals(groupId)) {
+            throw new ForbiddenException(10222);
+        }
+    }
+
+    @Override
+    public void validateIsAdminLevelGroupId(Long groupId) {
+        List<Long> adminLevelGroupsIds = this.getAdminLevelGroupsIds();
+        if (!CommonUtil.isContainOneId(groupId, adminLevelGroupsIds)) {
+            throw new ForbiddenException(10223);
+        }
     }
 }

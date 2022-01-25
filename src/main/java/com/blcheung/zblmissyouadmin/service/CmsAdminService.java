@@ -1,14 +1,16 @@
 package com.blcheung.zblmissyouadmin.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
+import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
-import com.blcheung.zblmissyouadmin.vo.cms.UserVO;
+import com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO;
 
 import java.util.List;
 
@@ -19,24 +21,34 @@ import java.util.List;
 public interface CmsAdminService {
 
     /**
+     * 检查用户是否为管理员级别
+     *
+     * @param userId
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/11 9:50 下午
+     */
+    Boolean checkUserIsAdmin(Long userId);
+
+    /**
      * 新建分组
      *
      * @param dto
-     * @return boolean
+     * @return java.lang.Boolean
      * @author BLCheung
      * @date 2021/12/21 9:47 下午
      */
-    boolean createGroup(NewGroupDTO dto);
+    Boolean createGroup(NewGroupDTO dto);
 
     /**
      * 删除分组
      *
      * @param groupId
-     * @return boolean
+     * @return java.lang.Boolean
      * @author BLCheung
      * @date 2021/12/26 4:03 上午
      */
-    boolean deleteGroup(Long groupId);
+    Boolean deleteGroup(Long groupId);
 
     /**
      * 获取所有用户分组（不包括超级管理员）
@@ -84,7 +96,7 @@ public interface CmsAdminService {
      * @author BLCheung
      * @date 2022/1/24 11:22 下午
      */
-    PagingResultVO<UserVO> getUserPage(QueryUsersDTO dto);
+    PagingResultVO<UserGroupVO> getUserPage(QueryUsersDTO dto);
 
     /**
      * 更新用户分组
@@ -96,4 +108,14 @@ public interface CmsAdminService {
      * @date 2022/1/25 4:18 上午
      */
     Boolean updateUserGroup(Long userId, UpdateUserGroupDTO dto);
+
+    /**
+     * 用于组装管理员模块的查看用户分页结果通用函数（给每个用户数据拼接上所属分组信息）
+     *
+     * @param pageable
+     * @return com.blcheung.zblmissyouadmin.vo.PagingResultVO<com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO>
+     * @author BLCheung
+     * @date 2022/1/26 3:44 上午
+     */
+    PagingResultVO<UserGroupVO> assembleUserGroupVO(Page<CmsUserDO> pageable);
 }

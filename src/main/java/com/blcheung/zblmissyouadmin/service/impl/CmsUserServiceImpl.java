@@ -138,22 +138,6 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
     }
 
     @Override
-    public Boolean checkUserIsAdmin(Long userId) {
-        List<Long> userAllGroupIds = this.cmsUserGroupService.getUserAllGroupIds(userId);
-        if (userAllGroupIds.isEmpty()) return false;
-
-        List<Long> adminLevelGroupIds = this.cmsGroupService.getAdminLevelGroupsIds();
-        return CommonUtil.isContainAnyIds(userAllGroupIds, adminLevelGroupIds);
-    }
-
-    @Override
-    public Boolean checkUserIsRoot(Long userId) {
-        Long rootGroupId = this.cmsGroupService.getRootGroupId();
-        CmsUserGroupDO userGroupRelation = this.cmsUserGroupService.getUserGroupRelation(userId, rootGroupId);
-        return userGroupRelation != null;
-    }
-
-    @Override
     public List<CmsPermissionDO> getUserPermissions(Long uid) {
         List<Long> userAllGroupIds = this.cmsUserGroupService.getUserAllGroupIds(uid);
         if (userAllGroupIds.isEmpty()) return Collections.emptyList();
@@ -162,13 +146,19 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
     }
 
     @Override
-    public Page<CmsUserDO> getUserPageByGroupLevel(Page<CmsUserDO> page, GroupLevel level) {
+    public Page<CmsUserDO> getUserPageByGroupLevelGE(Page<CmsUserDO> page, GroupLevel level) {
         return this.getBaseMapper()
-                   .getUserPageByGroupLevel(page, level.getValue());
+                   .getUserPageByGroupLevelGE(page, level.getValue());
     }
 
     @Override
-    public Page<CmsUserDO> getUserPageByRoot(Page<CmsUserDO> page) {
+    public Page<CmsUserDO> getUserPageByGroupLevelEQ(Page<CmsUserDO> page, GroupLevel level) {
+        return this.getBaseMapper()
+                   .getUserPageByGroupLevelEQ(page, level.getValue());
+    }
+
+    @Override
+    public Page<CmsUserDO> getUserAdminPageByRoot(Page<CmsUserDO> page) {
         Long rootGroupId = this.cmsGroupService.getRootGroupId();
         CmsUserDO cmsUserDO = UserKit.getUser();
         CmsUserGroupDO userGroupRelation = this.cmsUserGroupService.getUserGroupRelation(cmsUserDO.getId(),
@@ -181,8 +171,8 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
     }
 
     @Override
-    public Page<CmsUserDO> getAdminPage(Page<CmsUserDO> page) {
-        return this.getUserPageByGroupLevel(page, GroupLevel.ADMIN);
+    public Page<CmsUserDO> getAdminPageByRoot(Page<CmsUserDO> page) {
+        return this.getUserPageByGroupLevelEQ(page, GroupLevel.ADMIN);
     }
 
     @Override

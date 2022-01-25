@@ -67,13 +67,25 @@ public interface CmsGroupService extends IService<CmsGroupDO> {
 
     /**
      * 通过分组级别获取该级别的所有分组
+     * （? == level）
      *
-     * @param groupLevel
+     * @param level
      * @return java.util.List<com.blcheung.zblmissyouadmin.model.CmsGroupDO>
      * @author BLCheung
      * @date 2022/1/25 3:37 上午
      */
-    List<CmsGroupDO> getGroupsByLevel(GroupLevel groupLevel);
+    List<CmsGroupDO> getGroupsByLevelEQ(GroupLevel level);
+
+    /**
+     * 通过分组级别获取该级别的所有分组
+     * （? >= level）
+     *
+     * @param level
+     * @return java.util.List<com.blcheung.zblmissyouadmin.model.CmsGroupDO>
+     * @author BLCheung
+     * @date 2022/1/26 4:10 上午
+     */
+    List<CmsGroupDO> getGroupsByLevelGE(GroupLevel level);
 
     /**
      * 校验分组
@@ -102,6 +114,16 @@ public interface CmsGroupService extends IService<CmsGroupDO> {
      * @date 2022/1/11 9:14 下午
      */
     List<Long> getUserGroupIds(Long userId);
+
+    /**
+     * 获取用户所有所属分组
+     *
+     * @param userId
+     * @return java.util.List<com.blcheung.zblmissyouadmin.model.CmsGroupDO>
+     * @author BLCheung
+     * @date 2022/1/26 2:17 上午
+     */
+    List<CmsGroupDO> getUserGroups(Long userId);
 
     /**
      * 获取所有管理员级别及以上的分组id
@@ -139,4 +161,31 @@ public interface CmsGroupService extends IService<CmsGroupDO> {
      * @date 2022/1/25 5:59 上午
      */
     Boolean validateGroupIdExistBatch(List<Long> groupIds);
+
+    /**
+     * 校验是否为用户级别的分组id
+     *
+     * @param groupId
+     * @author BLCheung
+     * @date 2022/1/26 12:12 上午
+     */
+    void validateIsUserLevelGroupId(Long groupId);
+
+    /**
+     * 校验是否为管理员或以上级别的分组id
+     *
+     * @param groupId
+     * @author BLCheung
+     * @date 2022/1/26 12:13 上午
+     */
+    void validateIsAdminLevelGroupId(Long groupId);
+
+    /**
+     * 校验是否为超级管理员级别的分组id
+     *
+     * @param groupId
+     * @author BLCheung
+     * @date 2022/1/26 12:15 上午
+     */
+    void validateIsRootLevelGroupId(Long groupId);
 }

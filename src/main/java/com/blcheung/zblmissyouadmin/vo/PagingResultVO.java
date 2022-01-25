@@ -3,6 +3,7 @@ package com.blcheung.zblmissyouadmin.vo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -69,6 +70,10 @@ public class PagingResultVO<T> {
         this.list = BeanKit.transformList(page.getRecords(), voClazz);
     }
 
+    public <D> PagingResultVO(Page<D> page, List<T> voList) {
+        this.initPage(page);
+        this.list = voList;
+    }
 
     private <D> void initPage(Page<D> page) {
         this.hasNext   = page.hasNext();

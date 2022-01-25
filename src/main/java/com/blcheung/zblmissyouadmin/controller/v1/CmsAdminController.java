@@ -14,7 +14,7 @@ import com.blcheung.zblmissyouadmin.vo.*;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
-import com.blcheung.zblmissyouadmin.vo.cms.UserVO;
+import com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +38,7 @@ public class CmsAdminController {
 
     @GetMapping("/users")
     @RouterMeta(name = "查询所有用户", mount = false)
-    public PagingResultVO<UserVO> users(@Validated QueryUsersDTO dto) {
+    public PagingResultVO<UserGroupVO> users(@Validated QueryUsersDTO dto) {
         return this.cmsAdminService.getUserPage(dto);
     }
 

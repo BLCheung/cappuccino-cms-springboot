@@ -49,7 +49,7 @@
               )
     </select>
 
-    <select id="getUserPageByGroupLevel" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <select id="getUserPageByGroupLevelGE" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         SELECT id,
                username,
                nickname,
@@ -67,6 +67,27 @@
                            LEFT JOIN cms_user_group AS ug
                                      ON ug.group_id = g.id
                   WHERE <![CDATA[ g.level >= #{level} ]]>
+              )
+    </select>
+
+    <select id="getUserPageByGroupLevelEQ" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT id,
+               username,
+               nickname,
+               avatar,
+               email,
+               create_time,
+               update_time,
+               delete_time
+        FROM cms_user AS u
+        WHERE u.delete_time IS NULL
+          AND u.id IN
+              (
+                  SELECT user_id
+                  FROM cms_group AS g
+                           LEFT JOIN cms_user_group AS ug
+                                     ON ug.group_id = g.id
+                  WHERE g.level = #{level}
               )
     </select>
 
