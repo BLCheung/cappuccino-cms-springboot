@@ -6,6 +6,7 @@ import com.blcheung.zblmissyouadmin.mapper.CmsPermissionMapper;
 import com.blcheung.zblmissyouadmin.service.CmsPermissionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +41,8 @@ public class CmsPermissionServiceImpl extends ServiceImpl<CmsPermissionMapper, C
 
     @Override
     public void validatePermissionExist(List<Long> permissionIds) {
+        if (ObjectUtils.isEmpty(permissionIds)) return;
+
         Boolean allPermissionExist = this.checkPermissionExistBatch(permissionIds);
         if (!allPermissionExist) throw new ForbiddenException(10207);
     }

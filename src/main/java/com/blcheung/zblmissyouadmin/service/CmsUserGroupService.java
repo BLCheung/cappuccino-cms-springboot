@@ -45,4 +45,26 @@ public interface CmsUserGroupService extends IService<CmsUserGroupDO> {
      * @date 2022/1/11 10:31 下午
      */
     CmsUserGroupDO getUserGroupRelation(Long userId, Long groupId);
+
+    /**
+     * 增加用户分组关系
+     *
+     * @param userId
+     * @param addGroupIds
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/25 8:23 下午
+     */
+    Boolean addUserGroupRelations(Long userId, List<Long> addGroupIds);
+
+    /**
+     * 移除用户分组关系
+     *
+     * @param userId
+     * @param removeGroupIds
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/25 8:23 下午
+     */
+    Boolean removeUserGroupRelations(Long userId, List<Long> removeGroupIds);
 }

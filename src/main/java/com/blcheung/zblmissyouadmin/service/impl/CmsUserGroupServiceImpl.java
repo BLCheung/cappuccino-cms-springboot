@@ -49,4 +49,24 @@ public class CmsUserGroupServiceImpl extends ServiceImpl<CmsUserGroupMapper, Cms
                    .eq(CmsUserGroupDO::getGroupId, groupId)
                    .one();
     }
+
+    @Override
+    public Boolean addUserGroupRelations(Long userId, List<Long> addGroupIds) {
+        if (addGroupIds.isEmpty()) return true;
+
+        List<CmsUserGroupDO> relations = addGroupIds.stream()
+                                                    .map(groupId -> new CmsUserGroupDO(userId, groupId))
+                                                    .collect(Collectors.toList());
+
+        return this.getBaseMapper()
+                   .saveBatch(relations) > 0;
+    }
+
+    @Override
+    public Boolean removeUserGroupRelations(Long userId, List<Long> removeGroupIds) {
+        if (removeGroupIds.isEmpty()) return true;
+
+        return this.getBaseMapper()
+                   .deleteBatch(userId, removeGroupIds) > 0;
+    }
 }

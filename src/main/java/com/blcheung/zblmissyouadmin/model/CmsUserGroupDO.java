@@ -41,5 +41,8 @@ public class CmsUserGroupDO implements Serializable {
      */
     private Long groupId;
 
-
+    public CmsUserGroupDO(Long userId, Long groupId) {
+        this.userId  = userId;
+        this.groupId = groupId;
+    }
 }

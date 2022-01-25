@@ -3,6 +3,7 @@ package com.blcheung.zblmissyouadmin.service;
 import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
 import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
@@ -84,4 +85,15 @@ public interface CmsAdminService {
      * @date 2022/1/24 11:22 下午
      */
     PagingResultVO<UserVO> getUserPage(QueryUsersDTO dto);
+
+    /**
+     * 更新用户分组
+     *
+     * @param dto
+     * @param userId
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/25 4:18 上午
+     */
+    Boolean updateUserGroup(Long userId, UpdateUserGroupDTO dto);
 }

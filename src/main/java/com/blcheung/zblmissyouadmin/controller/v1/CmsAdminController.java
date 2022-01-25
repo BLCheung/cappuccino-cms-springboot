@@ -7,6 +7,7 @@ import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
 import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.service.CmsAdminService;
 import com.blcheung.zblmissyouadmin.vo.*;
@@ -36,9 +37,17 @@ public class CmsAdminController {
     private CmsAdminService cmsAdminService;
 
     @GetMapping("/users")
-    @RouterMeta(name = "查询用户", mount = false)
+    @RouterMeta(name = "查询所有用户", mount = false)
     public PagingResultVO<UserVO> users(@Validated QueryUsersDTO dto) {
         return this.cmsAdminService.getUserPage(dto);
+    }
+
+    @PutMapping("/user/{id}/group")
+    @RouterMeta(name = "更新用户的分组", mount = false)
+    public UpdatedVO updateUserGroup(@PathVariable Long id, @RequestBody UpdateUserGroupDTO dto) {
+        Boolean updateSuccess = this.cmsAdminService.updateUserGroup(id, dto);
+        if (!updateSuccess) throw new FailedException(10122);
+        return ResultKit.resolveUpdated();
     }
 
     @GetMapping("/group/{id}")

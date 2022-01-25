@@ -9,4 +9,20 @@
         <result column="group_id" property="groupId" />
     </resultMap>
 
+    <insert id="saveBatch">
+        INSERT INTO cms_user_group(user_id, group_id)
+        VALUES
+        <foreach collection="relations" item="relation" separator=",">
+            (#{relation.userId}, #{relation.groupId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteBatch">
+        DELETE FROM cms_user_group AS ug
+        WHERE ug.user_id = #{userId}
+        AND ug.group_id IN
+        <foreach collection="groupIds" item="groupId" open="(" close=")" separator=",">
+            #{groupId}
+        </foreach>
+    </delete>
 </mapper>

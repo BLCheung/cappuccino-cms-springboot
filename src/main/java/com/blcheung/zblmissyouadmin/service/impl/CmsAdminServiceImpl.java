@@ -9,12 +9,14 @@ import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
 import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
 import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import com.blcheung.zblmissyouadmin.kit.PagingKit;
 import com.blcheung.zblmissyouadmin.model.CmsGroupDO;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.service.*;
+import com.blcheung.zblmissyouadmin.util.CommonUtil;
 import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
@@ -94,6 +96,7 @@ public class CmsAdminServiceImpl implements CmsAdminService {
 
     @Override
     public List<PermissionVO> getAssignablePermissions() {
+        // TODO: 目前为获取所有挂载的权限为可分配的权限，后期做多管理员分组情况时得增加level字段判断不同级别的分组可分配的权限
         List<CmsPermissionDO> cmsPermissions = this.cmsPermissionService.lambdaQuery()
                                                                         .eq(CmsPermissionDO::getMount, true)
                                                                         .list();
@@ -151,7 +154,7 @@ public class CmsAdminServiceImpl implements CmsAdminService {
 
     @Override
     public PagingResultVO<UserVO> getUserPage(QueryUsersDTO dto) {
-        Page<CmsUserDO> pageable = PagingKit.pageable(dto, CmsUserDO.class);
+        Page<CmsUserDO> pageable = PagingKit.build(dto, CmsUserDO.class);
 
         if (dto.getGroupId() == null) {
             // 当前只能查询管理员以下级别的用户
@@ -160,7 +163,45 @@ public class CmsAdminServiceImpl implements CmsAdminService {
             pageable = this.cmsUserService.getUserPageByGroupId(pageable, dto.getGroupId());
         }
 
-        return PagingKit.build(pageable, UserVO.class);
+        return PagingKit.resolve(pageable, UserVO.class);
+    }
+
+    @Transactional
+    @Override
+    public Boolean updateUserGroup(Long userId, UpdateUserGroupDTO dto) {
+        List<Long> dispatchGroupIds = dto.getGroupIds();
+
+        CmsUserDO cmsUserDO = this.cmsUserService.getUserByUserId(userId)
+                                                 .orElseThrow(() -> new NotFoundException(10103));
+
+        List<Long> userGroupIds = this.cmsGroupService.getUserGroupIds(cmsUserDO.getId());
+
+        if (dispatchGroupIds.isEmpty() && userGroupIds.isEmpty()) return true;
+
+        List<Long> addIds = Collections.emptyList();
+        List<Long> removeIds = Collections.emptyList();
+
+        if (!dispatchGroupIds.isEmpty()) {
+            List<Long> adminLevelGroups = this.cmsGroupService.getAdminLevelGroupsIds();
+            Boolean isContain = CommonUtil.isContainAnyIds(dispatchGroupIds, adminLevelGroups);
+            if (isContain) throw new ForbiddenException(10203);
+
+            Boolean isAllExist = this.cmsGroupService.validateGroupIdExistBatch(dispatchGroupIds);
+            if (!isAllExist) throw new NotFoundException(10202);
+
+            addIds = dispatchGroupIds.stream()
+                                     .filter(dId -> userGroupIds.isEmpty() || !userGroupIds.contains(dId))
+                                     .collect(Collectors.toList());
+        }
+
+        if (!userGroupIds.isEmpty()) {
+            removeIds = userGroupIds.stream()
+                                    .filter(ugId -> dispatchGroupIds.isEmpty() || !dispatchGroupIds.contains(ugId))
+                                    .collect(Collectors.toList());
+        }
+
+        return this.cmsUserGroupService.addUserGroupRelations(cmsUserDO.getId(), addIds) &&
+               this.cmsUserGroupService.removeUserGroupRelations(cmsUserDO.getId(), removeIds);
     }
 
 
@@ -172,10 +213,10 @@ public class CmsAdminServiceImpl implements CmsAdminService {
      * @date 2022/1/22 2:50 上午
      */
     private void validateGroupCanModify(Long groupId) {
-        List<Long> adminGroupIds = this.cmsGroupService.getAdminLevelGroups();
+        List<Long> adminGroupIds = this.cmsGroupService.getAdminLevelGroupsIds();
         if (adminGroupIds.contains(groupId)) throw new ForbiddenException(10211);
 
-        Long guestGroupId = this.cmsGroupService.getGroupIdByEnum(GroupLevel.GUEST);
+        Long guestGroupId = this.cmsGroupService.getGroupIdByLevel(GroupLevel.GUEST);
         if (guestGroupId.equals(groupId)) throw new ForbiddenException(10212);
     }
 }
