@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
 import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
 
+import java.util.List;
+
 /**
  * 分页辅助器
  *
@@ -63,5 +65,18 @@ public class PagingKit {
      */
     public static <D, V> PagingResultVO<V> resolve(Page<D> pageable, V voItem) {
         return new PagingResultVO<V>(pageable, voItem);
+    }
+
+    /**
+     * 构造VO类型集合的分页
+     *
+     * @param pageable
+     * @param voList
+     * @return com.blcheung.zblmissyouadmin.vo.PagingResultVO<V>
+     * @author BLCheung
+     * @date 2022/1/26 2:54 上午
+     */
+    public static <D, V> PagingResultVO<V> resolve(Page<D> pageable, List<V> voList) {
+        return new PagingResultVO<V>(pageable, voList);
     }
 }
