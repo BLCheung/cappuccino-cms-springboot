@@ -57,13 +57,20 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
     }
 
     @Override
-    public Long getGroupIdByEnum(GroupLevel groupLevel) {
+    public Long getGroupIdByLevel(GroupLevel groupLevel) {
         // 普通用户组无需返回具体分组id
         if (GroupLevel.USER.equals(groupLevel)) return 0L;
         CmsGroupDO cmsGroupDO = this.lambdaQuery()
                                     .eq(CmsGroupDO::getLevel, groupLevel.getValue())
                                     .one();
         return cmsGroupDO.getId();
+    }
+
+    @Override
+    public List<CmsGroupDO> getGroupsByLevel(GroupLevel groupLevel) {
+        return this.lambdaQuery()
+                   .eq(CmsGroupDO::getLevel, groupLevel.getValue())
+                   .list();
     }
 
     @Override
@@ -86,7 +93,7 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
     }
 
     @Override
-    public List<Long> getAdminLevelGroups() {
+    public List<Long> getAdminLevelGroupsIds() {
         return this.lambdaQuery()
                    .select(CmsGroupDO::getId)   // 只查id即可，返回的对象内只包含id字段以及基类的字段（不查则为null）
                    .le(CmsGroupDO::getLevel, GroupLevel.ADMIN)
@@ -98,14 +105,23 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
 
     @Override
     public Long getRootGroupId() {
-        return this.getGroupIdByEnum(GroupLevel.ROOT);
+        return this.getGroupIdByLevel(GroupLevel.ROOT);
     }
 
     @Override
     public List<CmsGroupDO> getAllUserLevelGroups() {
-        List<Long> adminLevelGroupsIds = this.getAdminLevelGroups();
+        List<Long> adminLevelGroupsIds = this.getAdminLevelGroupsIds();
         return this.lambdaQuery()
                    .notIn(CmsGroupDO::getId, adminLevelGroupsIds)
                    .list();
+    }
+
+    @Override
+    public Boolean validateGroupIdExistBatch(List<Long> groupIds) {
+        Long existCount = this.lambdaQuery()
+                              .select(CmsGroupDO::getId)
+                              .in(CmsGroupDO::getId, groupIds)
+                              .count();
+        return existCount == groupIds.size();
     }
 }

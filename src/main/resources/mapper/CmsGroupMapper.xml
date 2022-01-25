@@ -19,18 +19,9 @@
         WHERE g.delete_time IS NULL
           AND g.id IN
               (
-#                   SELECT ug.group_id
-#                   FROM cms_user AS u
-#                            LEFT JOIN cms_user_group AS ug
-#                                      ON ug.user_id = u.id
-#                   WHERE u.id = #{uid}
-#                     AND u.delete_time IS NULL
                   SELECT group_id
                   FROM cms_user_group AS ug
-                           LEFT JOIN cms_user AS u
-                                     ON u.id = ug.user_id
-                  WHERE u.id = #{uid}
-                    AND u.delete_time IS NULL
+                  WHERE ug.user_id = #{uid}
               )
     </select>
 
@@ -42,10 +33,7 @@
               (
                   SELECT group_id
                   FROM cms_user_group AS ug
-                           LEFT JOIN cms_user AS u
-                                     ON u.id = ug.user_id
-                  WHERE u.id = #{uid}
-                    AND u.delete_time IS NULL
+                  WHERE ug.user_id = #{uid}
               )
     </select>
 

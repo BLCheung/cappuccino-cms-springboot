@@ -6,6 +6,7 @@ import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
 import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
 import com.blcheung.zblmissyouadmin.common.exceptions.ParameterException;
+import com.blcheung.zblmissyouadmin.common.exceptions.UnAuthorizedException;
 import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.dto.cms.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.RegisterUserDTO;
@@ -15,6 +16,7 @@ import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserGroupDO;
 import com.blcheung.zblmissyouadmin.service.*;
+import com.blcheung.zblmissyouadmin.util.CommonUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,7 +68,7 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         if (ObjectUtils.isEmpty(dto.getGroupIds()) || dto.getGroupIds()
                                                          .isEmpty()) {
             // 没有分配分组，默认存储进游客组
-            Long guestGroupId = this.cmsGroupService.getGroupIdByEnum(GroupLevel.GUEST);
+            Long guestGroupId = this.cmsGroupService.getGroupIdByLevel(GroupLevel.GUEST);
             CmsUserGroupDO userGroupRelation = CmsUserGroupDO.builder()
                                                              .userId(userDO.getId())
                                                              .groupId(guestGroupId)
@@ -108,6 +110,7 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
     @Override
     public Boolean checkUserExistByUserName(String username) {
         return this.lambdaQuery()
+                   .select(CmsUserDO::getId)
                    .eq(CmsUserDO::getUsername, username)
                    .exists();
     }
@@ -115,8 +118,16 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
     @Override
     public Boolean checkUserExistByEmail(String email) {
         return this.lambdaQuery()
+                   .select(CmsUserDO::getId)
                    .eq(CmsUserDO::getEmail, email)
                    .exists();
+    }
+
+    @Override
+    public Optional<CmsUserDO> getUserByUserId(Long userId) {
+        return this.lambdaQuery()
+                   .eq(CmsUserDO::getId, userId)
+                   .oneOpt();
     }
 
     @Override
@@ -131,10 +142,8 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         List<Long> userAllGroupIds = this.cmsUserGroupService.getUserAllGroupIds(userId);
         if (userAllGroupIds.isEmpty()) return false;
 
-        List<Long> adminLevelGroupIds = this.cmsGroupService.getAdminLevelGroups();
-        return adminLevelGroupIds.stream()
-                                 .anyMatch(
-                                         adminLevelGroupId -> this.isContainGroups(adminLevelGroupId, userAllGroupIds));
+        List<Long> adminLevelGroupIds = this.cmsGroupService.getAdminLevelGroupsIds();
+        return CommonUtil.isContainAnyIds(userAllGroupIds, adminLevelGroupIds);
     }
 
     @Override
@@ -164,9 +173,16 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         CmsUserDO cmsUserDO = UserKit.getUser();
         CmsUserGroupDO userGroupRelation = this.cmsUserGroupService.getUserGroupRelation(cmsUserDO.getId(),
                                                                                          rootGroupId);
+        if (ObjectUtils.isEmpty(userGroupRelation)) throw new UnAuthorizedException();
+
         return this.lambdaQuery()
                    .ne(CmsUserDO::getId, userGroupRelation.getUserId())
                    .page(page);
+    }
+
+    @Override
+    public Page<CmsUserDO> getAdminPage(Page<CmsUserDO> page) {
+        return this.getUserPageByGroupLevel(page, GroupLevel.ADMIN);
     }
 
     @Override
@@ -181,18 +197,9 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
     }
 
     private void checkGroupValidate(List<Long> groupIds) {
-        List<Long> adminLevelGroupIds = this.cmsGroupService.getAdminLevelGroups();
-        boolean isContainAdminLevel = adminLevelGroupIds.stream()
-                                                        .anyMatch(adminGroupId -> this.isContainGroups(adminGroupId,
-                                                                                                       groupIds));
+        List<Long> adminLevelGroupIds = this.cmsGroupService.getAdminLevelGroupsIds();
 
+        boolean isContainAdminLevel = CommonUtil.isContainAnyIds(groupIds, adminLevelGroupIds);
         if (isContainAdminLevel) throw new ForbiddenException(10203);
-    }
-
-    private Boolean isContainGroups(Long groupId, List<Long> belongGroupsIds) {
-        if (belongGroupsIds.isEmpty()) return false;
-
-        return belongGroupsIds.stream()
-                              .anyMatch(belongGroupsId -> belongGroupsId.equals(groupId));
     }
 }

@@ -62,6 +62,16 @@ public interface CmsUserService extends IService<CmsUserDO> {
     Boolean checkUserExistByEmail(String email);
 
     /**
+     * 通过id获取用户
+     *
+     * @param userId
+     * @return java.util.Optional<com.blcheung.zblmissyouadmin.model.CmsUserDO>
+     * @author BLCheung
+     * @date 2022/1/25 8:07 下午
+     */
+    Optional<CmsUserDO> getUserByUserId(Long userId);
+
+    /**
      * 通过用户名获取用户
      *
      * @param userName
@@ -121,6 +131,16 @@ public interface CmsUserService extends IService<CmsUserDO> {
      * @date 2022/1/24 2:52 上午
      */
     Page<CmsUserDO> getUserPageByRoot(Page<CmsUserDO> page);
+
+    /**
+     * 获取管理员分页
+     *
+     * @param page
+     * @return com.baomidou.mybatisplus.extension.plugins.pagination.Page<com.blcheung.zblmissyouadmin.model.CmsUserDO>
+     * @author BLCheung
+     * @date 2022/1/25 3:03 上午
+     */
+    Page<CmsUserDO> getAdminPage(Page<CmsUserDO> page);
 
     /**
      * 根据分组id获取用户分页

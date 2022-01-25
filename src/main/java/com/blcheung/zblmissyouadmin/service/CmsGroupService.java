@@ -63,7 +63,17 @@ public interface CmsGroupService extends IService<CmsGroupDO> {
      * @author BLCheung
      * @date 2021/12/21 12:53 上午
      */
-    Long getGroupIdByEnum(GroupLevel groupLevel);
+    Long getGroupIdByLevel(GroupLevel groupLevel);
+
+    /**
+     * 通过分组级别获取该级别的所有分组
+     *
+     * @param groupLevel
+     * @return java.util.List<com.blcheung.zblmissyouadmin.model.CmsGroupDO>
+     * @author BLCheung
+     * @date 2022/1/25 3:37 上午
+     */
+    List<CmsGroupDO> getGroupsByLevel(GroupLevel groupLevel);
 
     /**
      * 校验分组
@@ -100,7 +110,7 @@ public interface CmsGroupService extends IService<CmsGroupDO> {
      * @author BLCheung
      * @date 2022/1/11 10:02 下午
      */
-    List<Long> getAdminLevelGroups();
+    List<Long> getAdminLevelGroupsIds();
 
     /**
      * 获取超级管理员分组的id
@@ -119,4 +129,14 @@ public interface CmsGroupService extends IService<CmsGroupDO> {
      * @date 2022/1/21 2:13 上午
      */
     List<CmsGroupDO> getAllUserLevelGroups();
+
+    /**
+     * 批量检查权限是否都存在
+     *
+     * @param groupIds
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/25 5:59 上午
+     */
+    Boolean validateGroupIdExistBatch(List<Long> groupIds);
 }
