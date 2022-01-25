@@ -37,4 +37,9 @@ public class FileExtensionException extends HttpException {
         super(code, message);
         this.isDefaultMsg = false;
     }
+
+    @Override
+    public Integer getStatusCode() {
+        return this.statusCode;
+    }
 }

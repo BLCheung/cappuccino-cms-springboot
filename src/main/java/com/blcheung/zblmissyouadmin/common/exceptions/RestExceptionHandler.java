@@ -78,6 +78,10 @@ public class RestExceptionHandler {
         Integer code = exception.getCode();
         // 自定义消息
         String msg = exception.getMsg();
+        // 状态码
+        int statusCode = null == exception.getStatusCode()
+                ? HttpStatus.INTERNAL_SERVER_ERROR.value()
+                : exception.getStatusCode();
         // 默认消息，从code码取或异常自带
         String defaultMsg = StringUtils.hasText(CodeConfiguration.getMessage(code))
                 ? CodeConfiguration.getMessage(code)
@@ -88,7 +92,7 @@ public class RestExceptionHandler {
         ErrorVO errorVO = ResultKit.reject(code, isDefaultMsg ? defaultMsg : msg);
         errorVO.setRequest(RequestUtil.getActionRequest(request));
 
-        response.setStatus(exception.getStatusCode());
+        response.setStatus(statusCode);
 
         return errorVO;
     }

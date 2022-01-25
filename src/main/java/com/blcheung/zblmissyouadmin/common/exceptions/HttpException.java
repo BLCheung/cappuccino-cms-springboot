@@ -54,11 +54,6 @@ public abstract class HttpException extends RuntimeException implements BaseResp
     }
 
     @Override
-    public Integer getStatusCode() {
-        return this.statusCode;
-    }
-
-    @Override
     public String getMsg() {
         return this.msg;
     }
