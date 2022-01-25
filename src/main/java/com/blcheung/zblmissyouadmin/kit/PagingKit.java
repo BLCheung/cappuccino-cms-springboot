@@ -21,7 +21,7 @@ public class PagingKit {
      * @author BLCheung
      * @date 2022/1/23 10:50 下午
      */
-    public static <D extends BasePagingDTO, T> Page<T> pageable(D dto, Class<T> entityClazz) {
+    public static <D extends BasePagingDTO, T> Page<T> build(D dto, Class<T> entityClazz) {
         Long pageNum = dto.getPageNum();
         Long pageSize = dto.getPageSize();
         return new Page<T>(pageNum, pageSize);
@@ -35,7 +35,7 @@ public class PagingKit {
      * @author BLCheung
      * @date 2022/1/23 10:51 下午
      */
-    public static <D> PagingResultVO<D> build(Page<D> pageable) {
+    public static <D> PagingResultVO<D> resolve(Page<D> pageable) {
         return new PagingResultVO<D>(pageable);
     }
 
@@ -48,7 +48,7 @@ public class PagingKit {
      * @author BLCheung
      * @date 2022/1/24 10:21 下午
      */
-    public static <D, V> PagingResultVO<V> build(Page<D> pageable, Class<V> voItemClass) {
+    public static <D, V> PagingResultVO<V> resolve(Page<D> pageable, Class<V> voItemClass) {
         return new PagingResultVO<V>(pageable, voItemClass);
     }
 
@@ -61,7 +61,7 @@ public class PagingKit {
      * @author BLCheung
      * @date 2022/1/24 10:22 下午
      */
-    public static <D, V> PagingResultVO<V> build(Page<D> pageable, V voItem) {
+    public static <D, V> PagingResultVO<V> resolve(Page<D> pageable, V voItem) {
         return new PagingResultVO<V>(pageable, voItem);
     }
 }

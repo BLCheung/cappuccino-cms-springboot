@@ -2,6 +2,7 @@ package com.blcheung.zblmissyouadmin.util;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author BLCheung
@@ -51,5 +52,38 @@ public class CommonUtil {
         long endTime = end.getTime();
 
         return nowTime > startTime && nowTime < endTime;
+    }
+
+    /**
+     * 判断一个id是否被包含在指定id集合中
+     *
+     * @param id  指定id
+     * @param ids id集合
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/25 4:25 上午
+     */
+    public static Boolean isContainOneId(Long id, List<Long> ids) {
+        if (ids.isEmpty()) return false;
+
+        return ids.stream()
+                  .anyMatch(idInList -> idInList.equals(id));
+    }
+
+    /**
+     * 判断一个id集合内是否包含有另一个id集合的个别元素
+     *
+     * @param ids
+     * @param otherIds
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/25 4:39 上午
+     */
+    public static Boolean isContainAnyIds(List<Long> ids, List<Long> otherIds) {
+        if (ids.isEmpty()) return false;
+
+        return ids.stream()
+                  .anyMatch(id -> otherIds.stream()
+                                          .anyMatch(otherId -> otherId.equals(id)));
     }
 }
