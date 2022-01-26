@@ -6,6 +6,7 @@ import com.blcheung.zblmissyouadmin.common.exceptions.*;
 import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateGroupDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
 import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import com.blcheung.zblmissyouadmin.kit.PagingKit;
@@ -21,6 +22,7 @@ import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,6 +84,22 @@ public class CmsAdminServiceImpl implements CmsAdminService {
         }
 
         return true;
+    }
+
+    @Override
+    public Boolean updateGroup(Long groupId, UpdateGroupDTO dto) {
+        CmsGroupDO cmsGroupDO = this.cmsGroupService.getById(groupId);
+        if (ObjectUtils.isEmpty(cmsGroupDO)) throw new NotFoundException(10208);
+
+        if (!StringUtils.equals(cmsGroupDO.getName(), dto.getName())) {
+            this.cmsGroupService.validateGroupNameExist(dto.getName());
+        }
+
+        return this.cmsGroupService.lambdaUpdate()
+                                   .eq(CmsGroupDO::getId, cmsGroupDO.getId())
+                                   .set(!StringUtils.isEmpty(dto.getName()), CmsGroupDO::getName, dto.getName())
+                                   .set(null != dto.getInfo(), CmsGroupDO::getInfo, dto.getInfo())
+                                   .update();
     }
 
     @Transactional

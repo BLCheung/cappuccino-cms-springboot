@@ -47,7 +47,7 @@ public class CmsRootController {
 
     @PostMapping("/user/{id}/group")
     @RouterMeta(name = "更新用户分组", mount = false)
-    public UpdatedVO updateUserGroup(@PathVariable @Positive Long id, @RequestBody UpdateUserGroupDTO dto) {
+    public UpdatedVO updateUserGroup(@PathVariable @Positive Long id, @RequestBody @Validated UpdateUserGroupDTO dto) {
         Boolean updateSuccess = this.cmsRootService.updateUserGroupByRoot(id, dto);
         if (!updateSuccess) throw new FailedException(10122);
         return ResultKit.resolveUpdated();

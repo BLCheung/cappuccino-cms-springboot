@@ -7,6 +7,7 @@ import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
 import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateGroupDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.service.CmsAdminService;
@@ -69,6 +70,14 @@ public class CmsAdminController {
     public CreatedVO createGroup(@RequestBody @Validated NewGroupDTO dto) {
         this.cmsAdminService.createGroup(dto);
         return ResultKit.resolveCreated();
+    }
+
+    @PutMapping("/group/{id}")
+    @RouterMeta(name = "更新分组", mount = false)
+    public UpdatedVO updateGroup(@PathVariable @Positive Long id, @RequestBody @Validated UpdateGroupDTO dto) {
+        Boolean updateSuccess = this.cmsAdminService.updateGroup(id, dto);
+        if (!updateSuccess) throw new FailedException(10214);
+        return ResultKit.resolveUpdated();
     }
 
     @DeleteMapping("/group/{id}")

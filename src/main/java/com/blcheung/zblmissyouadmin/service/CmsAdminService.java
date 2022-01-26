@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateGroupDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.vo.PagingVO;
@@ -39,6 +40,17 @@ public interface CmsAdminService {
      * @date 2021/12/21 9:47 下午
      */
     Boolean createGroup(NewGroupDTO dto);
+
+    /**
+     * 更新分组
+     *
+     * @param groupId
+     * @param dto
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/27 4:18 上午
+     */
+    Boolean updateGroup(Long groupId, UpdateGroupDTO dto);
 
     /**
      * 删除分组
