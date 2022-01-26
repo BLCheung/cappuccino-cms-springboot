@@ -86,4 +86,42 @@ public class CommonUtil {
                   .anyMatch(id -> otherIds.stream()
                                           .anyMatch(otherId -> otherId.equals(id)));
     }
+
+    /**
+     * 两个id集合内是否都包含各自相同的id元素（包括重复的id）
+     *
+     * @param ids
+     * @param otherIds
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/27 2:56 上午
+     */
+    public static Boolean isIncludeEqualIds(List<Long> ids, List<Long> otherIds) {
+        if (ids.isEmpty() && otherIds.isEmpty()) return true;
+
+        if (ids.isEmpty() || otherIds.isEmpty()) return false;
+
+        return ids.stream()
+                  .allMatch(id -> otherIds.stream()
+                                          .anyMatch(oId -> oId.equals(id)));
+    }
+
+    /**
+     * 两个id集合是否长度一致，并且所有id各自都包含且全等
+     *
+     * @param ids
+     * @param otherIds
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/27 3:11 上午
+     */
+    public static Boolean isDistinctEqualIds(List<Long> ids, List<Long> otherIds) {
+        if (ids.isEmpty() && otherIds.isEmpty()) return true;
+
+        if (ids.size() != otherIds.size()) return false;
+
+        return ids.stream()
+                  .allMatch(id -> otherIds.stream()
+                                          .anyMatch(oId -> oId.equals(id)));
+    }
 }
