@@ -5,10 +5,7 @@ import com.blcheung.zblmissyouadmin.common.annotations.router.RouterMeta;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterModule;
 import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
 import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
-import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
-import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
-import com.blcheung.zblmissyouadmin.dto.cms.UpdateGroupDTO;
-import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.*;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.service.CmsAdminService;
 import com.blcheung.zblmissyouadmin.vo.*;
@@ -45,9 +42,18 @@ public class CmsAdminController {
 
     @PutMapping("/user/{id}/group")
     @RouterMeta(name = "更新用户的分组", mount = false)
-    public UpdatedVO updateUserGroup(@PathVariable Long id, @RequestBody UpdateUserGroupDTO dto) {
+    public UpdatedVO updateUserGroup(@PathVariable @Positive Long id, @RequestBody @Validated UpdateUserGroupDTO dto) {
         Boolean updateSuccess = this.cmsAdminService.updateUserGroup(id, dto);
         if (!updateSuccess) throw new FailedException(10122);
+        return ResultKit.resolveUpdated();
+    }
+
+    @PutMapping("/user/{id}/password")
+    @RouterMeta(name = "更改用户密码", mount = false)
+    public UpdatedVO resetUserPassword(@PathVariable @Positive Long id,
+                                       @RequestBody @Validated ResetUserPasswordDTO dto) {
+        Boolean updateSuccess = this.cmsAdminService.changeUserPassword(id, dto);
+        if (!updateSuccess) throw new FailedException(10120);
         return ResultKit.resolveUpdated();
     }
 

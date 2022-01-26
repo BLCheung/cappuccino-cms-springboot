@@ -52,6 +52,17 @@ public interface CmsUserIdentityService extends IService<CmsUserIdentityDO> {
     CmsUserIdentityDO createUsernamePasswordIdentity(Long userId, String username, String password);
 
     /**
+     * 更改用户名密码类型的用户密码
+     *
+     * @param userId
+     * @param password
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/27 5:56 上午
+     */
+    Boolean changeUserPasswordIdentity(Long userId, String password);
+
+    /**
      * 校验用户名密码凭证
      *
      * @param userId

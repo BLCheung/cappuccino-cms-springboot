@@ -2,10 +2,7 @@ package com.blcheung.zblmissyouadmin.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
-import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
-import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
-import com.blcheung.zblmissyouadmin.dto.cms.UpdateGroupDTO;
-import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.*;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.vo.PagingVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
@@ -120,6 +117,17 @@ public interface CmsAdminService {
      * @date 2022/1/25 4:18 上午
      */
     Boolean updateUserGroup(Long userId, UpdateUserGroupDTO dto);
+
+    /**
+     * 更改用户密码
+     *
+     * @param userId
+     * @param dto
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/27 5:40 上午
+     */
+    Boolean changeUserPassword(Long userId, ResetUserPasswordDTO dto);
 
     /**
      * 用于组装管理员模块的查看用户分页结果通用函数（给每个用户数据拼接上所属分组信息）

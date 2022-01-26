@@ -34,6 +34,16 @@ public class CmsUserIdentityServiceImpl extends ServiceImpl<CmsUserIdentityMappe
     }
 
     @Override
+    public Boolean changeUserPasswordIdentity(Long userId, String password) {
+        String newPassword = EncryptUtil.encrypt(password);
+        return this.lambdaUpdate()
+                   .eq(CmsUserIdentityDO::getIdentityType, UserIdentifyType.USERNAME_PASSWORD)
+                   .eq(CmsUserIdentityDO::getUserId, userId)
+                   .set(CmsUserIdentityDO::getCredential, newPassword)
+                   .update();
+    }
+
+    @Override
     public Boolean verifyUserNamePasswordIdentity(Long userId, String username, String password) {
         CmsUserIdentityDO cmsUserIdentityDO = this.lambdaQuery()
                                                   .eq(CmsUserIdentityDO::getUserId, userId)

@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.common.exceptions.*;
 import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
-import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
-import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
-import com.blcheung.zblmissyouadmin.dto.cms.UpdateGroupDTO;
-import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.*;
 import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import com.blcheung.zblmissyouadmin.kit.PagingKit;
 import com.blcheung.zblmissyouadmin.kit.UserKit;
@@ -51,6 +48,8 @@ public class CmsAdminServiceImpl implements CmsAdminService {
     private CmsUserService            cmsUserService;
     @Autowired
     private CmsRootService            cmsRootService;
+    @Autowired
+    private CmsUserIdentityService    cmsUserIdentityService;
 
     @Override
     public Boolean checkUserIsAdmin(Long userId) {
@@ -239,6 +238,23 @@ public class CmsAdminServiceImpl implements CmsAdminService {
 
         return this.cmsUserGroupService.addUserGroupRelations(cmsUserDO.getId(), addIds) &&
                this.cmsUserGroupService.removeUserGroupRelations(cmsUserDO.getId(), removeIds);
+    }
+
+    @Transactional
+    @Override
+    public Boolean changeUserPassword(Long userId, ResetUserPasswordDTO dto) {
+        CmsUserDO cmsUserDO = this.cmsUserService.getUserByUserId(userId)
+                                                 .orElseThrow(() -> new NotFoundException(10103));
+        // 当前是否超级管理员在访问
+        CmsUserDO currentUser = UserKit.getUser();
+        Boolean isRoot = this.cmsRootService.checkUserIsRoot(currentUser.getId());
+        if (!isRoot) {
+            // 目标修改的用户是否为管理员或以上级别
+            Boolean isAdminOrRoot = this.checkUserIsAdmin(cmsUserDO.getId());
+            if (isAdminOrRoot) throw new ForbiddenException();
+        }
+
+        return this.cmsUserIdentityService.changeUserPasswordIdentity(cmsUserDO.getId(), dto.getPassword());
     }
 
     /**
