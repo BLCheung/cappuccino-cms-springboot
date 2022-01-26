@@ -163,7 +163,7 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         CmsUserDO cmsUserDO = UserKit.getUser();
         CmsUserGroupDO userGroupRelation = this.cmsUserGroupService.getUserGroupRelation(cmsUserDO.getId(),
                                                                                          rootGroupId);
-        if (ObjectUtils.isEmpty(userGroupRelation)) throw new UnAuthorizedException();
+        if (ObjectUtils.isEmpty(userGroupRelation)) throw new UnAuthorizedException(10222);
 
         return this.lambdaQuery()
                    .ne(CmsUserDO::getId, userGroupRelation.getUserId())

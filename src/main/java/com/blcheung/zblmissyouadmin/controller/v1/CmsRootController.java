@@ -3,13 +3,16 @@ package com.blcheung.zblmissyouadmin.controller.v1;
 import com.blcheung.zblmissyouadmin.common.annotations.permission.RootRequired;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterMeta;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterModule;
+import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
+import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewAdminGroupDTO;
-import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.service.CmsRootService;
 import com.blcheung.zblmissyouadmin.vo.CreatedVO;
 import com.blcheung.zblmissyouadmin.vo.DeletedVO;
 import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
+import com.blcheung.zblmissyouadmin.vo.UpdatedVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
+
 /**
  * @author BLCheung
  * @date 2021/12/26 9:52 下午
@@ -26,15 +30,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/cms/root")
 @Validated
-@RouterModule(name = "超级管理员")
 @RootRequired
+@RouterModule(name = "超级管理员")
 public class CmsRootController {
     @Autowired
     private CmsRootService cmsRootService;
 
     @GetMapping("/users/all")
     @RouterMeta(name = "查询所有用户与管理员", mount = false)
-    public PagingResultVO<UserGroupVO> users(@Validated BasePagingDTO dto) {
+    public PagingResultVO<UserGroupVO> users(@Validated QueryUsersDTO dto) {
         return this.cmsRootService.getAllUserByRoot(dto);
     }
 
@@ -42,6 +46,14 @@ public class CmsRootController {
     @RouterMeta(name = "查询所有分组", mount = false)
     public List<GroupVO> groups() {
         return this.cmsRootService.getAllGroupByRoot();
+    }
+
+    @PostMapping("/user/{id}/group")
+    @RouterMeta(name = "更新用户分组", mount = false)
+    public UpdatedVO updateUserGroup(@PathVariable @Positive Long id, @RequestBody UpdateUserGroupDTO dto) {
+        Boolean updateSuccess = this.cmsRootService.updateUserGroupByRoot(id, dto);
+        if (!updateSuccess) throw new FailedException(10122);
+        return ResultKit.resolveUpdated();
     }
 
     @PostMapping("/admin/group")

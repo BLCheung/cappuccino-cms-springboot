@@ -4,14 +4,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
 import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
+import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewAdminGroupDTO;
-import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
 import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import com.blcheung.zblmissyouadmin.kit.PagingKit;
 import com.blcheung.zblmissyouadmin.model.CmsGroupDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserGroupDO;
 import com.blcheung.zblmissyouadmin.service.*;
+import com.blcheung.zblmissyouadmin.util.CommonUtil;
 import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,16 +79,66 @@ public class CmsRootServiceImpl implements CmsRootService {
     }
 
     @Override
-    public PagingResultVO<UserGroupVO> getAllUserByRoot(BasePagingDTO dto) {
+    public PagingResultVO<UserGroupVO> getAllUserByRoot(QueryUsersDTO dto) {
         Page<CmsUserDO> userAdminPageable = PagingKit.build(dto, CmsUserDO.class);
-        userAdminPageable = this.cmsUserService.getUserAdminPageByRoot(userAdminPageable);
+
+        if (dto.getGroupId() == null) {
+            userAdminPageable = this.cmsUserService.getUserAdminPageByRoot(userAdminPageable);
+        } else {
+            userAdminPageable = this.cmsUserService.getUserPageByGroupId(userAdminPageable, dto.getGroupId());
+        }
 
         return this.cmsAdminService.assembleUserGroupVO(userAdminPageable);
     }
 
     @Override
     public List<GroupVO> getAllGroupByRoot() {
+        // 获取管理员以及以下级别分组
         List<CmsGroupDO> adminGroups = this.cmsGroupService.getGroupsByLevelGE(GroupLevel.ADMIN);
         return BeanKit.transformList(adminGroups, GroupVO.class);
+    }
+
+    @Transactional
+    @Override
+    public Boolean updateUserGroupByRoot(Long userId, UpdateUserGroupDTO dto) {
+        // 被分配的分组id集合
+        List<Long> dispatchGroupIds = dto.getGroupIds();
+        this.validateGroupCanModify(dispatchGroupIds);
+
+        CmsUserDO cmsUserDO = this.cmsUserService.getUserByUserId(userId)
+                                                 .orElseThrow(() -> new NotFoundException(10103));
+
+        // 用户当前所有所属分组id
+        List<Long> userCurrentGroupIds = this.cmsGroupService.getUserGroupIds(cmsUserDO.getId());
+        if (dispatchGroupIds.isEmpty() && userCurrentGroupIds.isEmpty()) return true;
+
+        List<Long> addIds = Collections.emptyList();
+        List<Long> removeIds = Collections.emptyList();
+
+        if (!dispatchGroupIds.isEmpty()) {
+            Boolean isAllExist = this.cmsGroupService.validateGroupIdExistBatch(dispatchGroupIds);
+            if (!isAllExist) throw new NotFoundException(10202);
+
+            addIds = dispatchGroupIds.stream()
+                                     .filter(dId -> userCurrentGroupIds.isEmpty() || !userCurrentGroupIds.contains(dId))
+                                     .collect(Collectors.toList());
+        }
+
+        if (!userCurrentGroupIds.isEmpty()) {
+            removeIds = userCurrentGroupIds.stream()
+                                           .filter(ugId -> dispatchGroupIds.isEmpty() ||
+                                                           !dispatchGroupIds.contains(ugId))
+                                           .collect(Collectors.toList());
+        }
+
+        return this.cmsUserGroupService.addUserGroupRelations(cmsUserDO.getId(), addIds) &&
+               this.cmsUserGroupService.removeUserGroupRelations(cmsUserDO.getId(), removeIds);
+    }
+
+
+    private void validateGroupCanModify(List<Long> groupIds) {
+        if (groupIds.isEmpty()) return;
+        Long rootGroupId = this.cmsGroupService.getRootGroupId();
+        if (CommonUtil.isContainOneId(rootGroupId, groupIds)) throw new ForbiddenException(10213);
     }
 }

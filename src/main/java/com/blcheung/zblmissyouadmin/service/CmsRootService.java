@@ -1,6 +1,8 @@
 package com.blcheung.zblmissyouadmin.service;
 
+import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewAdminGroupDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
 import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
 import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
@@ -52,7 +54,7 @@ public interface CmsRootService {
      * @author BLCheung
      * @date 2022/1/25 3:00 上午
      */
-    PagingResultVO<UserGroupVO> getAllUserByRoot(BasePagingDTO dto);
+    PagingResultVO<UserGroupVO> getAllUserByRoot(QueryUsersDTO dto);
 
     /**
      * 超级管理员获取所有分组
@@ -62,4 +64,15 @@ public interface CmsRootService {
      * @date 2022/1/25 3:35 上午
      */
     List<GroupVO> getAllGroupByRoot();
+
+    /**
+     * 超级管理员更新用户信息（分组）
+     *
+     * @param userId
+     * @param dto
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/26 9:02 下午
+     */
+    Boolean updateUserGroupByRoot(Long userId, UpdateUserGroupDTO dto);
 }
