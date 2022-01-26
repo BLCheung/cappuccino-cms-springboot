@@ -2,7 +2,7 @@ package com.blcheung.zblmissyouadmin.kit;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
-import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
+import com.blcheung.zblmissyouadmin.vo.PagingVO;
 
 import java.util.List;
 
@@ -37,8 +37,8 @@ public class PagingKit {
      * @author BLCheung
      * @date 2022/1/23 10:51 下午
      */
-    public static <D> PagingResultVO<D> resolve(Page<D> pageable) {
-        return new PagingResultVO<D>(pageable);
+    public static <D> PagingVO<D> resolve(Page<D> pageable) {
+        return new PagingVO<D>(pageable);
     }
 
     /**
@@ -50,8 +50,8 @@ public class PagingKit {
      * @author BLCheung
      * @date 2022/1/24 10:21 下午
      */
-    public static <D, V> PagingResultVO<V> resolve(Page<D> pageable, Class<V> voItemClass) {
-        return new PagingResultVO<V>(pageable, voItemClass);
+    public static <D, V> PagingVO<V> resolve(Page<D> pageable, Class<V> voItemClass) {
+        return new PagingVO<V>(pageable, voItemClass);
     }
 
     /**
@@ -63,8 +63,8 @@ public class PagingKit {
      * @author BLCheung
      * @date 2022/1/24 10:22 下午
      */
-    public static <D, V> PagingResultVO<V> resolve(Page<D> pageable, V voItem) {
-        return new PagingResultVO<V>(pageable, voItem);
+    public static <D, V> PagingVO<V> resolve(Page<D> pageable, V voItem) {
+        return new PagingVO<V>(pageable, voItem);
     }
 
     /**
@@ -76,7 +76,7 @@ public class PagingKit {
      * @author BLCheung
      * @date 2022/1/26 2:54 上午
      */
-    public static <D, V> PagingResultVO<V> resolve(Page<D> pageable, List<V> voList) {
-        return new PagingResultVO<V>(pageable, voList);
+    public static <D, V> PagingVO<V> resolve(Page<D> pageable, List<V> voList) {
+        return new PagingVO<V>(pageable, voList);
     }
 }

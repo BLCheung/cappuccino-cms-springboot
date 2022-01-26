@@ -6,7 +6,7 @@ import com.blcheung.zblmissyouadmin.dto.cms.DispatchPermissionsDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewGroupDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
-import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
+import com.blcheung.zblmissyouadmin.vo.PagingVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
@@ -96,7 +96,7 @@ public interface CmsAdminService {
      * @author BLCheung
      * @date 2022/1/24 11:22 下午
      */
-    PagingResultVO<UserGroupVO> getUserPage(QueryUsersDTO dto);
+    PagingVO<UserGroupVO> getUserPage(QueryUsersDTO dto);
 
     /**
      * 更新用户分组
@@ -117,5 +117,5 @@ public interface CmsAdminService {
      * @author BLCheung
      * @date 2022/1/26 3:44 上午
      */
-    PagingResultVO<UserGroupVO> assembleUserGroupVO(Page<CmsUserDO> pageable);
+    PagingVO<UserGroupVO> assembleUserGroupVO(Page<CmsUserDO> pageable);
 }

@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class PagingResultVO<T> {
+public class PagingVO<T> {
 
     private Boolean hasNext;
 
@@ -36,7 +36,7 @@ public class PagingResultVO<T> {
      * @author BLCheung
      * @date 2022/1/24 9:57 下午
      */
-    public PagingResultVO(Page<T> page) {
+    public PagingVO(Page<T> page) {
         this.initPage(page);
         this.list = page.getRecords();
     }
@@ -50,7 +50,7 @@ public class PagingResultVO<T> {
      * @author BLCheung
      * @date 2022/1/24 9:58 下午
      */
-    public <D> PagingResultVO(Page<D> page, T voItem) {
+    public <D> PagingVO(Page<D> page, T voItem) {
         this.initPage(page);
         this.list = BeanKit.transformList(page.getRecords(), voItem);
     }
@@ -65,12 +65,12 @@ public class PagingResultVO<T> {
      * @author BLCheung
      * @date 2022/1/24 10:02 下午
      */
-    public <D> PagingResultVO(Page<D> page, Class<T> voClazz) {
+    public <D> PagingVO(Page<D> page, Class<T> voClazz) {
         this.initPage(page);
         this.list = BeanKit.transformList(page.getRecords(), voClazz);
     }
 
-    public <D> PagingResultVO(Page<D> page, List<T> voList) {
+    public <D> PagingVO(Page<D> page, List<T> voList) {
         this.initPage(page);
         this.list = voList;
     }

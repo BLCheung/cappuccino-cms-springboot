@@ -15,7 +15,7 @@ import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.service.*;
 import com.blcheung.zblmissyouadmin.util.CommonUtil;
-import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
+import com.blcheung.zblmissyouadmin.vo.PagingVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
@@ -163,7 +163,7 @@ public class CmsAdminServiceImpl implements CmsAdminService {
     }
 
     @Override
-    public PagingResultVO<UserGroupVO> getUserPage(QueryUsersDTO dto) {
+    public PagingVO<UserGroupVO> getUserPage(QueryUsersDTO dto) {
         Page<CmsUserDO> pageable = PagingKit.build(dto, CmsUserDO.class);
 
         if (dto.getGroupId() == null) {
@@ -232,7 +232,7 @@ public class CmsAdminServiceImpl implements CmsAdminService {
      * @date 2022/1/26 3:03 上午
      */
     @Override
-    public PagingResultVO<UserGroupVO> assembleUserGroupVO(Page<CmsUserDO> pageable) {
+    public PagingVO<UserGroupVO> assembleUserGroupVO(Page<CmsUserDO> pageable) {
         List<UserGroupVO> userGroupsVO = pageable.getRecords()
                                                  .stream()
                                                  .map(cmsUserDO -> {

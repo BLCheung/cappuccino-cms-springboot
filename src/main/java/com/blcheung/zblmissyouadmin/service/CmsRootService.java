@@ -3,8 +3,7 @@ package com.blcheung.zblmissyouadmin.service;
 import com.blcheung.zblmissyouadmin.dto.QueryUsersDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.NewAdminGroupDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
-import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
-import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
+import com.blcheung.zblmissyouadmin.vo.PagingVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO;
 
@@ -54,7 +53,7 @@ public interface CmsRootService {
      * @author BLCheung
      * @date 2022/1/25 3:00 上午
      */
-    PagingResultVO<UserGroupVO> getAllUserByRoot(QueryUsersDTO dto);
+    PagingVO<UserGroupVO> getAllUserByRoot(QueryUsersDTO dto);
 
     /**
      * 超级管理员获取所有分组

@@ -9,10 +9,7 @@ import com.blcheung.zblmissyouadmin.dto.cms.NewAdminGroupDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserGroupDTO;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.service.CmsRootService;
-import com.blcheung.zblmissyouadmin.vo.CreatedVO;
-import com.blcheung.zblmissyouadmin.vo.DeletedVO;
-import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
-import com.blcheung.zblmissyouadmin.vo.UpdatedVO;
+import com.blcheung.zblmissyouadmin.vo.*;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +35,8 @@ public class CmsRootController {
 
     @GetMapping("/users/all")
     @RouterMeta(name = "查询所有用户与管理员", mount = false)
-    public PagingResultVO<UserGroupVO> users(@Validated QueryUsersDTO dto) {
-        return this.cmsRootService.getAllUserByRoot(dto);
+    public ResultVO<PagingVO<UserGroupVO>> users(@Validated QueryUsersDTO dto) {
+        return ResultKit.resolve(this.cmsRootService.getAllUserByRoot(dto));
     }
 
     @GetMapping("/groups/all")

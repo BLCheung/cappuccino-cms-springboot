@@ -14,7 +14,7 @@ import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserGroupDO;
 import com.blcheung.zblmissyouadmin.service.*;
 import com.blcheung.zblmissyouadmin.util.CommonUtil;
-import com.blcheung.zblmissyouadmin.vo.PagingResultVO;
+import com.blcheung.zblmissyouadmin.vo.PagingVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +79,7 @@ public class CmsRootServiceImpl implements CmsRootService {
     }
 
     @Override
-    public PagingResultVO<UserGroupVO> getAllUserByRoot(QueryUsersDTO dto) {
+    public PagingVO<UserGroupVO> getAllUserByRoot(QueryUsersDTO dto) {
         Page<CmsUserDO> userAdminPageable = PagingKit.build(dto, CmsUserDO.class);
 
         if (dto.getGroupId() == null) {

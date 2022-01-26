@@ -38,8 +38,8 @@ public class CmsAdminController {
 
     @GetMapping("/users")
     @RouterMeta(name = "查询所有用户", mount = false)
-    public PagingResultVO<UserGroupVO> users(@Validated QueryUsersDTO dto) {
-        return this.cmsAdminService.getUserPage(dto);
+    public ResultVO<PagingVO<UserGroupVO>> users(@Validated QueryUsersDTO dto) {
+        return ResultKit.resolve(this.cmsAdminService.getUserPage(dto));
     }
 
     @PutMapping("/user/{id}/group")
