@@ -134,7 +134,8 @@ public class CmsAdminServiceImpl implements CmsAdminService {
         // 分组下的权限列表
         List<Long> currentGroupPermissionIds = this.cmsPermissionService.getPermissionIdsByGroupId(groupId);
 
-        if (dispatchPermissionIds.isEmpty() && currentGroupPermissionIds.isEmpty()) return true;
+        Boolean isInclude = CommonUtil.isIncludeEqualIds(dispatchPermissionIds, currentGroupPermissionIds);
+        if (isInclude) return true;
 
         List<Long> addIds = Collections.emptyList();
         List<Long> removeIds = Collections.emptyList();
@@ -190,9 +191,10 @@ public class CmsAdminServiceImpl implements CmsAdminService {
         CmsUserDO cmsUserDO = this.cmsUserService.getUserByUserId(userId)
                                                  .orElseThrow(() -> new NotFoundException(10103));
 
-        List<Long> userGroupIds = this.cmsGroupService.getUserGroupIds(cmsUserDO.getId());
+        List<Long> currentUserGroupIds = this.cmsGroupService.getUserGroupIds(cmsUserDO.getId());
 
-        if (dispatchGroupIds.isEmpty() && userGroupIds.isEmpty()) return true;
+        Boolean isInclude = CommonUtil.isIncludeEqualIds(dispatchGroupIds, currentUserGroupIds);
+        if (isInclude) return true;
 
         List<Long> addIds = Collections.emptyList();
         List<Long> removeIds = Collections.emptyList();
@@ -206,14 +208,15 @@ public class CmsAdminServiceImpl implements CmsAdminService {
             if (!isAllExist) throw new NotFoundException(10202);
 
             addIds = dispatchGroupIds.stream()
-                                     .filter(dId -> userGroupIds.isEmpty() || !userGroupIds.contains(dId))
+                                     .filter(dId -> currentUserGroupIds.isEmpty() || !currentUserGroupIds.contains(dId))
                                      .collect(Collectors.toList());
         }
 
-        if (!userGroupIds.isEmpty()) {
-            removeIds = userGroupIds.stream()
-                                    .filter(ugId -> dispatchGroupIds.isEmpty() || !dispatchGroupIds.contains(ugId))
-                                    .collect(Collectors.toList());
+        if (!currentUserGroupIds.isEmpty()) {
+            removeIds = currentUserGroupIds.stream()
+                                           .filter(ugId -> dispatchGroupIds.isEmpty() ||
+                                                           !dispatchGroupIds.contains(ugId))
+                                           .collect(Collectors.toList());
         }
 
         return this.cmsUserGroupService.addUserGroupRelations(cmsUserDO.getId(), addIds) &&

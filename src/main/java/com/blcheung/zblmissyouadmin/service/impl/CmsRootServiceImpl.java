@@ -110,7 +110,8 @@ public class CmsRootServiceImpl implements CmsRootService {
 
         // 用户当前所有所属分组id
         List<Long> userCurrentGroupIds = this.cmsGroupService.getUserGroupIds(cmsUserDO.getId());
-        if (dispatchGroupIds.isEmpty() && userCurrentGroupIds.isEmpty()) return true;
+        Boolean isInclude = CommonUtil.isIncludeEqualIds(dispatchGroupIds, userCurrentGroupIds);
+        if (isInclude) return true;
 
         List<Long> addIds = Collections.emptyList();
         List<Long> removeIds = Collections.emptyList();
