@@ -57,6 +57,13 @@ public class CmsAdminController {
         return ResultKit.resolveUpdated();
     }
 
+    @DeleteMapping("/user/{id}")
+    @RouterMeta(name = "删除用户", mount = false)
+    public DeletedVO deleteUser(@PathVariable @Positive Long id) {
+        this.cmsAdminService.deleteUser(id);
+        return ResultKit.resolveDeleted();
+    }
+
     @GetMapping("/group/{id}")
     @RouterMeta(name = "查询一个分组及其权限", mount = false)
     public ResultVO<GroupPermissionVO> group(@PathVariable @Positive Long id) {

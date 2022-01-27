@@ -63,6 +63,12 @@ public class CmsUserGroupServiceImpl extends ServiceImpl<CmsUserGroupMapper, Cms
     }
 
     @Override
+    public Boolean removeUserGroupByUserId(Long userId) {
+        return this.getBaseMapper()
+                   .deleteByUserId(userId) > 0;
+    }
+
+    @Override
     public Boolean removeUserGroupRelations(Long userId, List<Long> removeGroupIds) {
         if (removeGroupIds.isEmpty()) return true;
 

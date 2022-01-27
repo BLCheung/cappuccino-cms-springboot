@@ -14,4 +14,9 @@
         <result column="credential" property="credential" />
     </resultMap>
 
+    <delete id="deleteByUserId">
+        DELETE
+        FROM cms_user_identity AS ui
+        WHERE ui.user_id = #{userId}
+    </delete>
 </mapper>

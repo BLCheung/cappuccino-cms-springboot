@@ -25,4 +25,10 @@
             #{groupId}
         </foreach>
     </delete>
+
+    <delete id="deleteByUserId">
+        DELETE
+        FROM cms_user_group AS ug
+        WHERE ug.user_id = #{userId}
+    </delete>
 </mapper>

@@ -63,6 +63,16 @@ public interface CmsUserIdentityService extends IService<CmsUserIdentityDO> {
     Boolean changeUserPasswordIdentity(Long userId, String password);
 
     /**
+     * 删除用户名密码类型的用户凭证
+     *
+     * @param userId
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/27 10:01 下午
+     */
+    Boolean removeUserIdentity(Long userId);
+
+    /**
      * 校验用户名密码凭证
      *
      * @param userId

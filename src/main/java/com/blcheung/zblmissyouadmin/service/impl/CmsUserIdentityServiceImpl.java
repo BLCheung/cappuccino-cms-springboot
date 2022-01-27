@@ -11,6 +11,7 @@ import com.blcheung.zblmissyouadmin.service.CmsUserIdentityService;
 import com.blcheung.zblmissyouadmin.util.EncryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 /**
  * <p>
@@ -41,6 +42,13 @@ public class CmsUserIdentityServiceImpl extends ServiceImpl<CmsUserIdentityMappe
                    .eq(CmsUserIdentityDO::getUserId, userId)
                    .set(CmsUserIdentityDO::getCredential, newPassword)
                    .update();
+    }
+
+    @Override
+    public Boolean removeUserIdentity(Long userId) {
+        if (ObjectUtils.isEmpty(userId)) return false;
+        return this.getBaseMapper()
+                   .deleteByUserId(userId) > 0;
     }
 
     @Override

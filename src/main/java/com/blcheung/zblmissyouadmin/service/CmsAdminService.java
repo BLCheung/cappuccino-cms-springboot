@@ -130,6 +130,16 @@ public interface CmsAdminService {
     Boolean changeUserPassword(Long userId, ResetUserPasswordDTO dto);
 
     /**
+     * 删除用户
+     *
+     * @param userId
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/27 9:45 下午
+     */
+    Boolean deleteUser(Long userId);
+
+    /**
      * 用于组装管理员模块的查看用户分页结果通用函数（给每个用户数据拼接上所属分组信息）
      *
      * @param pageable

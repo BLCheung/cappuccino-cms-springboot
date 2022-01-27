@@ -58,6 +58,16 @@ public interface CmsUserGroupService extends IService<CmsUserGroupDO> {
     Boolean addUserGroupRelations(Long userId, List<Long> addGroupIds);
 
     /**
+     * 通过用户id移除用户分组关系
+     *
+     * @param userId
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/27 9:55 下午
+     */
+    Boolean removeUserGroupByUserId(Long userId);
+
+    /**
      * 移除用户分组关系
      *
      * @param userId

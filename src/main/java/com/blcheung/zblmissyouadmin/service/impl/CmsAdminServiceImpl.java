@@ -257,6 +257,31 @@ public class CmsAdminServiceImpl implements CmsAdminService {
         return this.cmsUserIdentityService.changeUserPasswordIdentity(cmsUserDO.getId(), dto.getPassword());
     }
 
+    @Transactional
+    @Override
+    public Boolean deleteUser(Long userId) {
+        CmsUserDO cmsUserDO = this.cmsUserService.getUserByUserId(userId)
+                                                 .orElseThrow(() -> new NotFoundException(10103));
+
+        CmsUserDO currentUser = UserKit.getUser();
+        Boolean isRoot = this.cmsRootService.checkUserIsRoot(currentUser.getId());
+        if (!isRoot) {
+            Boolean isAdminOrRootTarget = this.checkUserIsAdmin(cmsUserDO.getId());
+            if (isAdminOrRootTarget) throw new ForbiddenException();
+        }
+
+        Boolean removeUserGroupSuccess = this.cmsUserGroupService.removeUserGroupByUserId(cmsUserDO.getId());
+        if (!removeUserGroupSuccess) throw new DatabaseActionException(10100);
+
+        Boolean removeUserIdentitySuccess = this.cmsUserIdentityService.removeUserIdentity(cmsUserDO.getId());
+        if (!removeUserIdentitySuccess) throw new DatabaseActionException(10120);
+
+        boolean removeUserSuccess = this.cmsUserService.removeById(cmsUserDO.getId());
+        if (!removeUserSuccess) throw new DatabaseActionException(10100);
+
+        return true;
+    }
+
     /**
      * 拼装用户分页下的每个用户所属分组信息
      *

@@ -38,4 +38,14 @@ public interface CmsUserGroupMapper extends BaseMapper<CmsUserGroupDO> {
      * @date 2022/1/25 8:29 下午
      */
     int deleteBatch(@Param("userId") Long userId, @Param("groupIds") List<Long> deleteGroupIds);
+
+    /**
+     * 通过用户id移除
+     *
+     * @param userId
+     * @return int
+     * @author BLCheung
+     * @date 2022/1/27 9:56 下午
+     */
+    int deleteByUserId(@Param("userId") Long userId);
 }
