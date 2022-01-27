@@ -2,22 +2,25 @@ package com.blcheung.zblmissyouadmin.controller.v1;
 
 
 import com.blcheung.zblmissyouadmin.common.annotations.permission.AdminRequired;
+import com.blcheung.zblmissyouadmin.common.annotations.permission.LoginRequired;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterMeta;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterModule;
+import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
 import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.dto.cms.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.RegisterUserDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserInfoDTO;
+import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.service.CmsUserService;
 import com.blcheung.zblmissyouadmin.vo.CreatedVO;
 import com.blcheung.zblmissyouadmin.vo.ResultVO;
+import com.blcheung.zblmissyouadmin.vo.UpdatedVO;
+import com.blcheung.zblmissyouadmin.vo.cms.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -48,5 +51,14 @@ public class CmsUserController {
     public ResultVO<Tokens> login(@RequestBody @Validated LoginDTO dto) {
         Tokens tokens = this.cmsUserService.login(dto);
         return ResultKit.resolve(tokens);
+    }
+
+    @PutMapping
+    @LoginRequired
+    @RouterMeta(name = "更新用户信息", mount = false)
+    public UpdatedVO update(@RequestBody @Validated UpdateUserInfoDTO dto) {
+        CmsUserDO cmsUserDO = this.cmsUserService.update(dto)
+                                                 .orElseThrow(() -> new FailedException(10103));
+        return ResultKit.resolveUpdated(BeanKit.transform(cmsUserDO, new UserVO()));
     }
 }

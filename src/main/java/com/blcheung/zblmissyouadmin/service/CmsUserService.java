@@ -6,6 +6,7 @@ import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.dto.cms.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.RegisterUserDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserInfoDTO;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 
@@ -40,6 +41,16 @@ public interface CmsUserService extends IService<CmsUserDO> {
      * @date 2021/12/30 10:37 下午
      */
     Tokens login(LoginDTO loginDTO);
+
+    /**
+     * 更新用户信息
+     *
+     * @param dto
+     * @return com.blcheung.zblmissyouadmin.model.CmsUserDO
+     * @author BLCheung
+     * @date 2022/1/27 10:45 下午
+     */
+    Optional<CmsUserDO> update(UpdateUserInfoDTO dto);
 
     /**
      * 通过用户名检查用户是否存在

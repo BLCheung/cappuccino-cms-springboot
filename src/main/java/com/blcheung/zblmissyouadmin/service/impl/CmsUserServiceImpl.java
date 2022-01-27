@@ -3,13 +3,11 @@ package com.blcheung.zblmissyouadmin.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
-import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
-import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
-import com.blcheung.zblmissyouadmin.common.exceptions.ParameterException;
-import com.blcheung.zblmissyouadmin.common.exceptions.UnAuthorizedException;
+import com.blcheung.zblmissyouadmin.common.exceptions.*;
 import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.dto.cms.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.RegisterUserDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserInfoDTO;
 import com.blcheung.zblmissyouadmin.kit.UserKit;
 import com.blcheung.zblmissyouadmin.mapper.CmsUserMapper;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
@@ -17,6 +15,7 @@ import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserGroupDO;
 import com.blcheung.zblmissyouadmin.service.*;
 import com.blcheung.zblmissyouadmin.util.CommonUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,11 +52,9 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
     @Transactional
     @Override
     public CmsUserDO registerUser(RegisterUserDTO dto) {
-        Boolean isUserNameExist = this.checkUserExistByUserName(dto.getUsername());
-        if (isUserNameExist) throw new ForbiddenException(10101);
+        this.validateUserNameExist(dto.getUsername());
 
-        Boolean isEmailExist = this.checkUserExistByEmail(dto.getEmail());
-        if (isEmailExist) throw new ForbiddenException(10102);
+        this.validateEmailExist(dto.getEmail());
 
         CmsUserDO userDO = new CmsUserDO();
         BeanUtils.copyProperties(dto, userDO);
@@ -105,6 +102,31 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         if (!isValid) throw new ParameterException(10121);
 
         return this.cmsUserIdentityService.generateDoubleJwtToken(cmsUserDO.getId());
+    }
+
+    @Transactional
+    @Override
+    public Optional<CmsUserDO> update(UpdateUserInfoDTO dto) {
+        CmsUserDO currentUser = UserKit.getUser();
+
+        boolean isUserNameNotEqual = !StringUtils.isBlank(dto.getUsername()) &&
+                                     !StringUtils.equals(currentUser.getUsername(), dto.getUsername());
+        if (isUserNameNotEqual) {
+            this.validateUserNameExist(dto.getUsername());
+        }
+
+        boolean updateUserSuccess = this.lambdaUpdate()
+                                        .eq(CmsUserDO::getId, currentUser.getId())
+                                        .set(isUserNameNotEqual, CmsUserDO::getUsername, dto.getUsername())
+                                        .set(CmsUserDO::getNickname, dto.getNickname())
+                                        .set(CmsUserDO::getEmail, dto.getEmail())
+                                        .set(!StringUtils.isBlank(dto.getAvatar()), CmsUserDO::getAvatar,
+                                             dto.getAvatar())
+                                        .update();
+
+        if (!updateUserSuccess) throw new DatabaseActionException(10122);
+
+        return this.getUserByUserId(currentUser.getId());
     }
 
     @Override
@@ -191,5 +213,15 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
 
         boolean isContainAdminLevel = CommonUtil.isContainAnyIds(groupIds, adminLevelGroupIds);
         if (isContainAdminLevel) throw new ForbiddenException(10203);
+    }
+
+    private void validateUserNameExist(String userName) {
+        Boolean isUserNameExist = this.checkUserExistByUserName(userName);
+        if (isUserNameExist) throw new ForbiddenException(10101);
+    }
+
+    private void validateEmailExist(String email) {
+        Boolean isEmailExist = this.checkUserExistByEmail(email);
+        if (isEmailExist) throw new ForbiddenException(10102);
     }
 }
