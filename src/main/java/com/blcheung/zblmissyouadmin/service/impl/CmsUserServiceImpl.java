@@ -126,6 +126,12 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
 
         if (!updateUserSuccess) throw new DatabaseActionException(10122);
 
+        if (isUserNameNotEqual) {
+            Boolean updateIdentitySuccess = this.cmsUserIdentityService.changeUserNameIdentity(currentUser.getId(),
+                                                                                               dto.getUsername());
+            if (!updateIdentitySuccess) throw new DatabaseActionException(10120);
+        }
+
         return this.getUserByUserId(currentUser.getId());
     }
 

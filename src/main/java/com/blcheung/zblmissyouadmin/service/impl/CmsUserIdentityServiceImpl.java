@@ -45,6 +45,14 @@ public class CmsUserIdentityServiceImpl extends ServiceImpl<CmsUserIdentityMappe
     }
 
     @Override
+    public Boolean changeUserNameIdentity(Long userId, String userName) {
+        return this.lambdaUpdate()
+                   .eq(CmsUserIdentityDO::getUserId, userId)
+                   .set(CmsUserIdentityDO::getIdentifier, userName)
+                   .update();
+    }
+
+    @Override
     public Boolean removeUserIdentity(Long userId) {
         if (ObjectUtils.isEmpty(userId)) return false;
         return this.getBaseMapper()
