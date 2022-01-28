@@ -3,18 +3,24 @@ package com.blcheung.zblmissyouadmin.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
-import com.blcheung.zblmissyouadmin.common.exceptions.*;
+import com.blcheung.zblmissyouadmin.common.exceptions.DatabaseActionException;
+import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
+import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
+import com.blcheung.zblmissyouadmin.common.exceptions.UnAuthorizedException;
 import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.dto.cms.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.RegisterUserDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserInfoDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserPasswordDTO;
 import com.blcheung.zblmissyouadmin.kit.UserKit;
 import com.blcheung.zblmissyouadmin.mapper.CmsUserMapper;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserGroupDO;
+import com.blcheung.zblmissyouadmin.model.CmsUserIdentityDO;
 import com.blcheung.zblmissyouadmin.service.*;
 import com.blcheung.zblmissyouadmin.util.CommonUtil;
+import com.blcheung.zblmissyouadmin.util.EncryptUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,10 +102,9 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
     public Tokens login(LoginDTO loginDTO) {
         CmsUserDO cmsUserDO = this.getUserByUserName(loginDTO.getUsername())
                                   .orElseThrow(() -> new NotFoundException(10103));
-        Boolean isValid = this.cmsUserIdentityService.verifyUserNamePasswordIdentity(cmsUserDO.getId(),
-                                                                                     cmsUserDO.getUsername(),
-                                                                                     loginDTO.getPassword());
-        if (!isValid) throw new ParameterException(10121);
+        this.cmsUserIdentityService.verifyUserNamePasswordIdentity(cmsUserDO.getId(), cmsUserDO.getUsername(),
+                                                                   loginDTO.getPassword())
+                                   .orElseThrow(() -> new ForbiddenException(10121));
 
         return this.cmsUserIdentityService.generateDoubleJwtToken(cmsUserDO.getId());
     }
@@ -133,6 +138,21 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         }
 
         return this.getUserByUserId(currentUser.getId());
+    }
+
+    @Override
+    public Boolean changePassword(UpdateUserPasswordDTO dto) {
+        CmsUserDO currentUser = UserKit.getUser();
+        CmsUserIdentityDO currentUserIdentity = this.cmsUserIdentityService.verifyUserNamePasswordIdentity(
+                currentUser.getId(), currentUser.getUsername(), dto.getPassword())
+                                                                           .orElseThrow(
+                                                                                   () -> new ForbiddenException(10122));
+        // 校验新旧密码是否一致
+        boolean isSameCredential = EncryptUtil.decrypt(currentUserIdentity.getCredential(), dto.getNewPassword());
+        if (isSameCredential) throw new ForbiddenException(10123);
+
+        return this.cmsUserIdentityService.changeUserPasswordIdentity(currentUserIdentity.getId(),
+                                                                      dto.getNewPassword());
     }
 
     @Override

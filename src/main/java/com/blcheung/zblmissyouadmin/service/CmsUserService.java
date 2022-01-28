@@ -7,6 +7,7 @@ import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.dto.cms.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.RegisterUserDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserInfoDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserPasswordDTO;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 
@@ -51,6 +52,16 @@ public interface CmsUserService extends IService<CmsUserDO> {
      * @date 2022/1/27 10:45 下午
      */
     Optional<CmsUserDO> update(UpdateUserInfoDTO dto);
+
+    /**
+     * 更新用户密码
+     *
+     * @param dto
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/28 9:51 下午
+     */
+    Boolean changePassword(UpdateUserPasswordDTO dto);
 
     /**
      * 通过用户名检查用户是否存在

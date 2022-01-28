@@ -9,9 +9,12 @@ import com.blcheung.zblmissyouadmin.mapper.CmsUserIdentityMapper;
 import com.blcheung.zblmissyouadmin.model.CmsUserIdentityDO;
 import com.blcheung.zblmissyouadmin.service.CmsUserIdentityService;
 import com.blcheung.zblmissyouadmin.util.EncryptUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+
+import java.util.Optional;
 
 /**
  * <p>
@@ -60,14 +63,15 @@ public class CmsUserIdentityServiceImpl extends ServiceImpl<CmsUserIdentityMappe
     }
 
     @Override
-    public Boolean verifyUserNamePasswordIdentity(Long userId, String username, String password) {
+    public Optional<CmsUserIdentityDO> verifyUserNamePasswordIdentity(Long userId, String username, String password) {
         CmsUserIdentityDO cmsUserIdentityDO = this.lambdaQuery()
                                                   .eq(CmsUserIdentityDO::getUserId, userId)
                                                   .eq(CmsUserIdentityDO::getIdentityType,
                                                       UserIdentifyType.USERNAME_PASSWORD.getValue())
                                                   .eq(CmsUserIdentityDO::getIdentifier, username)
                                                   .one();
-        return EncryptUtil.decrypt(cmsUserIdentityDO.getCredential(), password);
+        return Optional.ofNullable(cmsUserIdentityDO)
+                       .filter(ui -> this.verifyCredential(ui.getCredential(), password));
     }
 
     @Override
@@ -89,6 +93,12 @@ public class CmsUserIdentityServiceImpl extends ServiceImpl<CmsUserIdentityMappe
         if (!saveSuccess) throw new DatabaseActionException(10120);
 
         return cmsUserIdentityDO;
+    }
+
+    @Override
+    public Boolean verifyCredential(String credential, String key) {
+        if (StringUtils.isEmpty(credential) || StringUtils.isEmpty(key)) return false;
+        return EncryptUtil.decrypt(credential, key);
     }
 
     @Override

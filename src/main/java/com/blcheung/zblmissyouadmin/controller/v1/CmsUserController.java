@@ -10,6 +10,7 @@ import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.dto.cms.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.RegisterUserDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserInfoDTO;
+import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserPasswordDTO;
 import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
@@ -60,5 +61,14 @@ public class CmsUserController {
         CmsUserDO cmsUserDO = this.cmsUserService.update(dto)
                                                  .orElseThrow(() -> new FailedException(10103));
         return ResultKit.resolveUpdated(BeanKit.transform(cmsUserDO, new UserVO()));
+    }
+
+    @PutMapping("/password")
+    @LoginRequired
+    @RouterMeta(name = "修改密码", mount = false)
+    public UpdatedVO changePassword(@RequestBody @Validated UpdateUserPasswordDTO dto) {
+        Boolean updateSuccess = this.cmsUserService.changePassword(dto);
+        if (!updateSuccess) throw new FailedException(10120);
+        return ResultKit.resolveUpdated();
     }
 }

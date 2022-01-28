@@ -5,6 +5,8 @@ import com.blcheung.zblmissyouadmin.common.enumeration.UserIdentifyType;
 import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.model.CmsUserIdentityDO;
 
+import java.util.Optional;
+
 /**
  * <p>
  * 服务类
@@ -38,6 +40,17 @@ public interface CmsUserIdentityService extends IService<CmsUserIdentityDO> {
      */
     CmsUserIdentityDO createIdentity(Long userId, String identifier, String credential,
                                      UserIdentifyType userIdentifyType);
+
+    /**
+     * 校验凭证秘钥是否正确
+     *
+     * @param credential
+     * @param key
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/1/28 10:06 下午
+     */
+    Boolean verifyCredential(String credential, String key);
 
     /**
      * 创建用户名密码类型的用户凭证
@@ -93,7 +106,7 @@ public interface CmsUserIdentityService extends IService<CmsUserIdentityDO> {
      * @author BLCheung
      * @date 2021/12/30 11:10 下午
      */
-    Boolean verifyUserNamePasswordIdentity(Long userId, String username, String password);
+    Optional<CmsUserIdentityDO> verifyUserNamePasswordIdentity(Long userId, String username, String password);
 
     /**
      * 生成双令牌
