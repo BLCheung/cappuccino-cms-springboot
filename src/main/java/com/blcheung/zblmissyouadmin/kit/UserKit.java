@@ -1,6 +1,8 @@
 package com.blcheung.zblmissyouadmin.kit;
 
+import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
+import org.springframework.util.ObjectUtils;
 
 /**
  * 用户线程池，获取线程池内请求的用户
@@ -20,7 +22,9 @@ public class UserKit {
      * @date 2022/1/10 8:45 下午
      */
     public static CmsUserDO getUser() {
-        return UserKit.localUser.get();
+        CmsUserDO cmsUserDO = UserKit.localUser.get();
+        if (ObjectUtils.isEmpty(cmsUserDO)) throw new NotFoundException(10105);
+        return cmsUserDO;
     }
 
     /**
