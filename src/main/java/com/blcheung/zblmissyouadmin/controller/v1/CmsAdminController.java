@@ -44,7 +44,7 @@ public class CmsAdminController {
     @RouterMeta(name = "更新用户的分组", mount = false)
     public UpdatedVO updateUserGroup(@PathVariable @Positive Long id, @RequestBody @Validated UpdateUserGroupDTO dto) {
         Boolean updateSuccess = this.cmsAdminService.updateUserGroup(id, dto);
-        if (!updateSuccess) throw new FailedException(10122);
+        if (!updateSuccess) throw new FailedException(10104);
         return ResultKit.resolveUpdated();
     }
 
