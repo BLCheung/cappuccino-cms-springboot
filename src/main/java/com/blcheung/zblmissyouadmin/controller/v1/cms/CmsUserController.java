@@ -1,4 +1,4 @@
-package com.blcheung.zblmissyouadmin.controller.v1;
+package com.blcheung.zblmissyouadmin.controller.v1.cms;
 
 
 import com.blcheung.zblmissyouadmin.common.annotations.permission.AdminRequired;
