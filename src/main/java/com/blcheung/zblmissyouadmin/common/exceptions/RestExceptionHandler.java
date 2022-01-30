@@ -4,11 +4,10 @@ import com.blcheung.zblmissyouadmin.common.Code;
 import com.blcheung.zblmissyouadmin.common.configuration.CodeConfiguration;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.util.RequestUtil;
-import com.blcheung.zblmissyouadmin.vo.ErrorVO;
+import com.blcheung.zblmissyouadmin.vo.common.ErrorVO;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
-import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -48,7 +47,7 @@ public class RestExceptionHandler {
      * @param request
      * @param response
      * @param exception
-     * @return com.blcheung.zblmissyouadmin.vo.ErrorVO
+     * @return com.blcheung.zblmissyouadmin.vo.common.ErrorVO
      * @author BLCheung
      * @date 2021/12/9 8:42 下午
      */
@@ -68,7 +67,7 @@ public class RestExceptionHandler {
      * @param request
      * @param response
      * @param exception
-     * @return com.blcheung.zblmissyouadmin.vo.ErrorVO
+     * @return com.blcheung.zblmissyouadmin.vo.common.ErrorVO
      * @author BLCheung
      * @date 2021/12/9 8:43 下午
      */
@@ -103,7 +102,7 @@ public class RestExceptionHandler {
      * @param request
      * @param response
      * @param exception
-     * @return com.blcheung.zblmissyouadmin.vo.ErrorVO
+     * @return com.blcheung.zblmissyouadmin.vo.common.ErrorVO
      * @author BLCheung
      * @date 2021/12/9 8:43 下午
      */
@@ -128,7 +127,7 @@ public class RestExceptionHandler {
      * @param request
      * @param response
      * @param exception
-     * @return com.blcheung.zblmissyouadmin.vo.ErrorVO
+     * @return com.blcheung.zblmissyouadmin.vo.common.ErrorVO
      * @author BLCheung
      * @date 2021/12/9 9:01 下午
      */
@@ -152,7 +151,7 @@ public class RestExceptionHandler {
      * @param request
      * @param response
      * @param exception
-     * @return com.blcheung.zblmissyouadmin.vo.ErrorVO
+     * @return com.blcheung.zblmissyouadmin.vo.common.ErrorVO
      * @author BLCheung
      * @date 2021/12/9 9:58 下午
      */
@@ -174,7 +173,7 @@ public class RestExceptionHandler {
      * @param request
      * @param response
      * @param exception
-     * @return com.blcheung.zblmissyouadmin.vo.ErrorVO
+     * @return com.blcheung.zblmissyouadmin.vo.common.ErrorVO
      * @author BLCheung
      * @date 2021/12/9 11:07 下午
      */
@@ -195,7 +194,7 @@ public class RestExceptionHandler {
      * @param request
      * @param response
      * @param exception
-     * @return com.blcheung.zblmissyouadmin.vo.ErrorVO
+     * @return com.blcheung.zblmissyouadmin.vo.common.ErrorVO
      * @author BLCheung
      * @date 2021/12/9 10:31 下午
      */
@@ -217,7 +216,7 @@ public class RestExceptionHandler {
      * @param request
      * @param response
      * @param exception
-     * @return com.blcheung.zblmissyouadmin.vo.ErrorVO
+     * @return com.blcheung.zblmissyouadmin.vo.common.ErrorVO
      * @author BLCheung
      * @date 2021/12/9 10:40 下午
      */
@@ -243,7 +242,7 @@ public class RestExceptionHandler {
      * @param request
      * @param response
      * @param exception
-     * @return com.blcheung.zblmissyouadmin.vo.ErrorVO
+     * @return com.blcheung.zblmissyouadmin.vo.common.ErrorVO
      * @author BLCheung
      * @date 2021/12/9 10:58 下午
      */
@@ -264,7 +263,7 @@ public class RestExceptionHandler {
      * @param request
      * @param response
      * @param exception
-     * @return com.blcheung.zblmissyouadmin.vo.ErrorVO
+     * @return com.blcheung.zblmissyouadmin.vo.common.ErrorVO
      * @author BLCheung
      * @date 2021/12/9 10:48 下午
      */
@@ -299,7 +298,7 @@ public class RestExceptionHandler {
      * @param request
      * @param response
      * @param exception
-     * @return com.blcheung.zblmissyouadmin.vo.ErrorVO
+     * @return com.blcheung.zblmissyouadmin.vo.common.ErrorVO
      * @author BLCheung
      * @date 2022/1/19 8:03 下午
      */

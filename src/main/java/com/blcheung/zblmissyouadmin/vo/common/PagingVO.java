@@ -1,4 +1,4 @@
-package com.blcheung.zblmissyouadmin.vo;
+package com.blcheung.zblmissyouadmin.vo.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.kit.BeanKit;

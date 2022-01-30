@@ -1,7 +1,7 @@
 package com.blcheung.zblmissyouadmin.kit;
 
 import com.blcheung.zblmissyouadmin.common.Code;
-import com.blcheung.zblmissyouadmin.vo.*;
+import com.blcheung.zblmissyouadmin.vo.common.*;
 
 /**
  * 统一结果返回辅助类

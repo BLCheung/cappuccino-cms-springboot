@@ -1,10 +1,9 @@
-package com.blcheung.zblmissyouadmin.vo;
+package com.blcheung.zblmissyouadmin.vo.common;
 
 import com.blcheung.zblmissyouadmin.common.Code;
 import com.blcheung.zblmissyouadmin.common.interfaces.ResultAction;
 import com.blcheung.zblmissyouadmin.util.RequestUtil;
 import com.blcheung.zblmissyouadmin.util.ResponseUtil;
-import lombok.Builder;
 import org.springframework.http.HttpStatus;
 
 /**

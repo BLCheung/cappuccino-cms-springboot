@@ -2,7 +2,7 @@ package com.blcheung.zblmissyouadmin.kit;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
-import com.blcheung.zblmissyouadmin.vo.PagingVO;
+import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
 
 import java.util.List;
 

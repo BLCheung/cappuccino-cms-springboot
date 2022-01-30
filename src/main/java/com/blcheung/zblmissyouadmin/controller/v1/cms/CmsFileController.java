@@ -4,8 +4,8 @@ package com.blcheung.zblmissyouadmin.controller.v1.cms;
 import com.blcheung.zblmissyouadmin.common.annotations.permission.LoginRequired;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.service.CmsFileService;
-import com.blcheung.zblmissyouadmin.vo.ResultVO;
 import com.blcheung.zblmissyouadmin.vo.cms.FileVO;
+import com.blcheung.zblmissyouadmin.vo.common.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +34,7 @@ public class CmsFileController {
 
     /**
      * @param request 携带文件的request
-     * @return com.blcheung.zblmissyouadmin.vo.ResultVO<java.util.List < com.blcheung.zblmissyouadmin.vo.cms.FileVO>>
+     * @return com.blcheung.zblmissyouadmin.vo.common.ResultVO<java.util.List < com.blcheung.zblmissyouadmin.vo.cms.FileVO>>
      * @author BLCheung
      * @date 2022/1/18 5:00 上午
      */

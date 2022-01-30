@@ -3,7 +3,7 @@ package com.blcheung.zblmissyouadmin.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.dto.cms.*;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
-import com.blcheung.zblmissyouadmin.vo.PagingVO;
+import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
 import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;

@@ -5,7 +5,7 @@ import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
 import com.blcheung.zblmissyouadmin.model.BannerDO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.blcheung.zblmissyouadmin.vo.BannerVO;
-import com.blcheung.zblmissyouadmin.vo.PagingVO;
+import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
 
 /**
  * <p>

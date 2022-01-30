@@ -1,4 +1,4 @@
-package com.blcheung.zblmissyouadmin.vo;
+package com.blcheung.zblmissyouadmin.vo.common;
 
 import com.blcheung.zblmissyouadmin.common.Code;
 import com.blcheung.zblmissyouadmin.common.interfaces.ResultAction;
