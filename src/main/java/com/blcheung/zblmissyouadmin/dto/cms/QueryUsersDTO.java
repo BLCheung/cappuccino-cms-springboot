@@ -1,4 +1,4 @@
-package com.blcheung.zblmissyouadmin.dto;
+package com.blcheung.zblmissyouadmin.dto.cms;
 
 import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
 import lombok.Getter;
