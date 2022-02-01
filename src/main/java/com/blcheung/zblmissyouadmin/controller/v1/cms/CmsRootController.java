@@ -25,7 +25,7 @@ import java.util.List;
  * @date 2021/12/26 9:52 下午
  */
 @RestController
-@RequestMapping("/cms/root")
+@RequestMapping("/root")
 @Validated
 @RootRequired
 @RouterModule(name = "超级管理员")

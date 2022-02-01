@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
  * @since 2021-11-28
  */
 @RestController
-@RequestMapping("/cms/user")
+@RequestMapping("/user")
 @Validated  // 不加的话@PathVariable方式的参数校验可能不生效
 @RouterModule(name = "用户")
 public class CmsUserController {

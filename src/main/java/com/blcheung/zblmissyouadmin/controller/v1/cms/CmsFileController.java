@@ -25,7 +25,7 @@ import java.util.List;
  * @since 2021-11-28
  */
 @RestController
-@RequestMapping("/cms/file")
+@RequestMapping("/file")
 @LoginRequired
 public class CmsFileController {
 
