@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
  */
 @Getter
 @Setter
-public class CreateBannerDTO {
+public class BannerDTO {
 
     @NotBlank
     @Length(min = 1, max = 20)
