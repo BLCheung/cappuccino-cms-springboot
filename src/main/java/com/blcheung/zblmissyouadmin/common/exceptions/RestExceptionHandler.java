@@ -7,13 +7,14 @@ import com.blcheung.zblmissyouadmin.util.RequestUtil;
 import com.blcheung.zblmissyouadmin.vo.common.ErrorVO;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -82,7 +83,7 @@ public class RestExceptionHandler {
                 ? HttpStatus.INTERNAL_SERVER_ERROR.value()
                 : exception.getStatusCode();
         // 默认消息，从code码取或异常自带
-        String defaultMsg = StringUtils.hasText(CodeConfiguration.getMessage(code))
+        String defaultMsg = StringUtils.isEmpty(CodeConfiguration.getMessage(code))
                 ? CodeConfiguration.getMessage(code)
                 : exception.getMessage();
         // 是否为默认消息
@@ -324,8 +325,17 @@ public class RestExceptionHandler {
 
     private String formatAllBeanValidatorErrorMessage(List<ObjectError> errors) {
         StringBuffer errorMsg = new StringBuffer();
-        errors.forEach(error -> errorMsg.append(error.getDefaultMessage())
-                                        .append(";"));
+        errors.forEach(error -> {
+            String msg;
+            if (error instanceof FieldError) {
+                FieldError e = (FieldError) error;
+                msg = e.getField() + e.getDefaultMessage();
+            } else {
+                msg = error.getDefaultMessage();
+            }
+            errorMsg.append(msg)
+                    .append(";");
+        });
         return errorMsg.toString();
     }
 
@@ -344,11 +354,11 @@ public class RestExceptionHandler {
     }
 
     private String formatMismatchedInputFieldsMessage(List<JsonMappingException.Reference> path) {
-        StringBuffer errorMsg = new StringBuffer();
+        StringBuilder errorMsg = new StringBuilder();
         errorMsg.append("[");
-        String fieldsStr = org.apache.commons.lang3.StringUtils.join(path.stream()
-                                                                         .map(JsonMappingException.Reference::getFieldName)
-                                                                         .toArray(String[]::new));
+        String fieldsStr = StringUtils.join(path.stream()
+                                                .map(JsonMappingException.Reference::getFieldName)
+                                                .toArray(String[]::new));
         errorMsg.append(fieldsStr)
                 .append("]");
 
