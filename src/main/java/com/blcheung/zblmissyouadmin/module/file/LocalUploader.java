@@ -54,17 +54,16 @@ public class LocalUploader extends AbstractUploader {
 
     @Override
     protected String getFileUrl(String filePath) {
-        // 加了domain本地会无法正确访问文件
-        // String domain = this.getFileProperties()
-        //                     .getDomain();
+        String domain = this.getFileProperties()
+                            .getDomain();
 
         if (System.getProperty("os.name")
                   .toUpperCase()
                   .contains("WINDOWS")) {
             // 将window平台下的 \ 替换成 /
-            return filePath.replaceAll("\\\\", "/");
+            return domain + filePath.replaceAll("\\\\", "/");
         } else {
-            return filePath;
+            return domain + filePath;
         }
     }
 
@@ -86,8 +85,7 @@ public class LocalUploader extends AbstractUploader {
         // 初始化资源目录
         FileKit.initStorePath(staticDirPath);
 
-        return Paths.get(staticDirPath, newFileName)
-                    .toAbsolutePath()
+        return Paths.get(localPath, dateDir, newFileName)
                     .toString();
     }
 }

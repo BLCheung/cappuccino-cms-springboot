@@ -49,6 +49,13 @@ public class FileKit {
         }
     }
 
+    public static String getAbsolutePath(String dir) {
+        if (FileKit.isAbsolutePath(dir)) return dir;
+        return Path.of(FileKit.getProjectDirectory(), dir)
+                   .toAbsolutePath()
+                   .toString();
+    }
+
     public static String getProjectDirectory() {
         // 如果当前项目目录为D:/project/test/ 则返回D:/project/test/
         return System.getProperty("user.dir");
