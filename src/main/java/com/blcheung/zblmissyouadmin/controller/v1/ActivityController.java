@@ -10,10 +10,7 @@ import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.service.ActivityService;
 import com.blcheung.zblmissyouadmin.vo.ActivityVO;
-import com.blcheung.zblmissyouadmin.vo.common.DeletedVO;
-import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
-import com.blcheung.zblmissyouadmin.vo.common.ResultVO;
-import com.blcheung.zblmissyouadmin.vo.common.UpdatedVO;
+import com.blcheung.zblmissyouadmin.vo.common.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -40,9 +37,9 @@ public class ActivityController {
 
     @PostMapping
     @RouterMeta(name = "创建活动")
-    public ResultVO<ActivityVO> create(@RequestBody @Validated ActivityDTO dto) {
+    public CreatedVO create(@RequestBody @Validated ActivityDTO dto) {
         ActivityVO activityVO = this.activityService.createActivity(dto);
-        return ResultKit.resolve(activityVO);
+        return ResultKit.resolveCreated(activityVO);
     }
 
     @PutMapping("/{id}")
