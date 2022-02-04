@@ -3,7 +3,6 @@ package com.blcheung.zblmissyouadmin.vo.common;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -59,9 +58,8 @@ public class PagingVO<T> {
      * 视图类型的构造函数
      * 最终会构造一个为目标视图类型为item的分页结果
      *
-     * @param page
-     * @param voClazz
-     * @return null
+     * @param page    来自数据源的page分页器
+     * @param voClazz 需要转换的目标视图类
      * @author BLCheung
      * @date 2022/1/24 10:02 下午
      */
@@ -70,6 +68,15 @@ public class PagingVO<T> {
         this.list = BeanKit.transformList(page.getRecords(), voClazz);
     }
 
+    /**
+     * 集合类型的构造函数
+     * 最终会构造一个为目标类型的集合视图结果分页
+     *
+     * @param page   来自数据源的page分页器
+     * @param voList 视图类型的集合
+     * @author BLCheung
+     * @date 2022/1/24 10:05 下午
+     */
     public <D> PagingVO(Page<D> page, List<T> voList) {
         this.initPage(page);
         this.list = voList;
