@@ -83,7 +83,7 @@ public class RestExceptionHandler {
                 ? HttpStatus.INTERNAL_SERVER_ERROR.value()
                 : exception.getStatusCode();
         // 默认消息，从code码取或异常自带
-        String defaultMsg = StringUtils.isEmpty(CodeConfiguration.getMessage(code))
+        String defaultMsg = !StringUtils.isEmpty(CodeConfiguration.getMessage(code))
                 ? CodeConfiguration.getMessage(code)
                 : exception.getMessage();
         // 是否为默认消息
