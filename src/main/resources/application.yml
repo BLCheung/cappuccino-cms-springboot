@@ -27,6 +27,9 @@ missyou:
     # refresh_token过期时长，默认604800s 一周
     refresh-token-expired: 604800
 
+  # 宫格最大数量
+  grid-category-maximum: 6
+
 mybatis-plus:
   configuration:
     # 开启下划线转驼峰
