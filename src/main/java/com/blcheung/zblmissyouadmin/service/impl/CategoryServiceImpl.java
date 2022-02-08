@@ -1,6 +1,7 @@
 package com.blcheung.zblmissyouadmin.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blcheung.zblmissyouadmin.common.enumeration.RootStatus;
 import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
 import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
@@ -9,13 +10,13 @@ import com.blcheung.zblmissyouadmin.dto.CategoryDTO;
 import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
 import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import com.blcheung.zblmissyouadmin.kit.PagingKit;
-import com.blcheung.zblmissyouadmin.model.CategoryDO;
 import com.blcheung.zblmissyouadmin.mapper.CategoryMapper;
+import com.blcheung.zblmissyouadmin.model.CategoryDO;
 import com.blcheung.zblmissyouadmin.service.CategoryService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blcheung.zblmissyouadmin.vo.CategoryVO;
 import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -38,6 +39,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, CategoryDO>
                    .oneOpt();
     }
 
+    @Transactional
     @Override
     public CategoryVO createCategory(CategoryDTO dto) {
         CategoryDO newCategoryDO = BeanKit.transform(dto, new CategoryDO());
@@ -48,6 +50,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, CategoryDO>
         return BeanKit.transform(newCategoryDO, new CategoryVO());
     }
 
+    @Transactional
     @Override
     public CategoryVO updateCategory(Long categoryId, CategoryDTO dto) {
         CategoryDO categoryDO = this.getCategory(categoryId)
@@ -60,6 +63,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, CategoryDO>
         return BeanKit.transform(newCategoryDO, new CategoryVO());
     }
 
+    @Transactional
     @Override
     public Boolean deleteCategory(Long categoryId) {
         CategoryDO categoryDO = this.getCategory(categoryId)

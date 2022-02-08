@@ -15,6 +15,7 @@ import com.blcheung.zblmissyouadmin.vo.GridCategoryVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class GridCategoryServiceImpl extends ServiceImpl<GridCategoryMapper, Gri
                    .oneOpt();
     }
 
+    @Transactional
     @Override
     public GridCategoryVO createGirdCategory(GridCategoryDTO dto) {
         this.validateGridMaximum();
@@ -61,6 +63,7 @@ public class GridCategoryServiceImpl extends ServiceImpl<GridCategoryMapper, Gri
         return BeanKit.transform(newGridCategoryDO, new GridCategoryVO());
     }
 
+    @Transactional
     @Override
     public GridCategoryVO updateGridCategory(Long id, GridCategoryDTO dto) {
         GridCategoryDO gridCategoryDO = this.getGridCategory(id)
@@ -75,6 +78,7 @@ public class GridCategoryServiceImpl extends ServiceImpl<GridCategoryMapper, Gri
         return BeanKit.transform(newGridCategoryDO, new GridCategoryVO());
     }
 
+    @Transactional
     @Override
     public Boolean deleteGridCategory(Long id) {
         GridCategoryDO gridCategoryDO = this.getGridCategory(id)
@@ -95,7 +99,7 @@ public class GridCategoryServiceImpl extends ServiceImpl<GridCategoryMapper, Gri
                                                 GridCategoryDO gridCategoryDO) {
         GridCategoryDO newGridCategoryDO = BeanKit.transform(dto, gridCategoryDO);
         Long parentId = categoryDO.getParentId();
-        if (!ObjectUtils.isEmpty(parentId)) {
+        if (!ObjectUtils.isEmpty(parentId) && !ObjectUtils.isEmpty(newGridCategoryDO)) {
             newGridCategoryDO.setRootCategoryId(parentId);
         }
         return newGridCategoryDO;
