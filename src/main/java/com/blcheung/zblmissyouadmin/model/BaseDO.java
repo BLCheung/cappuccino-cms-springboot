@@ -1,6 +1,7 @@
 package com.blcheung.zblmissyouadmin.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,6 +21,7 @@ public class BaseDO {
     @JsonIgnore
     private Date createTime;
 
+    @TableField(update = "now()")
     @JsonIgnore
     private Date updateTime;
 
