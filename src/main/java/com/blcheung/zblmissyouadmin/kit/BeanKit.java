@@ -5,6 +5,8 @@ import com.github.dozermapper.core.Mapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.ObjectUtils;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +29,25 @@ public class BeanKit {
      * @date 2022/1/22 1:13 上午
      */
     public static <F, T> T transform(F f, T t) {
-        if (ObjectUtils.isEmpty(f) || ObjectUtils.isEmpty(t)) return null;
+        if (ObjectUtils.isEmpty(f) || ObjectUtils.isEmpty(t)) {
+            Class<T> targetClazz;
+            ParameterizedType type;
+            Type superType = t.getClass()
+                              .getGenericSuperclass();
+            if (superType instanceof ParameterizedType) {
+                type = (ParameterizedType) superType;
+                Type[] types = type.getActualTypeArguments();
+                if (!ObjectUtils.isEmpty(types)) {
+                    targetClazz = (Class<T>) types[ 0 ];
+                    try {
+                        return targetClazz.newInstance();
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
         BeanUtils.copyProperties(f, t);
         return t;
     }
