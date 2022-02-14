@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blcheung.zblmissyouadmin.mapper.SkuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.blcheung.zblmissyouadmin.model.SkuDO">
+        <result column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="delete_time" property="deleteTime" />
+        <result column="price" property="price" />
+        <result column="discount_price" property="discountPrice" />
+        <result column="online" property="online" />
+        <result column="img" property="img" />
+        <result column="title" property="title" />
+        <result column="spu_id" property="spuId" />
+        <result column="specs" property="specs" />
+        <result column="code" property="code" />
+        <result column="stock" property="stock" />
+        <result column="category_id" property="categoryId" />
+        <result column="root_category_id" property="rootCategoryId" />
+        <result column="limit_buy_count" property="limitBuyCount" />
+    </resultMap>
+
+    <select id="getSkuTitleById" parameterType="java.lang.Long" resultType="java.lang.String">
+        SELECT s.title
+        FROM sku s
+        WHERE s.id = #{skuId}
+          AND s.delete_time IS NULL
+    </select>
+</mapper>

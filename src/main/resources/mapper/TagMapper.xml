@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blcheung.zblmissyouadmin.mapper.TagMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.blcheung.zblmissyouadmin.model.TagDO">
+        <result column="id" property="id" />
+        <result column="update_time" property="updateTime" />
+        <result column="delete_time" property="deleteTime" />
+        <result column="create_time" property="createTime" />
+        <result column="title" property="title" />
+        <result column="description" property="description" />
+        <result column="highlight" property="highlight" />
+        <result column="type" property="type" />
+    </resultMap>
+
+    <select id="getTagsNameBySpuId" parameterType="java.lang.Long" resultType="java.lang.String">
+        SELECT t.title
+        FROM tag t,
+             (
+                 SELECT st.tag_id
+                 FROM spu_tag st
+                 WHERE st.spu_id = #{spuId}
+             ) st
+        WHERE t.id = st.tag_id
+          AND t.delete_time IS NULL
+    </select>
+</mapper>

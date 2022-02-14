@@ -18,4 +18,10 @@
         <result column="level" property="level" />
     </resultMap>
 
+    <select id="getNameById" parameterType="java.lang.Long" resultType="java.lang.String">
+        SELECT c.name
+        FROM category c
+        WHERE c.id = #{categoryId}
+          AND c.delete_time IS NULL
+    </select>
 </mapper>

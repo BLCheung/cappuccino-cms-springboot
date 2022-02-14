@@ -1,7 +1,7 @@
 package com.blcheung.zblmissyouadmin.mapper;
 
+import com.blcheung.zblmissyouadmin.model.SkuDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.blcheung.zblmissyouadmin.model.CategoryDO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -11,18 +11,18 @@ import org.springframework.stereotype.Repository;
  * </p>
  *
  * @author BLCheung
- * @since 2022-02-04
+ * @since 2022-02-10
  */
 @Repository
-public interface CategoryMapper extends BaseMapper<CategoryDO> {
+public interface SkuMapper extends BaseMapper<SkuDO> {
 
     /**
-     * 根据id获取分类名
+     * 根据id获取Sku的名称
      *
-     * @param categoryId
+     * @param skuId
      * @return java.lang.String
      * @author BLCheung
-     * @date 2022/2/10 10:08 下午
+     * @date 2022/2/10 10:09 下午
      */
-    String getNameById(@Param("categoryId") Long categoryId);
+    String getSkuTitleById(@Param("skuId") Long skuId);
 }
