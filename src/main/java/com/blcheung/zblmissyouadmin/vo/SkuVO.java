@@ -1,8 +1,7 @@
-package com.blcheung.zblmissyouadmin.model;
+package com.blcheung.zblmissyouadmin.vo;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.blcheung.zblmissyouadmin.util.JSONConverterUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,19 +9,14 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * <p>
- *
- * </p>
- *
  * @author BLCheung
- * @since 2022-02-10
+ * @date 2022/2/15 5:34 下午
  */
 @Getter
 @Setter
-@TableName(value = "sku")
-public class SkuDO extends BaseDO {
+public class SkuVO {
 
-    private static final long serialVersionUID = 1L;
+    private Long id;
 
     private BigDecimal price;
 
@@ -36,7 +30,7 @@ public class SkuDO extends BaseDO {
 
     private Long spuId;
 
-    private String specs;
+    private List<SpecKeyValueVO> specs;
 
     private String code;
 
@@ -49,11 +43,6 @@ public class SkuDO extends BaseDO {
     private Integer limitBuyCount;
 
     public void setSpecs(String specs) {
-        this.specs = specs;
-    }
-
-    @JsonIgnore
-    public void setSpecs(List<SpecKeyValueDO> specs) {
-        this.specs = JSONConverterUtil.convertObjectToJSON(specs);
+        this.specs = JSONConverterUtil.convertJSONToObject(specs, new TypeReference<List<SpecKeyValueVO>>() {});
     }
 }
