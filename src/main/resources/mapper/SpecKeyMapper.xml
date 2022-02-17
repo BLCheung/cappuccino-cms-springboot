@@ -32,4 +32,20 @@
         WHERE sk.id = spk.spec_key_id
           AND sk.delete_time IS NULL
     </select>
+
+    <select id="getSpecKeysBySpuId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT id,
+               name,
+               unit,
+               standard,
+               description
+        FROM spec_key k,
+             (
+                 SELECT _sk.id AS sk_id, _sk.spec_key_id
+                 FROM spu_key _sk
+                 WHERE _sk.spu_id = #{spuId}
+             ) sk
+        WHERE k.id = sk.spec_key_id
+          AND k.delete_time IS NULL
+    </select>
 </mapper>

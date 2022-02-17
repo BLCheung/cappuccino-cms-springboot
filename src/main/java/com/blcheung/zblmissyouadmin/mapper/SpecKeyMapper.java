@@ -48,4 +48,14 @@ public interface SpecKeyMapper extends BaseMapper<SpecKeyDO> {
      * @date 2022/2/14 12:33 上午
      */
     int saveSpecKeyBySpuId(@Param("spuId") Long spuId, @Param("spuKeys") List<Long> spuKeys);
+
+    /**
+     * 通过spuId获取该Spu下所属规格名
+     *
+     * @param spuId
+     * @return java.util.List<com.blcheung.zblmissyouadmin.model.SpecKeyDO>
+     * @author BLCheung
+     * @date 2022/2/16 11:23 下午
+     */
+    List<SpecKeyDO> getSpecKeysBySpuId(@Param("spuId") Long spuId);
 }
