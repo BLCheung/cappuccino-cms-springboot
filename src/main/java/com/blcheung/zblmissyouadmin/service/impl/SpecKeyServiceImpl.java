@@ -6,11 +6,13 @@ import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
 import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
 import com.blcheung.zblmissyouadmin.common.exceptions.ParameterException;
 import com.blcheung.zblmissyouadmin.dto.SpecKeyDTO;
+import com.blcheung.zblmissyouadmin.dto.SpecSelectorDTO;
 import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
 import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import com.blcheung.zblmissyouadmin.kit.PagingKit;
 import com.blcheung.zblmissyouadmin.mapper.SpecKeyMapper;
 import com.blcheung.zblmissyouadmin.model.SpecKeyDO;
+import com.blcheung.zblmissyouadmin.model.SpecKeyValueDO;
 import com.blcheung.zblmissyouadmin.service.SpecKeyService;
 import com.blcheung.zblmissyouadmin.vo.SpecKeyVO;
 import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -84,5 +87,17 @@ public class SpecKeyServiceImpl extends ServiceImpl<SpecKeyMapper, SpecKeyDO> im
     public Boolean delete(Long specKeyId) {
         SpecKeyDO specKeyDO = this.getSpecKey(specKeyId);
         return this.removeById(specKeyDO.getId());
+    }
+
+    @Override
+    public List<SpecKeyValueDO> getSpecValues(List<SpecSelectorDTO> specs) {
+        List<SpecKeyValueDO> specKeyValueList = new ArrayList<>();
+        for (SpecSelectorDTO dto : specs) {
+            SpecKeyValueDO keyValueDO = this.getBaseMapper()
+                                            .getSpecKeyValueById(dto.getKeyId(), dto.getValueId());
+            if (keyValueDO == null) return null;
+            specKeyValueList.add(keyValueDO);
+        }
+        return specKeyValueList;
     }
 }

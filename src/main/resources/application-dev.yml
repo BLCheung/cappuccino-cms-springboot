@@ -11,6 +11,13 @@ spring:
     password: "123456"
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+
+missyou:
+  sku:
+    # sku最大购买数量
+    max-buy-count: 99
+
+
 mybatis-plus:
   configuration:
     # 控制台打印sql

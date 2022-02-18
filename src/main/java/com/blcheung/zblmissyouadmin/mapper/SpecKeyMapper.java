@@ -2,6 +2,7 @@ package com.blcheung.zblmissyouadmin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.blcheung.zblmissyouadmin.model.SpecKeyDO;
+import com.blcheung.zblmissyouadmin.model.SpecKeyValueDO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -58,4 +59,15 @@ public interface SpecKeyMapper extends BaseMapper<SpecKeyDO> {
      * @date 2022/2/16 11:23 下午
      */
     List<SpecKeyDO> getSpecKeysBySpuId(@Param("spuId") Long spuId);
+
+    /**
+     * 获取规格名与规格值
+     *
+     * @param keyId
+     * @param valueId
+     * @return com.blcheung.zblmissyouadmin.model.SpecKeyValueDO
+     * @author BLCheung
+     * @date 2022/2/18 9:52 下午
+     */
+    SpecKeyValueDO getSpecKeyValueById(@Param("keyId") Long keyId, @Param("valueId") Long valueId);
 }

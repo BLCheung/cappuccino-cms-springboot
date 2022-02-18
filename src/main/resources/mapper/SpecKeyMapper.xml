@@ -14,6 +14,13 @@
         <result column="description" property="description" />
     </resultMap>
 
+    <resultMap id="SpecKeyValueMap" type="com.blcheung.zblmissyouadmin.model.SpecKeyValueDO">
+        <result column="key_id" property="keyId" />
+        <result column="key_name" property="key" />
+        <result column="value_id" property="valueId" />
+        <result column="value_name" property="value" />
+    </resultMap>
+
     <select id="getSpecKeyNameById" parameterType="java.lang.Long" resultType="java.lang.String">
         SELECT sk.name
         FROM spec_key sk
@@ -47,5 +54,19 @@
              ) sk
         WHERE k.id = sk.spec_key_id
           AND k.delete_time IS NULL
+    </select>
+
+    <select id="getSpecKeyValueById" resultMap="SpecKeyValueMap">
+        SELECT sk.key_id, sk.key_name, sv.id AS value_id, sv.value AS value_name
+        FROM spec_value sv,
+             (
+                 SELECT _sk.id AS key_id, _sk.name AS key_name
+                 FROM spec_key _sk
+                 WHERE _sk.id = #{keyId}
+                   AND _sk.delete_time IS NULL
+             ) sk
+        WHERE sv.id = #{valueId}
+          AND sv.spec_id = sk.key_id
+          AND sv.delete_time IS NULL
     </select>
 </mapper>

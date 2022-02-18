@@ -2,8 +2,10 @@ package com.blcheung.zblmissyouadmin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.blcheung.zblmissyouadmin.dto.SpecKeyDTO;
+import com.blcheung.zblmissyouadmin.dto.SpecSelectorDTO;
 import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
 import com.blcheung.zblmissyouadmin.model.SpecKeyDO;
+import com.blcheung.zblmissyouadmin.model.SpecKeyValueDO;
 import com.blcheung.zblmissyouadmin.vo.SpecKeyVO;
 import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
 
@@ -75,4 +77,14 @@ public interface SpecKeyService extends IService<SpecKeyDO> {
      * @date 2022/2/17 8:36 下午
      */
     Boolean delete(Long specKeyId);
+
+    /**
+     * 获取所有所选的规格名与规格值
+     *
+     * @param specs
+     * @return java.util.List<com.blcheung.zblmissyouadmin.model.SpecKeyValueDO>
+     * @author BLCheung
+     * @date 2022/2/18 10:19 下午
+     */
+    List<SpecKeyValueDO> getSpecValues(List<SpecSelectorDTO> specs);
 }

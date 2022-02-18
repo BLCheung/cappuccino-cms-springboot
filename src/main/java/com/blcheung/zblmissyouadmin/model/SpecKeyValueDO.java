@@ -20,13 +20,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SpecKeyValueDO {
 
+    private String key;
+
+    private String value;
+
     @JsonProperty(value = "key_id")
     private Long keyId;
 
     @JsonProperty(value = "value_id")
     private Long valueId;
 
-    private String key;
-
-    private String value;
 }
