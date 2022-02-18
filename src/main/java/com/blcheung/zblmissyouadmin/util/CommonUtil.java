@@ -124,4 +124,23 @@ public class CommonUtil {
                   .allMatch(id -> otherIds.stream()
                                           .anyMatch(oId -> oId.equals(id)));
     }
+
+    /**
+     * 该id集合每个id值是否都是唯一不重复的
+     *
+     * @param ids
+     * @return java.lang.Boolean
+     * @author BLCheung
+     * @date 2022/2/18 10:25 下午
+     */
+    public static Boolean isDistinctIds(List<Long> ids) {
+        if (ids.isEmpty()) return false;
+
+        long size = ids.size();
+        long uniqueSize = ids.stream()
+                             .distinct()
+                             .count();
+
+        return size == uniqueSize;
+    }
 }
