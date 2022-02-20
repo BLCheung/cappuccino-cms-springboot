@@ -54,4 +54,15 @@
                #{spu.defaultSkuId} AS skuId
     </select>
 
+    <select id="getSpusByThemeId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT s.*
+        FROM spu s,
+             (
+                 SELECT _ts.spu_id
+                 FROM theme_spu _ts
+                 WHERE _ts.theme_id = #{themeId}
+             ) ts
+        WHERE s.id = ts.spu_id
+          AND s.delete_time IS NULL
+    </select>
 </mapper>

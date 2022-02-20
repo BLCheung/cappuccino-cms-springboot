@@ -3,19 +3,28 @@ package com.blcheung.zblmissyouadmin.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
+import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
 import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
 import com.blcheung.zblmissyouadmin.dto.ThemeDTO;
+import com.blcheung.zblmissyouadmin.dto.ThemeSpuDTO;
 import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
 import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import com.blcheung.zblmissyouadmin.kit.PagingKit;
+import com.blcheung.zblmissyouadmin.mapper.SpuMapper;
 import com.blcheung.zblmissyouadmin.mapper.ThemeMapper;
+import com.blcheung.zblmissyouadmin.model.SpuDO;
 import com.blcheung.zblmissyouadmin.model.ThemeDO;
+import com.blcheung.zblmissyouadmin.service.SpuService;
 import com.blcheung.zblmissyouadmin.service.ThemeService;
+import com.blcheung.zblmissyouadmin.service.ThemeSpuService;
+import com.blcheung.zblmissyouadmin.vo.SpuVO;
 import com.blcheung.zblmissyouadmin.vo.ThemeVO;
 import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,6 +38,15 @@ import java.util.Optional;
 @Service
 public class ThemeServiceImpl extends ServiceImpl<ThemeMapper, ThemeDO> implements ThemeService {
 
+    @Autowired
+    private SpuService spuService;
+
+    @Autowired
+    private ThemeSpuService themeSpuService;
+
+    @Autowired
+    private SpuMapper spuMapper;
+
     @Override
     public Optional<ThemeDO> getTheme(Long themeId) {
         if (themeId == null) return Optional.empty();
@@ -36,6 +54,24 @@ public class ThemeServiceImpl extends ServiceImpl<ThemeMapper, ThemeDO> implemen
                    .eq(ThemeDO::getId, themeId)
                    .oneOpt();
     }
+
+    @Override
+    public ThemeVO getThemeDetail(Long themeId) {
+        ThemeDO themeDO = this.getTheme(themeId)
+                              .orElseThrow(() -> new NotFoundException(10451));
+        return BeanKit.transform(themeDO, new ThemeVO());
+    }
+
+    @Override
+    public void checkThemeExist(Long themeId) {
+        Long count = this.lambdaQuery()
+                         .select(ThemeDO::getId)
+                         .eq(themeId != null, ThemeDO::getId, themeId)
+                         .last("limit 1")
+                         .count();
+        if (count <= 0) throw new NotFoundException(10451);
+    }
+
 
     @Transactional
     @Override
@@ -66,6 +102,10 @@ public class ThemeServiceImpl extends ServiceImpl<ThemeMapper, ThemeDO> implemen
     public Boolean deleteTheme(Long themeId) {
         ThemeDO themeDO = this.getTheme(themeId)
                               .orElseThrow(() -> new NotFoundException(10451));
+
+        Boolean hasSpu = this.themeSpuService.isThemeHasSpu(themeId);
+        if (hasSpu) throw new ForbiddenException(10457);
+
         return this.removeById(themeDO.getId());
     }
 
@@ -76,5 +116,33 @@ public class ThemeServiceImpl extends ServiceImpl<ThemeMapper, ThemeDO> implemen
                        .page(pageable);
 
         return PagingKit.resolve(pageable, ThemeVO.class);
+    }
+
+    @Override
+    public List<SpuVO> getThemeSpus(Long themeId) {
+        this.checkThemeExist(themeId);
+        List<SpuDO> themeSpus = this.spuMapper.getSpusByThemeId(themeId);
+        return BeanKit.transformList(themeSpus, SpuVO.class);
+    }
+
+    @Transactional
+    @Override
+    public SpuVO addThemeSpu(ThemeSpuDTO dto) {
+        this.checkThemeExist(dto.getThemeId());
+        SpuDO spuDO = this.spuService.getSpu(dto.getSpuId())
+                                     .orElseThrow(() -> new NotFoundException(10501));
+
+        Boolean isRelationSaved = this.themeSpuService.addThemeSpuRelation(dto.getThemeId(), spuDO.getId());
+        if (!isRelationSaved) throw new FailedException(10456);
+
+        return BeanKit.transform(spuDO, new SpuVO());
+    }
+
+    @Transactional
+    @Override
+    public Boolean deleteThemeSpu(ThemeSpuDTO dto) {
+        Boolean isRelationExist = this.themeSpuService.isThemeSpuRelationExist(dto.getThemeId(), dto.getSpuId());
+        if (!isRelationExist) throw new NotFoundException(10458);
+        return this.themeSpuService.deleteThemeSpuRelation(dto.getThemeId(), dto.getSpuId());
     }
 }

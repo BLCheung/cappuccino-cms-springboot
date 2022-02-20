@@ -6,9 +6,11 @@ import com.blcheung.zblmissyouadmin.common.annotations.router.RouterMeta;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterModule;
 import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
 import com.blcheung.zblmissyouadmin.dto.ThemeDTO;
+import com.blcheung.zblmissyouadmin.dto.ThemeSpuDTO;
 import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.service.ThemeService;
+import com.blcheung.zblmissyouadmin.vo.SpuVO;
 import com.blcheung.zblmissyouadmin.vo.ThemeVO;
 import com.blcheung.zblmissyouadmin.vo.common.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Positive;
+import java.util.List;
 
 /**
  * <p>
@@ -42,6 +45,13 @@ public class ThemeController {
         return ResultKit.resolveCreated(themeVO);
     }
 
+    @GetMapping("{id}")
+    @RouterMeta(name = "查看主题详情", mount = false)
+    public ResultVO<ThemeVO> get(@PathVariable @Positive Long id) {
+        ThemeVO themeVO = this.themeService.getThemeDetail(id);
+        return ResultKit.resolve(themeVO);
+    }
+
     @PutMapping("/{id}")
     @RouterMeta(name = "更新主题")
     public UpdatedVO update(@PathVariable @Positive Long id, @RequestBody @Validated ThemeDTO dto) {
@@ -62,5 +72,27 @@ public class ThemeController {
     public ResultVO<PagingVO<ThemeVO>> page(@Validated BasePagingDTO dto) {
         PagingVO<ThemeVO> themePage = this.themeService.getThemePage(dto);
         return ResultKit.resolve(themePage);
+    }
+
+    @GetMapping("/{id}/spus")
+    @RouterMeta(name = "获取主题下所有SPU", mount = false)
+    public ResultVO<List<SpuVO>> spus(@PathVariable @Positive Long id) {
+        List<SpuVO> themeSpus = this.themeService.getThemeSpus(id);
+        return ResultKit.resolve(themeSpus);
+    }
+
+    @PostMapping("/spu")
+    @RouterMeta(name = "主题下添加SPU")
+    public CreatedVO addSpu(@RequestBody @Validated ThemeSpuDTO dto) {
+        SpuVO spuVO = this.themeService.addThemeSpu(dto);
+        return ResultKit.resolveCreated(spuVO);
+    }
+
+    @DeleteMapping("/spu")
+    @RouterMeta(name = "删除主题下的SPU")
+    public DeletedVO deleteSpu(@RequestBody @Validated ThemeSpuDTO dto) {
+        Boolean isDeleted = this.themeService.deleteThemeSpu(dto);
+        if (!isDeleted) throw new FailedException(10459);
+        return ResultKit.resolveDeleted();
     }
 }

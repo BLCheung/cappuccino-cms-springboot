@@ -6,6 +6,8 @@ import com.blcheung.zblmissyouadmin.model.SpuDO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * <p>
  * Mapper 接口
@@ -26,4 +28,14 @@ public interface SpuMapper extends BaseMapper<SpuDO> {
      * @date 2022/2/11 12:14 上午
      */
     SpuDetailBO getSpuDetail(@Param("spu") SpuDO spuDO);
+
+    /**
+     * 根据主题id获取主题下所有Spu
+     *
+     * @param themeId
+     * @return java.util.List<com.blcheung.zblmissyouadmin.model.SpuDO>
+     * @author BLCheung
+     * @date 2022/2/19 11:16 下午
+     */
+    List<SpuDO> getSpusByThemeId(@Param("themeId") Long themeId);
 }
