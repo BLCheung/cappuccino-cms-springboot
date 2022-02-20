@@ -41,8 +41,9 @@ public class CmsRootController {
 
     @GetMapping("/groups/all")
     @RouterMeta(name = "查询所有分组", mount = false)
-    public List<GroupVO> groups() {
-        return this.cmsRootService.getAllGroupByRoot();
+    public ResultVO<List<GroupVO>> groups() {
+        List<GroupVO> allGroups = this.cmsRootService.getAllGroupByRoot();
+        return ResultKit.resolve(allGroups);
     }
 
     @PostMapping("/user/{id}/group")
