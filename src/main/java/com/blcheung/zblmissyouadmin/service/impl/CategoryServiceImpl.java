@@ -14,11 +14,16 @@ import com.blcheung.zblmissyouadmin.mapper.CategoryMapper;
 import com.blcheung.zblmissyouadmin.model.CategoryDO;
 import com.blcheung.zblmissyouadmin.service.CategoryService;
 import com.blcheung.zblmissyouadmin.vo.CategoryVO;
+import com.blcheung.zblmissyouadmin.vo.RootCategoryVO;
 import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -37,6 +42,35 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, CategoryDO>
         return this.lambdaQuery()
                    .eq(CategoryDO::getId, categoryId)
                    .oneOpt();
+    }
+
+    @Override
+    public List<RootCategoryVO> getAllCategoryTree() {
+        List<CategoryDO> all = this.lambdaQuery()
+                                   .list();
+        List<CategoryDO> roots = all.stream()
+                                    .filter(categoryDO -> categoryDO.getParentId() == null)
+                                    .collect(Collectors.toList());
+        List<CategoryDO> subs = all.stream()
+                                   .filter(categoryDO -> categoryDO.getParentId() != null)
+                                   .collect(Collectors.toList());
+
+        List<RootCategoryVO> rootResults = new ArrayList<>(roots.size());
+        for (CategoryDO root : roots) {
+            List<CategoryVO> rootSubs = new ArrayList<>();
+            for (CategoryDO sub : subs) {
+                if (sub.getParentId()
+                       .equals(root.getId())) rootSubs.add(BeanKit.transform(sub, new CategoryVO()));
+            }
+            rootResults.add(BeanKit.transform(root, new RootCategoryVO(rootSubs)));
+        }
+
+        rootResults.sort((c1, c2) -> {
+            if (c1.getIndex() == null || c2.getIndex() == null) return 0;
+            return c1.getIndex() - c2.getIndex();
+        });
+
+        return rootResults;
     }
 
     @Transactional

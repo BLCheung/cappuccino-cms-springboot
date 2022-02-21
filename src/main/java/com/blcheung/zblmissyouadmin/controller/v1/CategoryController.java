@@ -10,12 +10,14 @@ import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.service.CategoryService;
 import com.blcheung.zblmissyouadmin.vo.CategoryVO;
+import com.blcheung.zblmissyouadmin.vo.RootCategoryVO;
 import com.blcheung.zblmissyouadmin.vo.common.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Positive;
+import java.util.List;
 
 /**
  * <p>
@@ -69,5 +71,12 @@ public class CategoryController {
     public ResultVO<PagingVO<CategoryVO>> subPage(@PathVariable @Positive Long id, @Validated BasePagingDTO dto) {
         PagingVO<CategoryVO> subCategoryPage = this.categoryService.getSubCategoryPage(id, dto);
         return ResultKit.resolve(subCategoryPage);
+    }
+
+    @GetMapping("/tree")
+    @RouterMeta(name = "获取分类树结构", mount = false)
+    public ResultVO<List<RootCategoryVO>> getCategoryTree() {
+        List<RootCategoryVO> categoryTree = this.categoryService.getAllCategoryTree();
+        return ResultKit.resolve(categoryTree);
     }
 }

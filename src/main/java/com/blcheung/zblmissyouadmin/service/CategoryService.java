@@ -5,8 +5,10 @@ import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
 import com.blcheung.zblmissyouadmin.model.CategoryDO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.blcheung.zblmissyouadmin.vo.CategoryVO;
+import com.blcheung.zblmissyouadmin.vo.RootCategoryVO;
 import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -28,6 +30,15 @@ public interface CategoryService extends IService<CategoryDO> {
      * @date 2022/2/5 12:18 上午
      */
     Optional<CategoryDO> getCategory(Long categoryId);
+
+    /**
+     * 获取所有分类树结构
+     *
+     * @return java.util.List<com.blcheung.zblmissyouadmin.vo.RootCategoryVO>
+     * @author BLCheung
+     * @date 2022/2/22 12:12 上午
+     */
+    List<RootCategoryVO> getAllCategoryTree();
 
     /**
      * 创建分类
