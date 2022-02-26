@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blcheung.zblmissyouadmin.mapper.CouponMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.blcheung.zblmissyouadmin.model.CouponDO">
+        <result column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="delete_time" property="deleteTime" />
+        <result column="title" property="title" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="description" property="description" />
+        <result column="full_money" property="fullMoney" />
+        <result column="minus" property="minus" />
+        <result column="rate" property="rate" />
+        <result column="type" property="type" />
+        <result column="activity_id" property="activityId" />
+        <result column="remark" property="remark" />
+        <result column="whole_store" property="wholeStore" />
+    </resultMap>
+
+    <select id="getCouponPage" resultMap="BaseResultMap">
+        SELECT c.*
+        FROM coupon c
+        WHERE c.delete_time IS NULL
+    </select>
+
+    <select id="getCouponsByActivityId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT c.*
+        FROM coupon c,
+             (
+                 SELECT _ac.coupon_id, _ac.activity_id
+                 FROM activity_coupon _ac
+                 WHERE _ac.activity_id = #{activityId}
+             ) ac
+        WHERE c.id = ac.coupon_id
+          AND c.activity_id = ac.activity_id
+          AND c.delete_time IS NULL
+    </select>
+</mapper>

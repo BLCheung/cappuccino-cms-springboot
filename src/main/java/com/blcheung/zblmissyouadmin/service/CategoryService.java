@@ -101,4 +101,14 @@ public interface CategoryService extends IService<CategoryDO> {
      * @date 2022/2/5 1:47 上午
      */
     Boolean hasSubCategory(Long parentId);
+
+    /**
+     * 获取某张优惠券下的适用分类
+     *
+     * @param couponId
+     * @return java.util.List<com.blcheung.zblmissyouadmin.model.CategoryDO>
+     * @author BLCheung
+     * @date 2022/2/22 4:47 上午
+     */
+    List<CategoryDO> getCategoriesByCouponId(Long couponId);
 }

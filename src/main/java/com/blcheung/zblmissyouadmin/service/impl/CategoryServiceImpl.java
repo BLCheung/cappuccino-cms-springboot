@@ -19,10 +19,7 @@ import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -145,5 +142,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, CategoryDO>
                    .eq(CategoryDO::getIsRoot, RootStatus.NOT_ROOT.getValue())
                    .last("limit 1")
                    .one() != null;
+    }
+
+    @Override
+    public List<CategoryDO> getCategoriesByCouponId(Long couponId) {
+        List<CategoryDO> categories = this.getBaseMapper()
+                                          .getAllCategoryByCouponId(couponId);
+        return categories.isEmpty() ? Collections.emptyList() : categories;
     }
 }

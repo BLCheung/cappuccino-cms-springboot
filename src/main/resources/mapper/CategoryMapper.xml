@@ -24,4 +24,16 @@
         WHERE c.id = #{categoryId}
           AND c.delete_time IS NULL
     </select>
+
+    <select id="getAllCategoryByCouponId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT c.*
+        FROM category c,
+             (
+                 SELECT _cc.category_id
+                 FROM coupon_category _cc
+                 WHERE _cc.coupon_id = #{couponId}
+             ) cc
+        WHERE c.id = cc.category_id
+          AND c.delete_time IS NULL
+    </select>
 </mapper>
