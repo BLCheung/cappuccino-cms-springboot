@@ -1,5 +1,6 @@
 package com.blcheung.zblmissyouadmin.kit;
 
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
 import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
@@ -27,6 +28,21 @@ public class PagingKit {
         Long pageNum = dto.getPageNum();
         Long pageSize = dto.getPageSize();
         return new Page<T>(pageNum, pageSize);
+    }
+
+    /**
+     * 生成最新的创建时间的分页查询器
+     *
+     * @param dto
+     * @param entityClazz
+     * @return com.baomidou.mybatisplus.extension.plugins.pagination.Page<T>
+     * @author BLCheung
+     * @date 2022/2/26 3:57 下午
+     */
+    public static <D extends BasePagingDTO, T> Page<T> buildLatest(D dto, Class<T> entityClazz) {
+        Long pageNum = dto.getPageNum();
+        Long pageSize = dto.getPageSize();
+        return new Page<T>(pageNum, pageSize).addOrder(OrderItem.desc("create_time"));
     }
 
     /**
