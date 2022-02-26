@@ -1,6 +1,7 @@
 package com.blcheung.zblmissyouadmin.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import com.blcheung.zblmissyouadmin.util.JSONConverterUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -47,6 +48,9 @@ public class SkuDO extends BaseDO {
     private Long rootCategoryId;
 
     private Integer limitBuyCount;
+
+    @Version
+    private Integer version;
 
     public void setSpecs(String specs) {
         this.specs = specs;
