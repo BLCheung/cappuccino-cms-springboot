@@ -1,11 +1,11 @@
 package com.blcheung.zblmissyouadmin.mapper;
 
-import com.blcheung.zblmissyouadmin.model.UserAddressDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.blcheung.zblmissyouadmin.model.UserAddressDO;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author BLCheung
