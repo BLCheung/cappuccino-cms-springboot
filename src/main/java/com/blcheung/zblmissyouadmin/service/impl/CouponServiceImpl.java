@@ -46,9 +46,6 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, CouponDO> imple
     private CategoryService categoryService;
 
     @Autowired
-    private ActivityService activityService;
-
-    @Autowired
     private CouponCategoryService couponCategoryService;
 
     @Override
@@ -159,6 +156,13 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, CouponDO> imple
     public List<CouponVO> getCouponsByActivity(Long activityId) {
         List<CouponDO> coupons = this.getBaseMapper()
                                      .getCouponsByActivityId(activityId);
+        return coupons.isEmpty() ? Collections.emptyList() : BeanKit.transformList(coupons, CouponVO.class);
+    }
+
+    @Override
+    public List<CouponVO> getCouponsByOrderAndUser(Long orderId, Long userId) {
+        List<CouponDO> coupons = this.getBaseMapper()
+                                     .getCouponsByOrderIdAndUserId(orderId, userId);
         return coupons.isEmpty() ? Collections.emptyList() : BeanKit.transformList(coupons, CouponVO.class);
     }
 

@@ -100,4 +100,15 @@ public interface CouponService extends IService<CouponDO> {
      * @date 2022/2/23 1:04 上午
      */
     List<CouponVO> getCouponsByActivity(Long activityId);
+
+    /**
+     * 根据用户的订单获取优惠券
+     *
+     * @param orderId
+     * @param userId
+     * @return java.util.List<com.blcheung.zblmissyouadmin.vo.CouponVO>
+     * @author BLCheung
+     * @date 2022/2/28 3:02 上午
+     */
+    List<CouponVO> getCouponsByOrderAndUser(Long orderId, Long userId);
 }

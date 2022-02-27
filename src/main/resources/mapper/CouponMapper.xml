@@ -39,4 +39,16 @@
           AND c.activity_id = ac.activity_id
           AND c.delete_time IS NULL
     </select>
+
+    <select id="getCouponsByOrderIdAndUserId" resultMap="BaseResultMap">
+        SELECT c.*
+        FROM coupon c
+        WHERE c.id IN
+              (
+                  SELECT _uc.coupon_id
+                  FROM user_coupon _uc
+                  WHERE _uc.user_id = #{userId}
+                    AND _uc.order_id = #{orderId}
+              )
+    </select>
 </mapper>
