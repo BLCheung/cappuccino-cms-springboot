@@ -51,4 +51,5 @@ public class UserController {
         UserDetailVO userDetailVO = this.userService.getUserDetail(id);
         return ResultKit.resolve(userDetailVO);
     }
+
 }

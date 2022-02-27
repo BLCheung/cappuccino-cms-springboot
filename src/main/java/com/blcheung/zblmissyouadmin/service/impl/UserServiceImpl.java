@@ -47,6 +47,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         Page<UserDO> pageable = PagingKit.buildLatest(dto, UserDO.class);
         String keyword = dto.getKeyword();
         pageable = this.lambdaQuery()
+                       .like(!StringUtils.isEmpty(dto.getKeyword()), UserDO::getId, dto.getKeyword())
+                       .or()
                        .like(!StringUtils.isEmpty(keyword), UserDO::getNickname, keyword)
                        .page(pageable);
         return PagingKit.resolve(pageable, UserVO.class);
