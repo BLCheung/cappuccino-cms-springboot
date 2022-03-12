@@ -84,6 +84,22 @@ public class CmsGroupServiceImpl extends ServiceImpl<CmsGroupMapper, CmsGroupDO>
     }
 
     @Override
+    public GroupLevel getUserGroupLevel(Long uid) {
+        List<CmsGroupDO> userGroups = this.getUserGroups(uid);
+        if (userGroups.isEmpty()) return GroupLevel.GUEST;
+
+        GroupLevel level = userGroups.get(0)
+                                     .getLevel();
+        // 获取所有分组里level值最小的一个（分组级别最高的）
+        for (CmsGroupDO group : userGroups) {
+            GroupLevel currentLevel = group.getLevel();
+            if (currentLevel.getValue() <= level.getValue()) level = currentLevel;
+        }
+
+        return level;
+    }
+
+    @Override
     public void validateGroupNameExist(String groupName) {
         boolean exist = this.checkGroupExistByName(groupName);
         if (exist) throw new ForbiddenException(10201);

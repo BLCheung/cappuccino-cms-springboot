@@ -88,6 +88,16 @@ public interface CmsGroupService extends IService<CmsGroupDO> {
     List<CmsGroupDO> getGroupsByLevelGE(GroupLevel level);
 
     /**
+     * 获取用户的分组级别
+     *
+     * @param uid
+     * @return com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel
+     * @author BLCheung
+     * @date 2022/3/3 9:56 下午
+     */
+    GroupLevel getUserGroupLevel(Long uid);
+
+    /**
      * 校验分组
      *
      * @param groupName

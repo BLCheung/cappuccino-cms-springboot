@@ -3,6 +3,7 @@ package com.blcheung.zblmissyouadmin.controller.v1.cms;
 
 import com.blcheung.zblmissyouadmin.common.annotations.permission.AdminRequired;
 import com.blcheung.zblmissyouadmin.common.annotations.permission.LoginRequired;
+import com.blcheung.zblmissyouadmin.common.annotations.permission.RefreshRequired;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterMeta;
 import com.blcheung.zblmissyouadmin.common.annotations.router.RouterModule;
 import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
@@ -15,6 +16,8 @@ import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.service.CmsUserService;
+import com.blcheung.zblmissyouadmin.vo.cms.UserInfoVO;
+import com.blcheung.zblmissyouadmin.vo.cms.UserPermissionsVO;
 import com.blcheung.zblmissyouadmin.vo.cms.UserVO;
 import com.blcheung.zblmissyouadmin.vo.common.CreatedVO;
 import com.blcheung.zblmissyouadmin.vo.common.ResultVO;
@@ -70,5 +73,29 @@ public class CmsUserController {
         Boolean updateSuccess = this.cmsUserService.changePassword(dto);
         if (!updateSuccess) throw new FailedException(10120);
         return ResultKit.resolveUpdated();
+    }
+
+    @GetMapping("/permissions")
+    @LoginRequired
+    @RouterMeta(name = "获取用户权限", mount = false)
+    public ResultVO<UserPermissionsVO> permissions() {
+        UserPermissionsVO userPermissionsVO = this.cmsUserService.getUserPermissions();
+        return ResultKit.resolve(userPermissionsVO);
+    }
+
+    @GetMapping("/info")
+    @LoginRequired
+    @RouterMeta(name = "获取用户信息", mount = false)
+    public ResultVO<UserInfoVO> info() {
+        UserInfoVO userInfoVO = this.cmsUserService.getUserInfo();
+        return ResultKit.resolve(userInfoVO);
+    }
+
+    @GetMapping("/refresh")
+    @RefreshRequired
+    @RouterMeta(name = "获取刷新令牌", mount = false)
+    public ResultVO<Tokens> refreshToken() {
+        Tokens tokens = this.cmsUserService.getRefreshToken();
+        return ResultKit.resolve(tokens);
     }
 }

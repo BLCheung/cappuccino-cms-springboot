@@ -10,6 +10,8 @@ import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserInfoDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserPasswordDTO;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
+import com.blcheung.zblmissyouadmin.vo.cms.UserInfoVO;
+import com.blcheung.zblmissyouadmin.vo.cms.UserPermissionsVO;
 
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +64,24 @@ public interface CmsUserService extends IService<CmsUserDO> {
      * @date 2022/1/28 9:51 下午
      */
     Boolean changePassword(UpdateUserPasswordDTO dto);
+
+    /**
+     * 获取用户权限
+     *
+     * @return com.blcheung.zblmissyouadmin.vo.cms.UserPermissionsVO
+     * @author BLCheung
+     * @date 2022/3/3 9:43 下午
+     */
+    UserPermissionsVO getUserPermissions();
+
+    /**
+     * 获取用户信息
+     *
+     * @return com.blcheung.zblmissyouadmin.vo.cms.UserInfoVO
+     * @author BLCheung
+     * @date 2022/3/3 11:07 下午
+     */
+    UserInfoVO getUserInfo();
 
     /**
      * 通过用户名检查用户是否存在
@@ -165,4 +185,13 @@ public interface CmsUserService extends IService<CmsUserDO> {
      * @date 2022/1/24 2:53 上午
      */
     Page<CmsUserDO> getUserPageByGroupId(Page<CmsUserDO> page, Long groupId);
+
+    /**
+     * 获取刷新令牌
+     *
+     * @return com.blcheung.zblmissyouadmin.common.token.Tokens
+     * @author BLCheung
+     * @date 2022/3/7 12:28 下午
+     */
+    Tokens getRefreshToken();
 }

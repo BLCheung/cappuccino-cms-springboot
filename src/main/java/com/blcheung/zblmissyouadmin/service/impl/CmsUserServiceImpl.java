@@ -7,20 +7,23 @@ import com.blcheung.zblmissyouadmin.common.exceptions.DatabaseActionException;
 import com.blcheung.zblmissyouadmin.common.exceptions.ForbiddenException;
 import com.blcheung.zblmissyouadmin.common.exceptions.NotFoundException;
 import com.blcheung.zblmissyouadmin.common.exceptions.UnAuthorizedException;
+import com.blcheung.zblmissyouadmin.common.token.DoubleJWT;
 import com.blcheung.zblmissyouadmin.common.token.Tokens;
 import com.blcheung.zblmissyouadmin.dto.cms.LoginDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.RegisterUserDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserInfoDTO;
 import com.blcheung.zblmissyouadmin.dto.cms.UpdateUserPasswordDTO;
+import com.blcheung.zblmissyouadmin.kit.BeanKit;
 import com.blcheung.zblmissyouadmin.kit.UserKit;
 import com.blcheung.zblmissyouadmin.mapper.CmsUserMapper;
-import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
-import com.blcheung.zblmissyouadmin.model.CmsUserDO;
-import com.blcheung.zblmissyouadmin.model.CmsUserGroupDO;
-import com.blcheung.zblmissyouadmin.model.CmsUserIdentityDO;
+import com.blcheung.zblmissyouadmin.model.*;
 import com.blcheung.zblmissyouadmin.service.*;
 import com.blcheung.zblmissyouadmin.util.CommonUtil;
 import com.blcheung.zblmissyouadmin.util.EncryptUtil;
+import com.blcheung.zblmissyouadmin.vo.cms.PermissionModuleVO;
+import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
+import com.blcheung.zblmissyouadmin.vo.cms.UserInfoVO;
+import com.blcheung.zblmissyouadmin.vo.cms.UserPermissionsVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -54,6 +58,9 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
 
     @Autowired
     private CmsUserIdentityService cmsUserIdentityService;
+
+    @Autowired
+    private DoubleJWT jwt;
 
     @Transactional
     @Override
@@ -156,6 +163,40 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
     }
 
     @Override
+    public UserPermissionsVO getUserPermissions() {
+        CmsUserDO currentUser = UserKit.getUser();
+        List<CmsPermissionDO> userPermissions = this.getUserPermissions(currentUser.getId());
+        GroupLevel groupLevel = this.cmsGroupService.getUserGroupLevel(currentUser.getId());
+
+        List<PermissionModuleVO> modules = new ArrayList<>();
+        for (CmsPermissionDO permission : userPermissions) {
+            int moduleIndex = this.getModuleIndex(modules, permission.getModule());
+            if (moduleIndex == -1) {
+                List<PermissionVO> permissions = new ArrayList<>();
+                permissions.add(BeanKit.transform(permission, new PermissionVO()));
+                modules.add(new PermissionModuleVO(permission.getModule(), permissions));
+            } else {
+                PermissionModuleVO moduleVO = modules.get(moduleIndex);
+                moduleVO.getPermissions()
+                        .add(BeanKit.transform(permission, new PermissionVO()));
+            }
+        }
+
+        UserPermissionsVO userPermissionsVO = BeanKit.transform(currentUser, new UserPermissionsVO(modules));
+        userPermissionsVO.setUserLevel(groupLevel.getValue());
+
+        return userPermissionsVO;
+    }
+
+    @Override
+    public UserInfoVO getUserInfo() {
+        CmsUserDO currentUser = UserKit.getUser();
+        List<CmsGroupDO> userGroups = this.cmsGroupService.getUserGroups(currentUser.getId());
+
+        return BeanKit.transform(currentUser, new UserInfoVO(userGroups));
+    }
+
+    @Override
     public Boolean checkUserExistByUserName(String username) {
         return this.lambdaQuery()
                    .select(CmsUserDO::getId)
@@ -227,6 +268,22 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
     public Page<CmsUserDO> getUserPageByGroupId(Page<CmsUserDO> page, Long groupId) {
         return this.getBaseMapper()
                    .getUserPageByGroupId(page, groupId);
+    }
+
+    @Override
+    public Tokens getRefreshToken() {
+        CmsUserDO user = UserKit.getUser();
+        return this.jwt.createTokens(user.getId());
+    }
+
+
+    private int getModuleIndex(List<PermissionModuleVO> modules, String module) {
+        if (modules.isEmpty()) return -1;
+        for (int i = 0; i < modules.size(); i++) {
+            PermissionModuleVO moduleVO = modules.get(i);
+            if (module.equals(moduleVO.getModule())) return i;
+        }
+        return -1;
     }
 
     private void checkGroupExist(List<Long> groupIds) {
