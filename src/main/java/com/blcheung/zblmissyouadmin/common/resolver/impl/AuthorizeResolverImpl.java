@@ -139,9 +139,9 @@ public class AuthorizeResolverImpl implements AuthorizeResolver {
         try {
             claimMap = this.jwt.decodeRefreshToken(refreshToken);
         } catch (JWTDecodeException | AlgorithmMismatchException | SignatureVerificationException | InvalidClaimException e) {
-            throw new TokenInvalidException(10012);
+            throw new TokenInvalidException(10014);
         } catch (com.auth0.jwt.exceptions.TokenExpiredException e) {
-            throw new TokenExpiredException(10013);
+            throw new TokenExpiredException(10015);
         }
 
         return this.verifyClaim(claimMap);
