@@ -17,9 +17,9 @@ public class UserPermissionsVO extends UserVO {
 
     private Integer userLevel;
 
-    private List<PermissionModuleVO> permissions;
+    private List<PermissionModuleVO> modules;
 
-    public UserPermissionsVO(List<PermissionModuleVO> permissions) {
-        this.permissions = permissions;
+    public UserPermissionsVO(List<PermissionModuleVO> modules) {
+        this.modules = modules;
     }
 }
