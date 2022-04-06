@@ -147,6 +147,7 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         return this.getUserByUserId(currentUser.getId());
     }
 
+    @Transactional
     @Override
     public Boolean changePassword(UpdateUserPasswordDTO dto) {
         CmsUserDO currentUser = UserKit.getUser();
@@ -158,7 +159,7 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         boolean isSameCredential = EncryptUtil.decrypt(currentUserIdentity.getCredential(), dto.getNewPassword());
         if (isSameCredential) throw new ForbiddenException(10123);
 
-        return this.cmsUserIdentityService.changeUserPasswordIdentity(currentUserIdentity.getId(),
+        return this.cmsUserIdentityService.changeUserPasswordIdentity(currentUser.getId(),
                                                                       dto.getNewPassword());
     }
 
