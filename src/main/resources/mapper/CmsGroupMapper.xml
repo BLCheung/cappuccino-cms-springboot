@@ -27,14 +27,14 @@
 
     <select id="getGroupsByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
         SELECT id, name, info, level, create_time, update_time, delete_time
-        FROM cms_group AS g
+        FROM (
+                 SELECT _ug.group_id
+                 FROM cms_user_group _ug
+                 WHERE _ug.user_id = #{uid}
+             ) ug
+                 LEFT JOIN cms_group g
+                           ON g.id = ug.group_id
         WHERE g.delete_time IS NULL
-          AND g.id IN
-              (
-                  SELECT group_id
-                  FROM cms_user_group AS ug
-                  WHERE ug.user_id = #{uid}
-              )
     </select>
 
 </mapper>

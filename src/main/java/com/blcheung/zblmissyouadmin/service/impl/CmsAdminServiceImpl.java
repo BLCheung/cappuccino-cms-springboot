@@ -150,7 +150,7 @@ public class CmsAdminServiceImpl implements CmsAdminService {
         // 分组下的权限列表
         List<Long> currentGroupPermissionIds = this.cmsPermissionService.getPermissionIdsByGroupId(groupId);
 
-        Boolean isInclude = CommonUtil.isIncludeEqualIds(dispatchPermissionIds, currentGroupPermissionIds);
+        Boolean isInclude = CommonUtil.isDistinctEqualIds(dispatchPermissionIds, currentGroupPermissionIds);
         if (isInclude) return true;
 
         List<Long> addIds = Collections.emptyList();
@@ -185,6 +185,7 @@ public class CmsAdminServiceImpl implements CmsAdminService {
         if (dto.getGroupId() == null) {
             // 当前只能查询管理员以下级别的用户
             pageable = this.cmsUserService.getUserPageByGroupLevelGE(pageable, GroupLevel.USER);
+            // 每个用户都组装上分组信息
         } else {
             CmsUserDO cmsUserDO = UserKit.getUser();
             Boolean isRoot = this.cmsRootService.checkUserIsRoot(cmsUserDO.getId());
@@ -194,9 +195,8 @@ public class CmsAdminServiceImpl implements CmsAdminService {
             }
             pageable = this.cmsUserService.getUserPageByGroupId(pageable, dto.getGroupId());
         }
-
         // 每个用户都组装上分组信息
-        return this.assembleUserGroupVO(pageable);
+        return this.assembleUserGroupVO(pageable, GroupLevel.USER);
     }
 
     @Transactional
@@ -209,7 +209,7 @@ public class CmsAdminServiceImpl implements CmsAdminService {
 
         List<Long> currentUserGroupIds = this.cmsGroupService.getUserGroupIds(cmsUserDO.getId());
 
-        Boolean isInclude = CommonUtil.isIncludeEqualIds(dispatchGroupIds, currentUserGroupIds);
+        Boolean isInclude = CommonUtil.isDistinctEqualIds(dispatchGroupIds, currentUserGroupIds);
         if (isInclude) return true;
 
         List<Long> addIds = Collections.emptyList();
@@ -285,12 +285,13 @@ public class CmsAdminServiceImpl implements CmsAdminService {
      * 拼装用户分页下的每个用户所属分组信息
      *
      * @param pageable
+     * @param filterLevel
      * @return com.blcheung.zblmissyouadmin.vo.PagingResultVO<com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO>
      * @author BLCheung
      * @date 2022/1/26 3:03 上午
      */
     @Override
-    public PagingVO<UserGroupVO> assembleUserGroupVO(Page<CmsUserDO> pageable) {
+    public PagingVO<UserGroupVO> assembleUserGroupVO(Page<CmsUserDO> pageable, GroupLevel filterLevel) {
         List<UserGroupVO> userGroupsVO = pageable.getRecords()
                                                  .stream()
                                                  .map(cmsUserDO -> {
@@ -300,7 +301,18 @@ public class CmsAdminServiceImpl implements CmsAdminService {
                                                      return BeanKit.transform(cmsUserDO, new UserGroupVO(userGroups));
                                                  })
                                                  .collect(Collectors.toList());
-        return PagingKit.resolve(pageable, userGroupsVO);
+        if (filterLevel == null) {
+            return PagingKit.resolve(pageable, userGroupsVO);
+        } else {
+            List<UserGroupVO> finalUserGroupsVO = userGroupsVO.stream()
+                                                              .filter(userGroupVO -> userGroupVO.getGroups()
+                                                                                                .stream()
+                                                                                                .allMatch(groupVO ->
+                                                                                                                   groupVO.getLevel() >=
+                                                                                                                   filterLevel.getValue()))
+                                                              .collect(Collectors.toList());
+            return PagingKit.resolve(pageable, finalUserGroupsVO);
+        }
     }
 
 

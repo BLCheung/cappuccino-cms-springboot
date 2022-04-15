@@ -16,4 +16,6 @@ public class GroupVO {
     private String name;
 
     private String info;
+
+    private Integer level;
 }

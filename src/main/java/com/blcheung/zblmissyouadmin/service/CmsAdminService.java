@@ -1,6 +1,7 @@
 package com.blcheung.zblmissyouadmin.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.dto.cms.*;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
 import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
@@ -142,9 +143,10 @@ public interface CmsAdminService {
      * 用于组装管理员模块的查看用户分页结果通用函数（给每个用户数据拼接上所属分组信息）
      *
      * @param pageable
+     * @param filterLevel 过滤的级别
      * @return com.blcheung.zblmissyouadmin.vo.PagingResultVO<com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO>
      * @author BLCheung
      * @date 2022/1/26 3:44 上午
      */
-    PagingVO<UserGroupVO> assembleUserGroupVO(Page<CmsUserDO> pageable);
+    PagingVO<UserGroupVO> assembleUserGroupVO(Page<CmsUserDO> pageable, GroupLevel filterLevel);
 }

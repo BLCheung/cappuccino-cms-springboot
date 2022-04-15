@@ -75,8 +75,7 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         this.baseMapper.insert(userDO);
 
         // 是否设置了分组
-        if (ObjectUtils.isEmpty(dto.getGroupIds()) || dto.getGroupIds()
-                                                         .isEmpty()) {
+        if (ObjectUtils.isEmpty(dto.getGroupIds())) {
             // 没有分配分组，默认存储进游客组
             Long guestGroupId = this.cmsGroupService.getGroupIdByLevel(GroupLevel.GUEST);
             CmsUserGroupDO userGroupRelation = CmsUserGroupDO.builder()
@@ -159,8 +158,7 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         boolean isSameCredential = EncryptUtil.decrypt(currentUserIdentity.getCredential(), dto.getNewPassword());
         if (isSameCredential) throw new ForbiddenException(10123);
 
-        return this.cmsUserIdentityService.changeUserPasswordIdentity(currentUser.getId(),
-                                                                      dto.getNewPassword());
+        return this.cmsUserIdentityService.changeUserPasswordIdentity(currentUser.getId(), dto.getNewPassword());
     }
 
     @Override

@@ -58,16 +58,17 @@
                create_time,
                update_time,
                delete_time
-        FROM cms_user AS u
+        FROM (
+                 SELECT _ug.user_id
+                 FROM cms_group _g
+                          RIGHT JOIN cms_user_group _ug
+                                     ON _g.id = _ug.group_id
+                 WHERE <![CDATA[ _g.level >= #{level} ]]>
+                 GROUP BY _ug.user_id
+             ) ug
+                 LEFT JOIN cms_user u
+                           ON u.id = ug.user_id
         WHERE u.delete_time IS NULL
-          AND u.id IN
-              (
-                  SELECT user_id
-                  FROM cms_group AS g
-                           LEFT JOIN cms_user_group AS ug
-                                     ON ug.group_id = g.id
-                  WHERE <![CDATA[ g.level >= #{level} ]]>
-              )
     </select>
 
     <select id="getUserPageByGroupLevelEQ" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -79,16 +80,17 @@
                create_time,
                update_time,
                delete_time
-        FROM cms_user AS u
+        FROM (
+                 SELECT _ug.user_id
+                 FROM cms_group _g
+                          RIGHT JOIN cms_user_group _ug
+                                     ON _g.id = _ug.group_id
+                 WHERE _g.level = #{level}
+                 GROUP BY _ug.user_id
+             ) ug
+                 LEFT JOIN cms_user u
+                           ON ug.user_id = u.id
         WHERE u.delete_time IS NULL
-          AND u.id IN
-              (
-                  SELECT user_id
-                  FROM cms_group AS g
-                           LEFT JOIN cms_user_group AS ug
-                                     ON ug.group_id = g.id
-                  WHERE g.level = #{level}
-              )
     </select>
 
     <select id="getUserPageByGroupId" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -100,13 +102,13 @@
                create_time,
                update_time,
                delete_time
-        FROM cms_user AS u
+        FROM (
+                 SELECT _ug.user_id
+                 FROM cms_user_group _ug
+                 WHERE _ug.group_id = #{groupId}
+             ) ug
+                 LEFT JOIN cms_user u
+                           ON ug.user_id = u.id
         WHERE u.delete_time IS NULL
-          AND u.id IN
-              (
-                  SELECT user_id
-                  FROM cms_user_group AS ug
-                  WHERE ug.group_id = #{groupId}
-              )
     </select>
 </mapper>
