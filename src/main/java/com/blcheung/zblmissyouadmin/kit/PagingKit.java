@@ -3,7 +3,9 @@ package com.blcheung.zblmissyouadmin.kit;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.dto.common.BasePagingDTO;
+import com.blcheung.zblmissyouadmin.dto.common.SortPagingDTO;
 import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -28,6 +30,19 @@ public class PagingKit {
         Long pageNum = dto.getPageNum();
         Long pageSize = dto.getPageSize();
         return new Page<T>(pageNum, pageSize);
+    }
+
+    /**
+     * 生成分页排序查询器
+     *
+     * @param dto         分页DTO
+     * @param entityClazz 数据源类型
+     * @return com.baomidou.mybatisplus.extension.plugins.pagination.Page<T>
+     * @author BLCheung
+     * @date 2022/4/12 1:50 上午
+     */
+    public static <S extends SortPagingDTO, T> Page<T> buildSort(S dto, Class<T> entityClazz) {
+        return handleSorts(build(dto, entityClazz), dto);
     }
 
     /**
@@ -94,5 +109,13 @@ public class PagingKit {
      */
     public static <D, V> PagingVO<V> resolve(Page<D> pageable, List<V> voList) {
         return new PagingVO<V>(pageable, voList);
+    }
+
+
+    private static <T> Page<T> handleSorts(Page<T> page, SortPagingDTO dto) {
+        if (StringUtils.isEmpty(dto.getProp())) return page;
+
+        return page.addOrder(new OrderItem(dto.getProp(), dto.getOrder()
+                                                             .equalsIgnoreCase("ascending")));
     }
 }
