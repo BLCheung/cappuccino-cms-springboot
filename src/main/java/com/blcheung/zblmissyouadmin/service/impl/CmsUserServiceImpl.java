@@ -21,7 +21,6 @@ import com.blcheung.zblmissyouadmin.service.*;
 import com.blcheung.zblmissyouadmin.util.CommonUtil;
 import com.blcheung.zblmissyouadmin.util.EncryptUtil;
 import com.blcheung.zblmissyouadmin.vo.cms.PermissionModuleVO;
-import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.UserInfoVO;
 import com.blcheung.zblmissyouadmin.vo.cms.UserPermissionsVO;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -167,19 +165,7 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         List<CmsPermissionDO> userPermissions = this.getUserPermissions(currentUser.getId());
         GroupLevel groupLevel = this.cmsGroupService.getUserGroupLevel(currentUser.getId());
 
-        List<PermissionModuleVO> modules = new ArrayList<>();
-        for (CmsPermissionDO permission : userPermissions) {
-            int moduleIndex = this.getModuleIndex(modules, permission.getModule());
-            if (moduleIndex == -1) {
-                List<PermissionVO> permissions = new ArrayList<>();
-                permissions.add(BeanKit.transform(permission, new PermissionVO()));
-                modules.add(new PermissionModuleVO(permission.getModule(), permissions));
-            } else {
-                PermissionModuleVO moduleVO = modules.get(moduleIndex);
-                moduleVO.getPermissions()
-                        .add(BeanKit.transform(permission, new PermissionVO()));
-            }
-        }
+        List<PermissionModuleVO> modules = this.cmsPermissionService.assemblePermissionModules(userPermissions);
 
         UserPermissionsVO userPermissionsVO = BeanKit.transform(currentUser, new UserPermissionsVO(modules));
         userPermissionsVO.setUserLevel(groupLevel.getValue());
@@ -275,15 +261,6 @@ public class CmsUserServiceImpl extends ServiceImpl<CmsUserMapper, CmsUserDO> im
         return this.jwt.createTokens(user.getId());
     }
 
-
-    private int getModuleIndex(List<PermissionModuleVO> modules, String module) {
-        if (modules.isEmpty()) return -1;
-        for (int i = 0; i < modules.size(); i++) {
-            PermissionModuleVO moduleVO = modules.get(i);
-            if (module.equals(moduleVO.getModule())) return i;
-        }
-        return -1;
-    }
 
     private void checkGroupExist(List<Long> groupIds) {
         boolean isGroupExist = this.cmsGroupService.checkGroupExistByIds(groupIds);

@@ -2,6 +2,7 @@ package com.blcheung.zblmissyouadmin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
+import com.blcheung.zblmissyouadmin.vo.cms.PermissionModuleVO;
 
 import java.util.List;
 
@@ -73,4 +74,14 @@ public interface CmsPermissionService extends IService<CmsPermissionDO> {
      * @date 2022/1/22 8:22 下午
      */
     List<Long> getPermissionIdsByGroupId(Long groupId);
+
+    /**
+     * 组装权限模块集合
+     *
+     * @param permissions
+     * @return java.util.List<com.blcheung.zblmissyouadmin.vo.cms.PermissionModuleVO>
+     * @author BLCheung
+     * @date 2022/4/18 6:27 上午
+     */
+    List<PermissionModuleVO> assemblePermissionModules(List<CmsPermissionDO> permissions);
 }

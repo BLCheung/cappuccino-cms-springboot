@@ -14,7 +14,7 @@ import com.blcheung.zblmissyouadmin.service.*;
 import com.blcheung.zblmissyouadmin.util.CommonUtil;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
 import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
-import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
+import com.blcheung.zblmissyouadmin.vo.cms.PermissionModuleVO;
 import com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO;
 import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
 import lombok.extern.slf4j.Slf4j;
@@ -120,12 +120,12 @@ public class CmsAdminServiceImpl implements CmsAdminService {
     }
 
     @Override
-    public List<PermissionVO> getAssignablePermissions() {
+    public List<PermissionModuleVO> getAssignablePermissions() {
         // TODO: 目前为获取所有挂载的权限为可分配的权限，后期做多管理员分组情况时得增加level字段判断不同级别的分组可分配的权限
-        List<CmsPermissionDO> cmsPermissions = this.cmsPermissionService.lambdaQuery()
+        List<CmsPermissionDO> allPermissions = this.cmsPermissionService.lambdaQuery()
                                                                         .eq(CmsPermissionDO::getMount, true)
                                                                         .list();
-        return BeanKit.transformList(cmsPermissions, PermissionVO.class);
+        return this.cmsPermissionService.assemblePermissionModules(allPermissions);
     }
 
     @Override
@@ -135,8 +135,9 @@ public class CmsAdminServiceImpl implements CmsAdminService {
                                                     .oneOpt()
                                                     .orElseThrow(() -> new NotFoundException(10208));
         List<CmsPermissionDO> groupPermissions = this.cmsPermissionService.getPermissionByGroupId(cmsGroupDO.getId());
+        List<PermissionModuleVO> modules = this.cmsPermissionService.assemblePermissionModules(groupPermissions);
 
-        return BeanKit.transform(cmsGroupDO, new GroupPermissionVO(groupPermissions));
+        return BeanKit.transform(cmsGroupDO, new GroupPermissionVO(modules));
     }
 
     @Transactional
@@ -308,8 +309,8 @@ public class CmsAdminServiceImpl implements CmsAdminService {
                                                               .filter(userGroupVO -> userGroupVO.getGroups()
                                                                                                 .stream()
                                                                                                 .allMatch(groupVO ->
-                                                                                                                   groupVO.getLevel() >=
-                                                                                                                   filterLevel.getValue()))
+                                                                                                                  groupVO.getLevel() >=
+                                                                                                                  filterLevel.getValue()))
                                                               .collect(Collectors.toList());
             return PagingKit.resolve(pageable, finalUserGroupsVO);
         }

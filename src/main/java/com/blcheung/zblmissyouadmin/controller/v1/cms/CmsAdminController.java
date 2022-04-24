@@ -7,10 +7,7 @@ import com.blcheung.zblmissyouadmin.common.exceptions.FailedException;
 import com.blcheung.zblmissyouadmin.dto.cms.*;
 import com.blcheung.zblmissyouadmin.kit.ResultKit;
 import com.blcheung.zblmissyouadmin.service.CmsAdminService;
-import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
-import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
-import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
-import com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO;
+import com.blcheung.zblmissyouadmin.vo.cms.*;
 import com.blcheung.zblmissyouadmin.vo.common.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -101,8 +98,8 @@ public class CmsAdminController {
 
     @GetMapping("/permissions")
     @RouterMeta(name = "查询所有可分配权限", mount = false)
-    public ResultVO<List<PermissionVO>> permissions() {
-        List<PermissionVO> assignablePermissions = this.cmsAdminService.getAssignablePermissions();
+    public ResultVO<List<PermissionModuleVO>> permissions() {
+        List<PermissionModuleVO> assignablePermissions = this.cmsAdminService.getAssignablePermissions();
         return ResultKit.resolve(assignablePermissions);
     }
 

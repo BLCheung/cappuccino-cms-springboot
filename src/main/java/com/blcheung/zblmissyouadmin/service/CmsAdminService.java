@@ -4,11 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blcheung.zblmissyouadmin.common.enumeration.GroupLevel;
 import com.blcheung.zblmissyouadmin.dto.cms.*;
 import com.blcheung.zblmissyouadmin.model.CmsUserDO;
+import com.blcheung.zblmissyouadmin.vo.cms.*;
 import com.blcheung.zblmissyouadmin.vo.common.PagingVO;
-import com.blcheung.zblmissyouadmin.vo.cms.GroupPermissionVO;
-import com.blcheung.zblmissyouadmin.vo.cms.GroupVO;
-import com.blcheung.zblmissyouadmin.vo.cms.PermissionVO;
-import com.blcheung.zblmissyouadmin.vo.cms.UserGroupVO;
 
 import java.util.List;
 
@@ -70,12 +67,11 @@ public interface CmsAdminService {
 
     /**
      * 获取所有可分配的权限
-     *
-     * @return java.util.List<com.blcheung.zblmissyouadmin.model.CmsPermissionDO>
      * @author BLCheung
-     * @date 2022/1/21 10:09 下午
+     * @date 2022/4/18 8:20 下午
+     * @return java.util.List<com.blcheung.zblmissyouadmin.vo.cms.PermissionModuleVO>
      */
-    List<PermissionVO> getAssignablePermissions();
+    List<PermissionModuleVO> getAssignablePermissions();
 
     /**
      * 获取一个分组以及它的权限

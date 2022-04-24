@@ -1,7 +1,5 @@
 package com.blcheung.zblmissyouadmin.vo.cms;
 
-import com.blcheung.zblmissyouadmin.kit.BeanKit;
-import com.blcheung.zblmissyouadmin.model.CmsPermissionDO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,9 +15,9 @@ import java.util.List;
 @NoArgsConstructor
 public class GroupPermissionVO extends GroupVO {
 
-    private List<PermissionVO> permissions;
+    private List<PermissionModuleVO> modules;
 
-    public GroupPermissionVO(List<CmsPermissionDO> cmsPermissions) {
-        this.permissions = BeanKit.transformList(cmsPermissions, new PermissionVO());
+    public GroupPermissionVO(List<PermissionModuleVO> modules) {
+        this.modules = modules;
     }
 }
