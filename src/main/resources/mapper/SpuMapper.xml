@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.blcheung.zblmissyouadmin.mapper.SpuMapper">
+<mapper namespace="com.blcheung.cappuccino.mapper.SpuMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.blcheung.zblmissyouadmin.model.SpuDO">
+    <resultMap id="BaseResultMap" type="com.blcheung.cappuccino.model.SpuDO">
         <result column="id" property="id" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
@@ -25,29 +25,29 @@
         <result column="for_theme_img" property="forThemeImg" />
     </resultMap>
 
-    <resultMap id="SpuDetailMap" autoMapping="true" type="com.blcheung.zblmissyouadmin.bo.SpuDetailBO">
+    <resultMap id="SpuDetailMap" autoMapping="true" type="com.blcheung.cappuccino.bo.SpuDetailBO">
         <id column="id" property="id" />
         <association property="categoryName"
                      column="categoryId"
-                     select="com.blcheung.zblmissyouadmin.mapper.CategoryMapper.getNameById" />
+                     select="com.blcheung.cappuccino.mapper.CategoryMapper.getNameById" />
         <association property="sketchSpecName"
                      column="specKeyId"
-                     select="com.blcheung.zblmissyouadmin.mapper.SpecKeyMapper.getSpecKeyNameById" />
+                     select="com.blcheung.cappuccino.mapper.SpecKeyMapper.getSpecKeyNameById" />
         <association property="defaultSkuTitle"
                      column="skuId"
-                     select="com.blcheung.zblmissyouadmin.mapper.SkuMapper.getSkuTitleById" />
+                     select="com.blcheung.cappuccino.mapper.SkuMapper.getSkuTitleById" />
         <collection property="spuKeys" ofType="java.lang.String"
                     column="id"
-                    select="com.blcheung.zblmissyouadmin.mapper.SpecKeyMapper.getSpecKeyNamesBySpuId" />
+                    select="com.blcheung.cappuccino.mapper.SpecKeyMapper.getSpecKeyNamesBySpuId" />
         <collection property="spuImages" ofType="java.lang.String"
                     column="id"
-                    select="com.blcheung.zblmissyouadmin.mapper.SpuImgMapper.getSpuImagesBySpuId" />
+                    select="com.blcheung.cappuccino.mapper.SpuImgMapper.getSpuImagesBySpuId" />
         <collection property="spuDetailImages" ofType="java.lang.String"
                     column="id"
-                    select="com.blcheung.zblmissyouadmin.mapper.SpuDetailImgMapper.getSpuDetailImagesBySpuId" />
+                    select="com.blcheung.cappuccino.mapper.SpuDetailImgMapper.getSpuDetailImagesBySpuId" />
     </resultMap>
 
-    <select id="getSpuDetail" parameterType="com.blcheung.zblmissyouadmin.model.SpuDO" resultMap="SpuDetailMap">
+    <select id="getSpuDetail" parameterType="com.blcheung.cappuccino.model.SpuDO" resultMap="SpuDetailMap">
         SELECT #{spu.id}           AS id,
                #{spu.categoryId}   AS categoryId,
                #{spu.sketchSpecId} AS specKeyId,

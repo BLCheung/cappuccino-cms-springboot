@@ -24,7 +24,7 @@ public class MyBatisCodeGenerator {
     private static final String dbPassword = "123456";
 
     private static final String projectPath = System.getProperty("user.dir");
-    private static final String packageName = "com.blcheung.zblmissyouadmin";
+    private static final String packageName = "com.blcheung.cappuccino";
     private static final String xmlMapper   = "/src/main/resources/mapper";
 
     public static void main(String[] args) {

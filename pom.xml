@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.blcheung</groupId>
-    <artifactId>zbl-missyou-admin</artifactId>
+    <artifactId>cappuccino-cms-springboot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>zbl-missyou-admin</name>
-    <description>CMS project for zbl-missyou-admin</description>
+    <name>cappuccino-cms-springboot</name>
+    <description>CMS project for cappuccino</description>
     <properties>
         <java.version>15</java.version>
     </properties>

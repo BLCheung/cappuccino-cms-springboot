@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.blcheung.zblmissyouadmin.mapper.CmsPermissionMapper">
+<mapper namespace="com.blcheung.cappuccino.mapper.CmsPermissionMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.blcheung.zblmissyouadmin.model.CmsPermissionDO">
+    <resultMap id="BaseResultMap" type="com.blcheung.cappuccino.model.CmsPermissionDO">
         <result column="id" property="id" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
@@ -15,44 +15,44 @@
 
     <select id="getPermissionsByGroupIds" parameterType="java.util.List" resultMap="BaseResultMap">
         SELECT id, name, module, mount, create_time, update_time, delete_time
-        FROM cms_permission AS p
-        WHERE p.delete_time IS NULL
-        AND p.mount = true
-        AND p.id IN
-        (
-        SELECT permission_id
-        FROM cms_group_permission AS gp
-        WHERE gp.group_id IN
-        <foreach item="groupId" index="index" collection="groupIds"
-                 open="(" separator="," close=")">
-            #{groupId}
-        </foreach>
-        )
+        FROM (
+            SELECT permission_id
+            FROM cms_group_permission _gp
+            WHERE _gp.group_id IN
+                <foreach collection="groupIds" item="groupId" index="index" open="(" separator="," close=")">
+                    #{groupId}
+                </foreach>
+            ) gp
+                LEFT JOIN cms_permission p
+                        ON gp.permission_id = p.id
+                            AND p.delete_time IS NULL
+                            AND p.mount = true
+            GROUP BY id
     </select>
 
     <select id="getPermissionByGroupId" parameterType="java.lang.Long" resultMap="BaseResultMap">
         SELECT id, name, module, mount, create_time, update_time, delete_time
-        FROM cms_permission AS p
-        WHERE p.delete_time IS NULL
-          AND p.mount = true
-          AND p.id IN
-              (
-                  SELECT permission_id
-                  FROM cms_group_permission AS gp
-                  WHERE gp.group_id = #{groupId}
-              )
+        FROM (
+                 SELECT permission_id
+                 FROM cms_group_permission _gp
+                 WHERE _gp.group_id = #{groupId}
+             ) gp
+                 LEFT JOIN cms_permission p
+                           ON gp.permission_id = p.id
+                               AND p.delete_time IS NULL
+                               AND p.mount = true
     </select>
 
     <select id="getPermissionIdsByGroupId" parameterType="java.lang.Long" resultType="java.lang.Long">
         SELECT id
-        FROM cms_permission AS p
-        WHERE p.delete_time IS NULL
-          AND p.mount = true
-          AND p.id IN
-              (
-                  SELECT gp.permission_id
-                  FROM cms_group_permission AS gp
-                  WHERE gp.group_id = #{groupId}
-              )
+        FROM (
+                 SELECT permission_id
+                 FROM cms_group_permission _gp
+                 WHERE _gp.group_id = #{groupId}
+             ) gp
+                 LEFT JOIN cms_permission p
+                           ON gp.permission_id = p.id
+                               AND p.delete_time IS NULL
+                               AND p.mount = true
     </select>
 </mapper>

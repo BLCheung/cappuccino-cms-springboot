@@ -16,8 +16,8 @@ spring:
       # 如果没有做特殊配置，我们的异常处理系统就会处理不到404请求
       add-mappings: false
 
-missyou:
-  api-path: com.blcheung.zblmissyouadmin.controller
+cappuccino:
+  api-path: com.blcheung.cappuccino.controller
   # cms配置
   cms:
     # 秘钥

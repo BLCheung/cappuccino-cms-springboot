@@ -12,7 +12,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 
-missyou:
+cappuccino:
   sku:
     # sku最大购买数量
     max-buy-count: 99

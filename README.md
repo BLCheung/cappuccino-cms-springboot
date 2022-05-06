@@ -1,2 +1,2 @@
-# zbl-missyou-admin-springboot
-springboot project for zbl-missyou-admin
+# cappuccino-cms-springboot
+springboot project for cappuccino-cms
