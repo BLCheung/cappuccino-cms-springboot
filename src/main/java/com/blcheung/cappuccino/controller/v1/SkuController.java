@@ -54,7 +54,7 @@ public class SkuController {
         return ResultKit.resolveUpdated(skuVO);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @RouterMeta(name = "删除SKU")
     public DeletedVO delete(@PathVariable(value = "id") @Positive Long skuId) {
         Boolean isDeleted = this.skuService.delete(skuId);
